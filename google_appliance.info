@@ -1,0 +1,4 @@
+; $Id: 
+name = "Google Search Appliance Integration"
+description = "Provides a search interace to the googleMini or GSA, meta-data generators which will allow for advanced search and a class for talking to a GoogleMini or GSA."
+package = "Other"

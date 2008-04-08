@@ -1,0 +1,35 @@
+<?php
+function google_appliance_install() {
+  $q = "
+CREATE TABLE IF NOT EXISTS `{cache_google}` (
+  `cid` varchar(255) NOT NULL default '',
+  `data` longblob,
+  `expire` int(11) NOT NULL default '0',
+  `created` int(11) NOT NULL default '0',
+  `headers` text,
+  PRIMARY KEY  (`cid`),
+  KEY `expire` (`expire`)
+) ENGINE=innoDB DEFAULT CHARSET=utf8
+";
+  
+  $ret[] = db_query($q);
+  return $ret;
+}
+
+function google_appliance_update_1() {
+  $q = "
+CREATE TABLE IF NOT EXISTS `{cache_google}` (
+  `cid` varchar(255) NOT NULL default '',
+  `data` longblob,
+  `expire` int(11) NOT NULL default '0',
+  `created` int(11) NOT NULL default '0',
+  `headers` text,
+  PRIMARY KEY  (`cid`),
+  KEY `expire` (`expire`)
+) ENGINE=innoDB DEFAULT CHARSET=utf8
+";
+  
+  $ret[] = update_sql($q);  
+  return $ret;
+}
+?>
