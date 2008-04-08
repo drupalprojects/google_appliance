@@ -238,8 +238,7 @@ class GoogleMini {
             }
             // The 'OROR' case is used on the Related Information pages, where you want
             // to search documents with one of multiple terms in multiple vocabularies.
-            // You have to join the different types with a | otherwise the date sorting gets messed up.
-            // See https://trac.civicactions.net/index.cgi/amnesty/ticket/1087#comment:11
+            // You have to join the different types with a | otherwise the date sorting gets messed up.            
             if ($mdf->type == 'OROR') {
               $metafilter .= join("|", $vals) . "|";
             } else {
