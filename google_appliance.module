@@ -17,13 +17,6 @@ function google_appliance_menu($may_cache = false) {
     'access' => true,
     );
 
-    $items[] = array (
-      'path' => 'google_appliance_feeder',
-      'callback' => 'google_apppliance_feeder',
-      'type' => MENU_CALLBACK,
-      'access' => true,
-    );
-
     $items[] = array(
       'path' => 'admin/settings/google_appliance',
       'title' => t('Google Appliance Settings'),
@@ -275,21 +268,6 @@ function _google_appliance_add_meta_tags() {
     $node = node_load(arg(1));
     theme('add_google_appliance_meta_tags', $node);
   }
-}
-
-function google_appliance_feeder() {
-  //not sure if this is appropriate as everything should be findable via the main site, but this basically just creates a listing of all nodes.
-  $result = db_query('SELECT * from {node} WHERE status = 1');
-  print '<html>';
-  print '<body>';
-
-  while ($row = db_fetch_object($result)) {
-    print l($row->title,'node/' . $row->nid);
-  }
-
-  print '</body>';
-  print '</html>';
-  die();
 }
 
 /**
