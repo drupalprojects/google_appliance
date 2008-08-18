@@ -240,11 +240,22 @@ class GoogleMini {
             }
             // The 'OROR' case is used on the Related Information pages, where you want
             // to search documents with one of multiple terms in multiple vocabularies.
-            // You have to join the different types with a | otherwise the date sorting gets messed up.            
+            // You have to join the different types with a | otherwise the date sorting gets messed up.
+            
+            
+            /***
+             * IMPORTANT!  The new Version of the Mini uses parenthesis.
+             * This will not work for older versions pre August 2008 (I believe).
+             *
+             * If you are using one of these versions see the patch at:
+             * which will use the old
+             *
+             */
+            
             if ($mdf->type == 'OROR') {
-              $metafilter .= join("|", $vals) . "|";
+              $metafilter .= '(' . join("|", $vals) . ")|";
             } else {
-              $metafilter .= join("|", $vals) . ".";
+              $metafilter .= '(' . join("|", $vals) . ").";
             }
           } else {
             foreach ($mdf->values as $value) {
