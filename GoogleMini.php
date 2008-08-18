@@ -1,6 +1,8 @@
 <?php
 
-define('GOOGLE_MINI_MAX_RESULTS', variable_get('google_appliance_max_results', 1000));
+if (!defined('GOOGLE_MINI_MAX_RESULTS')) {
+  define('GOOGLE_MINI_MAX_RESULTS', 1000);
+}
 
 class GoogleMini {
 
@@ -26,7 +28,7 @@ class GoogleMini {
       $callback = $this->debug_callback;
       call_user_func($callback,$message);
     }
-    watchdog('google_search',$message);
+    error_log($message);
   }
 
   /**
