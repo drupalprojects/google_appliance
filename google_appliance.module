@@ -148,6 +148,14 @@ function google_appliance_admin_settings() {
     "#default_value" => variable_get('google_debug', ''),    
   );
   
+  $form["config_init"]["google_appliance_limit_per_page"] = array(
+    "#type" => "textfield",
+    "#size" => 5,
+    "#title" => t("Number of results per page"),
+    "#description" => t('If you enter 0, it will return the max allowed by the appliance (100)'),
+    "#default_value" => variable_get('google_appliance_limit_per_page', 10),    
+  );
+  
 
   // error message config
   $form["config_messages"] = array(
@@ -246,6 +254,7 @@ function google_appliance_admin_settings_submit($form_id, $form) {
   variable_set('google_appliance_name', check_plain($form['google_appliance_name']));
   variable_set('google_appliance_cache_timeout', check_plain($form['google_appliance_cache_timeout']));
   variable_set('google_debug', check_plain($form['google_debug']));
+  variable_set('google_appliance_limit_per_page', check_plain($form['google_appliance_limit_per_page']));
 
   // don't run check_plain on these because they can have HTML
   variable_set('google_appliance_errorcode_1', $form['google_appliance_errorcode_1']);
@@ -300,6 +309,14 @@ function google_appliance_search($op = 'search', $keys = null) {
       break;
 
     case 'search':
+      global $pager_page_array, $pager_total, $pager_total_items;
+      $page = isset($_GET['page']) ? $_GET['page'] : '';
+      // Convert comma-separated $page to an array, used by other functions.
+      $pager_page_array = explode(',', $page);
+      // $element indicates which of the pagers active this pager is working from.  $limit indicates how many per page.
+      $element = 0;
+      $limit = variable_get('google_appliance_limit_per_page',10);
+      
       $dir = drupal_get_path('module', 'google_appliance');
       include_once $dir . '/DrupalGoogleMini.php';
       
@@ -332,7 +349,8 @@ function google_appliance_search($op = 'search', $keys = null) {
         $gm->baseUrl = $_tmp_host . "/search";
         $gm->collection = variable_get('google_appliance_collection', '');
         $gm->setQueryPart('client',variable_get('google_appliance_client', ''));
-
+        $gm->setPageAndResultsPerPage($page,$limit);
+        
         // set search parameters
         $gm->setKeywords($keys);
         
@@ -365,6 +383,11 @@ function google_appliance_search($op = 'search', $keys = null) {
       try {
         $resultIterator = $gm->query();
         google_appliance_static_response_cache($resultIterator);
+        // Google never returns more than 1000 results, so we ignore any values larger than that.
+        $pager_total_items[$element] = ($resultIterator->totalResults < 1000) ? $resultIterator->totalResults : 1000;
+        $pager_total[$element] = ceil($pager_total_items[$element] / $limit);
+        $pager_page_array[$element] = max(0, min((int)$pager_page_array[$element], ((int)$pager_total[$element]) - 1));
+        
         foreach ($resultIterator as $key => $result) {
           /*$results[] = array('link' => url('node/'. $doc->nid, NULL, NULL, TRUE),
                                'type' => node_get_types('name', $doc),
@@ -386,7 +409,6 @@ function google_appliance_search($op = 'search', $keys = null) {
         drupal_set_message($e->getMessage());
         return false;
       }
-
       return $results;
       break;
 
