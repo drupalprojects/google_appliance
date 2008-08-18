@@ -307,6 +307,12 @@ function google_appliance_search($op = 'search', $keys = null) {
           $gm = new DrupalGoogleMini(false);
         }
       
+      /**
+       * If you have many searches for the same content
+       * You can use this setting to keep the GSA from getting hit too often
+       *
+       */
+      
       if ($cache = variable_get('google_appliance_cache_timeout',0) ) {
         cache_clear_all(null,'cache_google');
         $gm->cache = true;
@@ -367,16 +373,6 @@ function google_appliance_search($op = 'search', $keys = null) {
         $pager_page_array[$element] = max(0, min((int)$pager_page_array[$element], ((int)$pager_total[$element]) - 1));
         
         foreach ($resultIterator as $key => $result) {
-          /*$results[] = array('link' => url('node/'. $doc->nid, NULL, NULL, TRUE),
-                               'type' => node_get_types('name', $doc),
-                               'title' => $doc->title,
-                               'user' => theme('username', $doc),
-                               'date' => $doc->changed,
-                               'node' => $doc,
-                               'extra' => $extra,
-                               'score' => $doc->score,
-                               'snippet' => $snippet);
-                                         */
           $results[] = theme('google_appliance_search_result_array', $result);
         }
       }
