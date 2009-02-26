@@ -1,35 +1,80 @@
 <?php
+// $Id$
+
+/**
+ * @file
+ * Installation file for building tables for Google Integration
+ */
+
+/**
+ * Implementation of hook_install().
+ */
 function google_appliance_install() {
-  $q = "
-CREATE TABLE IF NOT EXISTS `{cache_google}` (
-  `cid` varchar(255) NOT NULL default '',
-  `data` longblob,
-  `expire` int(11) NOT NULL default '0',
-  `created` int(11) NOT NULL default '0',
-  `headers` text,
-  PRIMARY KEY  (`cid`),
-  KEY `expire` (`expire`)
-) ENGINE=innoDB DEFAULT CHARSET=utf8
-";
+  $install = drupal_install_schema('google_appliance');
   
-  $ret[] = db_query($q);
-  return $ret;
+  if ($install['0']['success'] == 1) {
+    drupal_set_message(t('Google Appliance module installed successfully'));
+  } 
+  else {
+    drupal_set_message(t('Google Appliance module failed to install'), 'error');
+  }
 }
 
-function google_appliance_update_1() {
-  $q = "
-CREATE TABLE IF NOT EXISTS `{cache_google}` (
-  `cid` varchar(255) NOT NULL default '',
-  `data` longblob,
-  `expire` int(11) NOT NULL default '0',
-  `created` int(11) NOT NULL default '0',
-  `headers` text,
-  PRIMARY KEY  (`cid`),
-  KEY `expire` (`expire`)
-) ENGINE=innoDB DEFAULT CHARSET=utf8
-";
-  
-  $ret[] = update_sql($q);  
-  return $ret;
+/**
+ * Implementation of hook_uninstall().
+ */
+function google_appliance_uninstall() {
+  // Remove tables.
+  $uninstall = drupal_uninstall_schema('google_appliance');
+
+  if ($uninstall['0']['success'] == 1) {
+    drupal_set_message(t('Google Appliance module uninstalled successfully'));
+  } 
+  else {
+    drupal_set_message(t('Google Appliance module failed to uninstall'), 'error');
+  }
 }
-?>
+
+/**
+ * Implementation of hook_schema().
+ */
+function google_appliance_schema() {
+  $schema['cache_google'] = array(
+    'fields' => array(
+      'cid' => array(
+        'type' => 'varchar', 
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => ''
+      ),
+      'data' => array(
+        'type' => 'blob',
+        'not null' => FALSE,
+        'size' => 'big'
+      ),
+      'expire' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0
+      ),
+      'created' => array(
+        'type' => 'int',
+        'not null' => TRUE, 
+        'default' => 0
+      ),
+      'headers' => array(
+        'type' => 'text'
+      ),
+      'serialized' => array(
+        'type' => 'int',
+        'size' => 'small',
+        'not null' => TRUE,
+        'default' => 0
+      )
+    ),
+    'indexes' => array('expire' => array('expire')),
+    'primary key' => array('cid'),
+  );
+  
+  return $schema;
+}

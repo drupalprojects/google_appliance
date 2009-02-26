@@ -8,7 +8,7 @@ class GoogleFeeder {
     
   }
   
-  public function addLanguages($languages = null) {
+  public function addLanguages($languages = NULL) {
     
   }
   
@@ -20,14 +20,14 @@ class GoogleFeeder {
     
   }
   
-  public function getMetaData($key = null) {
+  public function getMetaData($key = NULL) {
     if (!$key) {
       return $this->_metaData;
     } else {
       if (isset($this->_metaData[$key])) {
         return $this->_metaData[$key];
       } else {
-        throw new Exception("Meta Data Code not found",E_WARNING);
+        throw new Exception("Meta Data Code not found", E_WARNING);
       }
     }
   }

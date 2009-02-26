@@ -1,6 +1,9 @@
 <?php
+// $Id$
 
-define('GOOGLE_MINI_MAX_RESULTS', variable_get('google_appliance_max_results', 1000));
+if (!defined('GOOGLE_MINI_MAX_RESULTS')) {
+  define('GOOGLE_MINI_MAX_RESULTS', 1000);
+}
 
 class GoogleMini {
 
@@ -12,21 +15,21 @@ class GoogleMini {
   private $_queryParts;
 
 
-  public function __construct($debug = false, $debug_callback = null) {
+  public function __construct($debug = FALSE, $debug_callback = NULL) {
     if ($debug) {
-      $this->debug = true;
+      $this->debug = TRUE;
       if ($debug_callback && function_exists($debug_callback)) {
         $this->debug_callback = $debug_callback;
       }
     }
   }
 
-  function log($message = null) {
+  function log($message = NULL) {
     if ($this->debug_callback) {
       $callback = $this->debug_callback;
       call_user_func($callback,$message);
     }
-    watchdog('google_search',$message);
+    error_log($message);
   }
 
   /**
@@ -64,9 +67,9 @@ class GoogleMini {
    * @param type either requiredfields or partialfields
    * @param string $join either AND or OR
    */
-  public function addMetaDataFilter($key, $values, $type = 'partialfields',  $join = 'OR') {
-    if (!in_array($type,array('partialfields','requiredfields'))) {
-      throw new GoogleMiniCriteriaException("You must provide a type of either partialfields or requiredfields",'-99');
+  public function addMetaDataFilter($key, $values, $type = 'partialfields', $join = 'OR') {
+    if (!in_array($type, array('partialfields', 'requiredfields'))) {
+      throw new GoogleMiniCriteriaException("You must provide a type of either partialfields or requiredfields", '-99');
     }
     if (is_array($values)) {
       $this->_metaDataFilters[$type][$key] = new stdClass();
@@ -86,16 +89,16 @@ class GoogleMini {
    *
    * @param array $languages
    */
-  public function setLanguageFilter($languages = null) {
+  public function setLanguageFilter($languages = NULL) {
     if ($languages) {
       if (is_array($languages)) {
-        $this->setQueryPart("lr",implode('|',$languages));
+        $this->setQueryPart("lr", implode('|',$languages));
       } else {
-        $this->setQueryPart("lr",$languages);
+        $this->setQueryPart("lr", $languages);
       }
-      return true;
+      return TRUE;
     }
-    return false;
+    return FALSE;
   }
 
   /**
@@ -108,7 +111,7 @@ class GoogleMini {
     if ($this->_queryParts['q']) {
       $this->_queryParts['q'] .= "%20daterange:$date_before..$date_after";
     } else {
-      $this->setQueryPart('q',"daterange:$date_before..$date_after");
+      $this->setQueryPart('q', "daterange:$date_before..$date_after");
     }
   }
 
@@ -122,7 +125,7 @@ class GoogleMini {
     if ($this->_queryParts['q']) {
       $this->_queryParts['q'] .= "%20site:$domain";
     } else {
-      $this->setQueryPart('q',"site:" . urlencode($domain));
+      $this->setQueryPart('q', "site:" . urlencode($domain));
     }
   }
 
@@ -138,17 +141,17 @@ class GoogleMini {
    *   *** WARNING *** Do not use this filter if your collection contains more than 50,000 documents.
    *   If the result set is very large, the sort operation could create significant delays in the display of results.
    */
-  public function setDateSort($dir = "D",$mode = 'S') {
+  public function setDateSort($dir = "D", $mode = 'S') {
       if ($dir != 'A' && $dir != 'D') {
-        throw new GoogleMiniCriteriaException(sprintf("The Sort direction provided is incorrect.  Got %s, needs to be A or D",htmlentities($dir)),E_WARNING);
+        throw new GoogleMiniCriteriaException(sprintf("The Sort direction provided is incorrect.  Got %s, needs to be A or D", htmlentities($dir)), E_WARNING);
       }
       if ($mode != 'S' && $mode != 'R') {
-        throw new GoogleMiniCriteriaException(sprintf("The Sort mode provided is incorrect.  Got %s, needs to be S or R",htmlentities($mode)),E_WARNING);
+        throw new GoogleMiniCriteriaException(sprintf("The Sort mode provided is incorrect.  Got %s, needs to be S or R", htmlentities($mode)), E_WARNING);
       }
 
       // build sort string
       // http://code.google.com/apis/searchappliance/documentation/46/xml_reference.html#request_sort_by_date
-      $this->setQueryPart('sort',"date:$dir:$mode:d1");
+      $this->setQueryPart('sort', "date:$dir:$mode:d1");
       return true;
   }
 
@@ -171,9 +174,9 @@ class GoogleMini {
    *
    * @param array $fields
    */
-  public function setMetaDataRequested($fields = null) {
+  public function setMetaDataRequested($fields = NULL) {
     if (is_array($fields)) {
-     $this->setQueryPart('getfields', implode('.',$fields));
+     $this->setQueryPart('getfields', implode('.', $fields));
     } else {
       $this->setQueryPart('getfields', $fields);
     }
@@ -187,10 +190,10 @@ class GoogleMini {
   public function setPageAndResultsPerPage($page = 0, $results = 10) {
     $end = $page * $results + $results;
     if ($end > GOOGLE_MINI_MAX_RESULTS) {
-      throw new GoogleMiniCriteriaException("You cannot get more than ".GOOGLE_MINI_MAX_RESULTS." results per page, requested $end",2);
+      throw new GoogleMiniCriteriaException("You cannot get more than ".GOOGLE_MINI_MAX_RESULTS." results per page, requested $end", 2);
     }
     $this->setQueryPart('start', $page * $results);
-    $this->setQueryPart('num',$results);
+    $this->setQueryPart('num', $results);
     return true;
   }
 
@@ -201,7 +204,7 @@ class GoogleMini {
    * @param string $enc
    */
   public function setOutputEncoding($enc) {
-    $this->setQueryPart('oe',$enc);
+    $this->setQueryPart('oe', $enc);
   }
 
  /**
@@ -210,7 +213,7 @@ class GoogleMini {
    * @param string $enc
    */
   public function setInputEncoding($enc) {
-    $this->setQueryPart('ie',$enc);
+    $this->setQueryPart('ie', $enc);
   }
 
   /**
@@ -231,27 +234,41 @@ class GoogleMini {
             foreach ($mdf->values as $value) {
              $metafilter .= '-' . $field . ':' . $value .'.';
             }
-          } elseif ($mdf->type == 'OR' || $mdf->type == 'OROR') {
+          }
+          elseif ($mdf->type == 'OR' || $mdf->type == 'OROR') {
             $vals = array();
             foreach ($mdf->values as $v) {
               $vals[] = $field . ':' . $v;
             }
             // The 'OROR' case is used on the Related Information pages, where you want
             // to search documents with one of multiple terms in multiple vocabularies.
-            // You have to join the different types with a | otherwise the date sorting gets messed up.            
+            // You have to join the different types with a | otherwise the date sorting gets messed up.
+            
+            
+            /***
+             * IMPORTANT!  The new Version of the Mini uses parenthesis.
+             * This will not work for older versions pre August 2008 (I believe).
+             *
+             * If you are using one of these versions see the patch at:
+             * which will use the old
+             *
+             */
+            
             if ($mdf->type == 'OROR') {
-              $metafilter .= join("|", $vals) . "|";
-            } else {
-              $metafilter .= join("|", $vals) . ".";
+              $metafilter .= '(' . join("|", $vals) . ")|";
             }
-          } else {
+            else {
+              $metafilter .= '(' . join("|", $vals) . ").";
+            }
+          }
+          else {
             foreach ($mdf->values as $value) {
-             $metafilter .= $field . ':' . $value .'.';
+              $metafilter .= $field . ':' . $value .'.';
             }
           }
         }
-        $metafilter = substr($metafilter,0,-1);
-        $this->setQueryPart($type,$metafilter);
+        $metafilter = substr($metafilter, 0,-1);
+        $this->setQueryPart($type, $metafilter);
       }
     }
 
@@ -262,7 +279,7 @@ class GoogleMini {
 
     if ($this->debug) {
       $this->log('Building Query');
-      $this->log(var_export($this->_queryParts,1));
+      $this->log(var_export($this->_queryParts, 1));
     }
 
     foreach ($this->_queryParts as $label => $value) {
@@ -286,15 +303,15 @@ class GoogleMini {
     // get search results in XML using cURL
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $query);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_VERBOSE, true);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+    curl_setopt($ch, CURLOPT_VERBOSE, TRUE);
 
     $resultXML = curl_exec($ch);
 	if ($this->debug) {
     	$this->log('Made CURL request to ' . $query);
 	}
 
-    return self::resultFactory($resultXML,$iteratorClass);
+    return self::resultFactory($resultXML, $iteratorClass);
   }
 
   function resultFactory($resultXML,$className = 'GoogleMiniResultIterator') {
@@ -309,7 +326,8 @@ class GoogleMini {
       if (!$payload->GM) {
         throw new GoogleMiniResultException("No Results found", '1');
       }
-    } else {
+    }
+    else {
       foreach ($payload->xpath('//R') as $res) {
         $results[] = $res;
       }
@@ -400,30 +418,30 @@ class GoogleMiniResultException extends GoogleMiniException {
 class GoogleMiniException extends Exception {
   
   function __construct($message, $code = null) {
-     parent::__construct($message,$code);
-     $this->userMessage = GoogleMiniException::getUserMessage($code);
-     if (!$this->userMessage) {
-       $this->userMessage = $message;
-     }
+      parent::__construct($message, $code);
+      $this->userMessage = GoogleMiniException::getUserMessage($code);
+      if (!$this->userMessage) {
+        $this->userMessage = $message;
+      }
   }
   
   function getErrorCodes() {
     static $error_codes;
     if (!$error_codes) {
-     $error_codes = array (
-      '-100' => 'We apologize, but the connection to our search engine appears to be down at the moment, please try again later.',
-      '-99' => 'We apologize, but your search cannot be completed at this time, please try again later.',
-      '1' => 'No results were found that matched your criteria.  Please try broadening your search.',
-      '2' => 'Sorry, but our search does not return more than 1,000 records, please refine your criteria.',
-     );
-   }
-   return $error_codes;
+      $error_codes = array (
+        '-100' => 'We apologize, but the connection to our search engine appears to be down at the moment, please try again later.',
+        '-99' => 'We apologize, but your search cannot be completed at this time, please try again later.',
+        '1' => 'No results were found that matched your criteria.  Please try broadening your search.',
+        '2' => 'Sorry, but our search does not return more than 1,000 records, please refine your criteria.',
+      );
+    }
+    return $error_codes;
   }
   
   
   function getUserMessage($code) {
-   $error_codes = $this->getErrorCodes();  
-   return $error_codes[$code];
+    $error_codes = $this->getErrorCodes();  
+    return $error_codes[$code];
   }
 }
 

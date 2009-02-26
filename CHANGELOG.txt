@@ -1,0 +1,6 @@
+// $Id$
+
+Google Appliance 6.x-2.x
+------------------------
+
+- [#271896] by coltrane: First commit of the Drupal 6 branch.
