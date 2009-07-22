@@ -22,7 +22,7 @@ class DrupalGoogleMini extends GoogleMini {
   }
   
   function query($iteratorClass = 'GoogleMiniResultIterator') {
-    if (!db_table_exists('cache_google')) {
+    if (!db_table_exists('cache_google_appliance')) {
       $this->cache = FALSE;
     }
     if (!$this->cache) {
@@ -31,11 +31,11 @@ class DrupalGoogleMini extends GoogleMini {
     else {
       $cached_result_obj = NULL;
       $cache_key = md5($this->buildQuery());
-      $_cached_result_xml = cache_get($cache_key, 'cache_google');
+      $_cached_result_xml = cache_get($cache_key, 'cache_google_appliance');
       $cached_result_xml = $_cached_result_xml->data;
+      $google_debug = variable_get('google_appliance_debug', 0);
       if ($cached_result_xml) {
         $google_results = GoogleMini::resultFactory($cached_result_xml, $iteratorClass);
-        $google_debug = variable_get('google_debug', 0);
         if ($google_debug >= 2 ){
           if (function_exists('dpr')) {
             dpr("got cache for $cache_key");
@@ -47,8 +47,8 @@ class DrupalGoogleMini extends GoogleMini {
       }
       else {
         $google_results = parent::query($iteratorClass);
-        //10 Min cache by default
-        cache_set($cache_key, $google_results->payload->asXML(), 'cache_google', time() + variable_get('google_appliance_cache_timeout', 600));
+        $timeout = variable_get('google_appliance_cache_timeout', 600); // 10 minutes by default
+        cache_set($cache_key, $google_results->payload->asXML(), 'cache_google_appliance', time() + $timeout);
         $google_debug = variable_get('google_debug', 0);
         if ($google_debug >= 2 ){
           if (function_exists('dpr')) {

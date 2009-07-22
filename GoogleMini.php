@@ -92,7 +92,7 @@ class GoogleMini {
   public function setLanguageFilter($languages = NULL) {
     if ($languages) {
       if (is_array($languages)) {
-        $this->setQueryPart("lr", implode('|',$languages));
+        $this->setQueryPart("lr", implode('|', $languages));
       } else {
         $this->setQueryPart("lr", $languages);
       }
@@ -125,7 +125,7 @@ class GoogleMini {
     if ($this->_queryParts['q']) {
       $this->_queryParts['q'] .= "%20site:$domain";
     } else {
-      $this->setQueryPart('q', "site:" . urlencode($domain));
+      $this->setQueryPart('q', "site:". urlencode($domain));
     }
   }
 
@@ -163,7 +163,7 @@ class GoogleMini {
    */
   public function setKeywords($keys) {
     if ($this->_queryParts['q']) {
-      $this->_queryParts['q'] .= "%20" . urlencode($keys);
+      $this->_queryParts['q'] .= "%20". urlencode($keys);
     } else {
       $this->setQueryPart('q', urlencode($keys));
     }
@@ -232,13 +232,13 @@ class GoogleMini {
         foreach ($fields as $field => $mdf) {
           if ($mdf->type == "ANDNEG") {
             foreach ($mdf->values as $value) {
-             $metafilter .= '-' . $field . ':' . $value .'.';
+             $metafilter .= '-'. $field .':'. $value .'.';
             }
           }
           elseif ($mdf->type == 'OR' || $mdf->type == 'OROR') {
             $vals = array();
             foreach ($mdf->values as $v) {
-              $vals[] = $field . ':' . $v;
+              $vals[] = $field .':'. $v;
             }
             // The 'OROR' case is used on the Related Information pages, where you want
             // to search documents with one of multiple terms in multiple vocabularies.
@@ -263,7 +263,7 @@ class GoogleMini {
           }
           else {
             foreach ($mdf->values as $value) {
-              $metafilter .= $field . ':' . $value .'.';
+              $metafilter .= $field .':'. $value .'.';
             }
           }
         }
@@ -272,10 +272,10 @@ class GoogleMini {
       }
     }
 
-    $this->setQueryPart('output','xml_no_dtd');
+    $this->setQueryPart('output', 'xml_no_dtd');
 
     $query = $this->baseUrl;
-    $query .= "?site=" . $this->collection;
+    $query .= "?site=". $this->collection;
 
     if ($this->debug) {
       $this->log('Building Query');
@@ -308,13 +308,13 @@ class GoogleMini {
 
     $resultXML = curl_exec($ch);
 	if ($this->debug) {
-    	$this->log('Made CURL request to ' . $query);
+    	$this->log('Made CURL request to '. $query);
 	}
 
     return self::resultFactory($resultXML, $iteratorClass);
   }
 
-  function resultFactory($resultXML,$className = 'GoogleMiniResultIterator') {
+  function resultFactory($resultXML, $className = 'GoogleMiniResultIterator') {
     $results = array();
 
 
@@ -375,6 +375,19 @@ class GoogleMiniResultIterator extends ArrayIterator   {
     return $output;
   }
 
+  /**
+   * Returns an array of synonyms.
+   */
+  function getSynonyms() {
+    $output = array();
+    if ($this->Synonyms) {
+      foreach ($this->Synonyms->children() as $child) {
+        $output[] = (string) $child['q'];
+      }
+    }
+    return $output;
+  }
+
 }
 
 class GoogleMiniResult {
@@ -418,17 +431,17 @@ class GoogleMiniResultException extends GoogleMiniException {
 class GoogleMiniException extends Exception {
   
   function __construct($message, $code = null) {
-      parent::__construct($message, $code);
-      $this->userMessage = GoogleMiniException::getUserMessage($code);
-      if (!$this->userMessage) {
-        $this->userMessage = $message;
-      }
+    parent::__construct($message, $code);
+    $this->userMessage = GoogleMiniException::getUserMessage($code);
+    if (!$this->userMessage) {
+      $this->userMessage = $message;
+    }
   }
   
   function getErrorCodes() {
     static $error_codes;
     if (!$error_codes) {
-      $error_codes = array (
+      $error_codes = array(
         '-100' => 'We apologize, but the connection to our search engine appears to be down at the moment, please try again later.',
         '-99' => 'We apologize, but your search cannot be completed at this time, please try again later.',
         '1' => 'No results were found that matched your criteria.  Please try broadening your search.',

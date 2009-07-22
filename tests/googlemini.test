@@ -70,7 +70,7 @@ class GoogleMiniTest extends DrupalTestCase {
     for ($i = 0; $i < 3; $i++) {
       $g = clone($this->stockMini);
       $g->cache = true;
-      cache_clear_all(null,'cache_google');
+      cache_clear_all(null,'cache_google_appliance');
       $g->debug_callback = 'google_appliance_test_cache_check';
       
       try {

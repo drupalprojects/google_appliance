@@ -39,7 +39,7 @@ function google_appliance_uninstall() {
  * Implementation of hook_schema().
  */
 function google_appliance_schema() {
-  $schema['cache_google'] = array(
+  $schema['cache_google_appliance'] = array(
     'fields' => array(
       'cid' => array(
         'type' => 'varchar', 
@@ -77,4 +77,29 @@ function google_appliance_schema() {
   );
   
   return $schema;
+}
+
+
+function google_appliance_update_1() {
+  $ret = array();
+  $conf = variable_init();
+  $var_names = array(
+    'google_debug' => 'google_appliance_debug',
+    'google_appliance_client' => 'google_appliance_default_client',
+    'google_appliance_collection' => 'google_appliance_default_collection',
+  );
+  foreach ($var_names as $old => $new) {
+    if (array_key_exists($old, $conf)) {
+      variable_set($new, $conf[$old]);
+      variable_del($old);
+      $ret[] = array('success' => TRUE, 'query' => "variable_set($new)");
+      $ret[] = array('success' => TRUE, 'query' => "variable_del($old)");
+    }
+  }
+  if (db_table_exists('cache_google')) {
+    db_add_index($ret, 'cache_google', 'cid', array('cid'));
+    db_rename_table($ret, 'cache_google', 'cache_google_appliance');
+  }
+  
+  return $ret;
 }
