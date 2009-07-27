@@ -80,7 +80,7 @@ function google_appliance_schema() {
 }
 
 
-function google_appliance_update_1() {
+function google_appliance_update_6201() {
   $ret = array();
   $conf = variable_init();
   $var_names = array(
