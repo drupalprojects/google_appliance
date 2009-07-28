@@ -19,3 +19,5 @@ Google Appliance 6.x-2.2
   
 - [#528428] by jweowu, larskleiner: changed google_appliance_update_1 to
   google_appliance_update_6201
+  
+- [#528428] by jweowu: added google_appliance_update_6000

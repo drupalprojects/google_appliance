@@ -79,6 +79,18 @@ function google_appliance_schema() {
   return $schema;
 }
 
+function google_appliance_update_6000() {
+  $ret = array();
+    db_add_field($ret, 'cache_google', 'serialized',
+      array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'size' => 'small',
+        'default' => 0,
+      )
+    );
+  return $ret;
+}
 
 function google_appliance_update_6201() {
   $ret = array();
