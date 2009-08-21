@@ -6,7 +6,6 @@ define('GOOGLE_MINI_MAX_RESULTS', variable_get('google_appliance_max_results', 1
 include_once 'GoogleMini.php';
 
 class DrupalGoogleMini extends GoogleMini {
-
   var $cache = FALSE;
 
   function __construct($debug = FALSE, $debug_callback = NULL) {
@@ -17,8 +16,12 @@ class DrupalGoogleMini extends GoogleMini {
     if ($this->debug_callback) {
       $callback = $this->debug_callback;
       call_user_func($callback, $message);
-    }
+    }    
     watchdog("google_appliance", $message);
+  }
+  
+  function getQueryParts() {
+    return $this->_queryParts;
   }
   
   function query($iteratorClass = 'GoogleMiniResultIterator') {

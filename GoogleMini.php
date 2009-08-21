@@ -12,7 +12,7 @@ class GoogleMini {
   public  $baseUrl = ''; // REQUIRED
   public  $frontEnd = ''; // IF SET WILL DISABLE parsing of results.
   public  $collection = ''; // REQUIRED
-  private $_queryParts;
+  protected $_queryParts;
 
 
   public function __construct($debug = FALSE, $debug_callback = NULL) {
@@ -82,7 +82,6 @@ class GoogleMini {
       $this->_metaDataFilters[$type][$key]->values = array (urlencode($values));
     }
   }
-
 
   /**
    * Sets the languages to be used in the search, if none specified, searches all languages
@@ -161,7 +160,7 @@ class GoogleMini {
    *
    * @param string $keys
    */
-  public function setKeywords($keys) {
+  public function setKeywords($keys) {		
     if ($this->_queryParts['q']) {
       $this->_queryParts['q'] .= "%20". urlencode($keys);
     } else {
@@ -249,8 +248,8 @@ class GoogleMini {
              * IMPORTANT!  The new Version of the Mini uses parenthesis.
              * This will not work for older versions pre August 2008 (I believe).
              *
-             * If you are using one of these versions see the patch at:
-             * which will use the old
+             * If you are using one of these versions see the patch at: ?
+             * which will use the old ?
              *
              */
             
@@ -285,7 +284,6 @@ class GoogleMini {
     foreach ($this->_queryParts as $label => $value) {
       $query .= "&$label=$value";
     }
-
     $this->_query = $query;
     if ($this->debug) {
       $this->log($query);
@@ -316,7 +314,6 @@ class GoogleMini {
 
   function resultFactory($resultXML, $className = 'GoogleMiniResultIterator') {
     $results = array();
-
 
     $payload = simplexml_load_string($resultXML);
 

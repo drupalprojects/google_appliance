@@ -37,7 +37,7 @@ function google_appliance_perm() {
 /**
  * Get selected config settings.
  */
-function _google_appliance_get_settings($reset = FALSE) {
+function google_appliance_get_settings($reset = FALSE) {
   static $settings;
   if ($reset or empty($settings)) {
     $google_appliance_name = trim(variable_get('google_appliance_name', GOOGLE_APPLIANCE_NAME_DEFAULT));
@@ -86,7 +86,7 @@ function _google_appliance_get_settings($reset = FALSE) {
  */
 function google_appliance_menu() {
   // Get settings.
-  $settings = _google_appliance_get_settings();
+  $settings = google_appliance_get_settings();
   $google_appliance_name = $settings['google_appliance_name'];
   $default_client = $settings['default_client'];
   $default_collection = $settings['default_collection'];
@@ -191,7 +191,7 @@ function google_appliance_local_task(&$items, $path_base, $parent, $item) {
  * Implementation of hook_menu_alter().
  */
 function google_appliance_menu_alter(&$items) {
-  $settings = _google_appliance_get_settings();
+  $settings = google_appliance_get_settings();
   $google_appliance_path = $settings['google_appliance_path'];
 
   // We have provided a replacement for the search.module's
@@ -279,7 +279,7 @@ function google_appliance_catch_all_task_access($permission, $client = NULL, $co
   if (!$client || !$collection) {
     return FALSE;
   }
-  $settings = _google_appliance_get_settings();
+  $settings = google_appliance_get_settings();
   foreach ($settings['tabs_array'] as $this_tab) {
     $tab = _google_appliance_explode_tab($this_tab);
     if ($tab['client'] == $client && $tab['collection'] == $collection) {
@@ -539,7 +539,7 @@ function google_appliance_block($op = 'list', $delta = 0, $edit = array()) {
  */
 function google_appliance_admin_settings() {
   // Get settings.
-  $settings = _google_appliance_get_settings();
+  $settings = google_appliance_get_settings();
   $google_appliance_name = $settings['google_appliance_name'];
   $google_appliance_path = $settings['google_appliance_path'];
   $default_client = $settings['default_client'];
@@ -789,7 +789,7 @@ function google_appliance_admin_settings_submit($form, &$form_state) {
   foreach ($fields as $field) {
     if ($form_state['values'][$field] != $form["config_init"][$field]['#default_value']) {
       drupal_set_message(t("Rebuilding menus."));
-      _google_appliance_get_settings(TRUE); //reset
+      google_appliance_get_settings(TRUE); //reset
       menu_rebuild();
       break;
     }
@@ -815,9 +815,6 @@ function google_appliance_admin_settings_submit($form, &$form_state) {
  */
 function google_appliance_search($op = 'search', $keys = NULL, $options = array(), $collection = '', $client = '') {
   switch ($op) {
-    // case 'reset':
-    // case 'status':
-       // break;
     case 'name':
       return t(variable_get('google_appliance_name', GOOGLE_APPLIANCE_NAME_DEFAULT));
     case 'search':
@@ -835,7 +832,7 @@ function google_appliance_search($op = 'search', $keys = NULL, $options = array(
       else {
         $gm = new DrupalGoogleMini(FALSE);
       }
-      
+  
       // Initialise the search object.
       $init = _google_appliance_search_initialise($gm, $client, $collection, $keys, $options);
       if ($init !== NULL) {
@@ -847,11 +844,10 @@ function google_appliance_search($op = 'search', $keys = NULL, $options = array(
   }
 }
 
-
 /**
  * Initialise the search object
  */
-function _google_appliance_search_initialise(&$gm, $client, $collection, $keys, $options) {
+function _google_appliance_search_initialise(&$gm, $client = NULL, $collection = NULL, $keys = NULL, $options = array()) {
   try {
     $gm->setOutputEncoding('utf8');
     $gm->setInputEncoding('utf8');
@@ -935,7 +931,7 @@ function _google_appliance_search(&$gm) {
       $gm->cache = TRUE; // Check the cache when calling $gm->query(). See DrupalGoogleMini.php
     }
 
-    $result_iterator = $gm->query();
+    $result_iterator = $gm->query(); 
     google_appliance_static_response_cache($result_iterator);
 
     // Store keymatches
@@ -957,12 +953,13 @@ function _google_appliance_search(&$gm) {
       and $total_results > GOOGLE_APPLIANCE_MAX_RESULTS_FOR_MINI) {
       $total_results = GOOGLE_APPLIANCE_MAX_RESULTS_FOR_MINI;
     }
+    
     $limit = $gm->getQueryPart('num');
     $page = $gm->getQueryPart('start') / $limit;
     google_appliance_configure_pager($total_results, $page, $limit);
 
     // Process search results
-    foreach ($result_iterator as $key => $result) {
+    foreach ($result_iterator as $key => $result) {      
       if (is_numeric($key)) {
         $result_array = theme('google_appliance_search_result_array', $result);
         $results[] = $result_array;
@@ -975,8 +972,7 @@ function _google_appliance_search(&$gm) {
     }
     drupal_set_message($e->getMessage());
     return FALSE;
-  }
-  
+  }  
   return $results;
 }
 
@@ -1031,7 +1027,7 @@ function google_appliance_configure_pager($total_results, $page = NULL, $limit =
   }
   if (is_null($limit)) {
     $limit = variable_get('google_appliance_limit_per_page', GOOGLE_APPLIANCE_RESULTS_PER_PAGE_DEFAULT);
-}
+  }
 
   // Convert comma-separated $page to an array, used by other functions.
   $pager_page_array = explode(',', $page);
@@ -1056,9 +1052,8 @@ function google_appliance_configure_pager($total_results, $page = NULL, $limit =
  * @return
  *   Themed search results.
  */
-function google_appliance_search_view($search_base, $client, $collection, $keys = NULL) {
+function google_appliance_search_view($search_base, $client, $collection, $keys = NULL, $title = NULL) {
   $form = drupal_get_form('google_appliance_search_form', NULL, $search_base, $client, $collection, $keys);
-
   // When POSTing back to an existing search-results page, the original
   // URL is accessed (which re-runs that search) and then the redirect for
   // the new search takes place and a second (correct) search is executed.
@@ -1075,7 +1070,7 @@ function google_appliance_search_view($search_base, $client, $collection, $keys 
       'keymatches' => google_appliance_cache_data('keymatches'),
       'synonyms' => google_appliance_cache_data('synonyms'),
     );
-    return theme('google_appliance_search_view', $search_view);
+    return theme('google_appliance_search_view', $search_view, $title);
   }
   else {
     return $form;
@@ -1091,7 +1086,7 @@ function google_appliance_search_view($search_base, $client, $collection, $keys 
  * @return
  *   Themed search results.
  */
-function theme_google_appliance_search_view($search_view) {
+function theme_google_appliance_search_view($search_view, $title = 'Search results') {
   $output = "";
 
   if (!empty($search_view['keys'])) {
@@ -1103,7 +1098,7 @@ function theme_google_appliance_search_view($search_view) {
       // search.module is enabled. See google_appliance_theme()
       // and google_appliance_preprocess_search_results()
       $search_results = theme('search_results', $search_view['results'], 'google-appliance');
-      $results = theme('box', t('Search results'), $search_results);
+      $results = theme('box', t($title), $search_results);
     }
 
     // Show any keymatches and/or synonyms found by the search.
@@ -1178,7 +1173,7 @@ function theme_google_appliance_add_meta_tags($node) {
   $meta_data[] = array('type', $node->type);
 
   // Author
-  $node->uid = empty($node->uid) ? 0: $node->uid;
+  $node->uid = empty($node->uid) ? 0 : $node->uid;  
   $user = user_load(array('uid' => 0));
   $meta_data[] = array('author', empty($user->name) ? 'anonymous' : $user->name);
 
@@ -1224,7 +1219,7 @@ function theme_google_appliance_search_result_array($result) {
 
   // Meta data (from <meta> tags)
   $meta_data = array();
-  if (isset($result->MT)) {
+  if (isset($result->MT)) {    
     foreach ($result->MT as $meta) {
       $value = (string) $meta['V'];
       $name = (string) $meta['N'];
@@ -1359,7 +1354,7 @@ function google_appliance_block_nogoogle($block) {
  * Define the search form.
  */
 function google_appliance_search_form(&$form_state, $prompt = NULL, $search_base = NULL, $client = NULL, $collection = NULL, $keys = '') {
-  $settings = _google_appliance_get_settings();
+  $settings = google_appliance_get_settings();
   if (is_null($prompt)) {
     $prompt = t('Enter your keywords');
   }
@@ -1460,7 +1455,6 @@ function google_appliance_simpletest() {
   $tests = file_scan_directory($dir, '\.test$');
   return array_keys($tests);
 }
-
 
 /**
  * Common MIME types
