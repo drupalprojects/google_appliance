@@ -24,6 +24,7 @@
  <li> Attributes (theming)</li>
  <li> Standard Drupal pager</li>
  <li> Standard or custom search-result(s) theme templates</li>
+ <li> Display cached HTML version</li>
 </ul>
 
 <h2> When the first official version is released it will contain:</h2>

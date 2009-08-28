@@ -349,6 +349,12 @@ function google_appliance_theme() {
         'synonyms' => NULL,
       ),
     ),
+    'google_appliance_cached_link' => array(
+      'arguments' => array(
+        'link' => NULL,
+        'cid' => NULL,
+      ),
+    ),
   );
 
   // If the search.module is disabled, replicate theme_search_result(s).
@@ -574,12 +580,14 @@ END_INTRO;
   $form["introduction"] = array(
     "#type"  => "markup",
     "#value" => t($introduction),
+    "#weight" => -2,
   );
 
   // initial required config fields
   $form["config_init"] = array(
     "#title" => t("Initial Configuration"),
     "#type" => "fieldset",
+    "#weight" => -1,
   );
 
   $form["config_init"]["google_appliance_name"] = array(
@@ -589,6 +597,7 @@ END_INTRO;
     "#description" => t('The name of this search, used as the default tab name, and the title of the "google-appliance/*" search pages.'),
     "#default_value" => $google_appliance_name,
     "#required" => TRUE,
+    "#weight" => -10,
   );
 
   $form["config_init"]["google_appliance_host_name"] = array(
@@ -598,6 +607,7 @@ END_INTRO;
     "#description" => t('Your Google Search Appliance host name or IP address (with http:// or https://), which were assigned when the appliance was set up.<br />You do <b>not</b> need to include "/search" at the end, or a trailing slash, but you should include a port number if needed.<br/> Example: http://mygooglebox.com'),
     "#default_value" => variable_get('google_appliance_host_name', ''),
     "#required" => TRUE,
+    "#weight" => -9,
   );
 
   $form["config_init"]["google_appliance_default_collection"] = array(
@@ -607,6 +617,7 @@ END_INTRO;
     "#description" => t('The name of the collection of indexed content to search.'),
     "#default_value" => $default_collection,
     "#required" => TRUE,
+    "#weight" => -8,
   );
 
   $form["config_init"]["google_appliance_default_client"] = array(
@@ -616,6 +627,7 @@ END_INTRO;
     "#description" => t('The name of a valid front-end, defined when you set up the appliance.'),
     "#default_value" => $default_client,
     "#required" => TRUE,
+    "#weight" => -7,
   );
   
   $form["config_init"]["google_appliance_default_tab_enabled"] = array(
@@ -623,6 +635,7 @@ END_INTRO;
     "#title" => t("Enable the default search tab"),
     "#description" => t('Provide a default search tab for the default client and collection.'),
     "#default_value" => $default_tab_enabled,
+    "#weight" => -6,
   );
   
   $form["config_init"]["google_appliance_default_search_path"] = array(
@@ -632,6 +645,7 @@ END_INTRO;
     "#description" => t('The default search address will be <strong>search/<em>default_search_path</em></strong><br/>Note that optional search.module tabs supply their own <em>path</em>.'),
     "#default_value" => $default_search_path,
     "#required" => TRUE,
+    "#weight" => -5,
   );
   
   $form["config_init"]["google_appliance_search_tabs"] = array(
@@ -640,6 +654,7 @@ END_INTRO;
     "#title" => t("Search tabs"),
     "#description" => t('Optional search tabs. These will appear on both search.module and "google-appliance/*" search pages.<br/>Format: title|path_arg|client|collection<br/>The search.module will use <b>search/<em>path_arg</em></b> for the tab\'s search path.'),
     "#default_value" => $search_tabs,
+    "#weight" => -4,
   );
   
   $form["config_init"]["google_appliance_path"] = array(
@@ -649,6 +664,7 @@ END_INTRO;
     "#description" => t('The base ("google-appliance") component of search paths of the form: <strong><i>google-appliance/client/collection/search terms</i></strong>'),
     "#default_value" => $google_appliance_path,
     "#required" => TRUE,
+    "#weight" => -3,
   );
 
   $form["config_init"]["google_appliance_collection_underscores_hyphens"] = array(
@@ -656,6 +672,7 @@ END_INTRO;
     "#title" => t("Use hyphens in the URLs, but underscores in the Client/Collection names?"),
     "#description" => t('e.g. Search default_client + default_collection when visiting <strong>google-appliance/default-client/default-collection</strong><br/>n.b. Client and Collection names may contain both hyphens and underscores, so you can still achieve the same effect without using this option.'),
     "#default_value" => variable_get('google_appliance_collection_underscores_hyphens', FALSE),
+    "#weight" => -2,
   );
   
   $form["config_init"]["google_appliance_cache_timeout"] = array(
@@ -663,7 +680,8 @@ END_INTRO;
     "#size" => 20,
     "#title" => t("Cache Timeout"),
     "#description" => t('If you wish to cache the search results to reduce the load on the Google Appliance, enter a timeout value here (in seconds).'),
-    "#default_value" => variable_get('google_appliance_cache_timeout', ''),    
+    "#default_value" => variable_get('google_appliance_cache_timeout', ''),
+    "#weight" => -1,   
   );
   
   $form["config_init"]["google_appliance_debug"] = array(
@@ -671,7 +689,8 @@ END_INTRO;
     "#size" => 20,
     "#title" => t("Debug Level"),
     "#description" => t('1 = watchdog, 2 = dpr(needs devel module), 3 = more dpr\'s'),
-    "#default_value" => variable_get('google_appliance_debug', 0),    
+    "#default_value" => variable_get('google_appliance_debug', 0),
+    "#weight" => 0,   
   );
   
   $form["config_init"]["google_appliance_limit_per_page"] = array(
@@ -679,7 +698,8 @@ END_INTRO;
     "#size" => 5,
     "#title" => t("Number of results per page"),
     "#description" => t('If you enter 0, it will return the max allowed by the appliance (100)'),
-    "#default_value" => variable_get('google_appliance_limit_per_page', GOOGLE_APPLIANCE_RESULTS_PER_PAGE_DEFAULT),    
+    "#default_value" => variable_get('google_appliance_limit_per_page', GOOGLE_APPLIANCE_RESULTS_PER_PAGE_DEFAULT),
+    "#weight" => 1,   
   );
   
   $form["config_init"]["google_appliance_type"] = array(
@@ -690,6 +710,7 @@ END_INTRO;
       GOOGLE_APPLIANCE_TYPE_GSA  => t('Google Search Appliance'),
     ),
     "#default_value" => variable_get('google_appliance_type', GOOGLE_APPLIANCE_TYPE_MINI),
+    "#weight" => 2,
   );
   
   // error message config
@@ -697,6 +718,7 @@ END_INTRO;
     "#title" => t("Error Messages"),
     "#type" => "fieldset",
     "#collapsible" => TRUE,
+    "#weight" => 0,
   );
 
   $form["config_messages"]["google_appliance_errorcode_1"] = array(
@@ -707,6 +729,7 @@ END_INTRO;
     "#required" => TRUE,
     "#description" => t('If there are no results for the search criteria.'),
     "#default_value" => variable_get('google_appliance_errorcode_1', 'No results were found that matched your criteria. Please try broadening your search.'),
+    "#weight" => -1,
   );
 
   $form["config_messages"]["google_appliance_errorcode_2"] = array(
@@ -717,6 +740,7 @@ END_INTRO;
     "#required" => TRUE,
     "#description" => t('If there are more than @max results for the search criteria.', array("@max" => number_format(GOOGLE_APPLIANCE_MAX_RESULTS_FOR_MINI))),
     "#default_value" => variable_get('google_appliance_errorcode_2', t('Sorry, our search does not return more than @max records. Please refine your criteria.', array("@max" => number_format(GOOGLE_APPLIANCE_MAX_RESULTS_FOR_MINI)))),
+    "#weight" => 0,
   );
 
   $form["config_messages"]["google_appliance_errorcode_neg_99"] = array(
@@ -727,6 +751,7 @@ END_INTRO;
     "#required" => TRUE,
     "#description" => t('If the search cannot perform due to a query error.'),
     "#default_value" => variable_get('google_appliance_errorcode_neg_99', 'Sorry, your search cannot be completed at this time. Please try again later.'),
+    "#weight" => 1,
   );
 
   $form["config_messages"]["google_appliance_errorcode_neg_100"] = array(
@@ -737,10 +762,11 @@ END_INTRO;
     "#required" => TRUE,
     "#description" => t('If the search cannot connect to the @name server.', array('@name' => $google_appliance_name)),
     "#default_value" => variable_get('google_appliance_errorcode_neg_100', 'Sorry, the connection to our search engine appears to be down at the moment. Please try again later.'),
+    "#weight" => 2,
   );
 
   $form = system_settings_form($form);
-  $form['#submit'][] = 'google_appliance_admin_settings_submit';
+  $form['#submit'][] = 'google_appliance_admin_settings_submit'; 
   return $form;
 }
 
@@ -945,6 +971,7 @@ function _google_appliance_search(&$gm) {
       $url = $base_path . $synonym;
       $synonyms[$synonym] = $url;
     }
+        
     google_appliance_cache_data('synonyms', $synonyms);
 
     // Configure pager
@@ -972,7 +999,8 @@ function _google_appliance_search(&$gm) {
     }
     drupal_set_message($e->getMessage());
     return FALSE;
-  }  
+  }    
+
   return $results;
 }
 
@@ -1232,7 +1260,12 @@ function theme_google_appliance_search_result_array($result) {
       }
     }
   }
-
+  
+  $link = (string) $result->U;
+  
+  // Identifier of a document in the GSA cache
+  $cid = (string) $result->HAS->C->attributes()->CID;
+  
   // These fields are processed by *_preprocess_search_result()
   // functions, including:
   // - template_preprocess_search_result()
@@ -1244,13 +1277,15 @@ function theme_google_appliance_search_result_array($result) {
     'meta_data' => $meta_data,
 
     // Standard search result items:
-    'link' => (string) $result->U,
+    'link' => $link,
     'title' => strip_tags($result->T),
     'snippet' => decode_entities((string) $result->S),
     'type' => $meta_data['type'][0],
     'user' => $meta_data['author'][0],
     'date' => strtotime($meta_data['modified'][0]),
-    #'extra' => array(),
+    'extra' => array(
+      'cached_link' => theme('google_appliance_cached_link', $link, $cid),
+    ),
   );
 }
 
@@ -1280,6 +1315,23 @@ function theme_google_appliance_synonyms($synonyms) {
   }
   if ($list) {
     return theme('item_list', $list, NULL, 'ul', array('class' => 'google-appliance-synonyms'));
+  }
+}
+
+/**
+ * Theme cached link
+ */
+function theme_google_appliance_cached_link($link, $cid) {
+  $google_appliance_host_name = variable_get('google_appliance_host_name', '');
+  if (isset($google_appliance_host_name)) {
+    
+    // lose protocol part of the $link url.
+    preg_match('/^\w+\:\/\/(.+)/', $link, $matches);
+    
+    if (!empty($matches)) {
+      $url = 'http://'. $google_appliance_host_name .'/search?q=cache:'. $cid .':'. $matches[1];
+      return l('cached version', $url);
+    }
   }
 }
 
