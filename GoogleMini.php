@@ -8,7 +8,6 @@ if (!defined('GOOGLE_MINI_MAX_RESULTS')) {
 class GoogleMini {
 
   private $_metaDataFilters = array();
-  private $_metaDataRequested = array();
   public  $baseUrl = ''; // REQUIRED
   public  $frontEnd = ''; // IF SET WILL DISABLE parsing of results.
   public  $collection = ''; // REQUIRED
@@ -296,26 +295,51 @@ class GoogleMini {
 
 
   public function query($iteratorClass = 'GoogleMiniResultIterator') {
-
     $query = $this->buildQuery();
-    // get search results in XML using cURL
     $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $query);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-    curl_setopt($ch, CURLOPT_VERBOSE, TRUE);
+    curl_setopt($ch, CURLOPT_URL, $query);            // Set the query URL.
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);   // Return the response during the curl_exec() call, or FALSE on error.
+    curl_setopt($ch, CURLOPT_VERBOSE, TRUE);          // Output errors to STDERR
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);  // Allow the cURL request to succeed even if the Google Mini server's SSL certificate isn't valid.
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);  // This way, you can serve the Google Mini using https without having to maintain an SSL certficate.
 
+    // Set this to a large number if connections aren't being made. Set to 0 for infinite timeout.
+    if ($timeout = variable_get('google_appliance_timeout', FALSE)) {
+      curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
+    }
+
+    // send request
     $resultXML = curl_exec($ch);
-	if ($this->debug) {
-    	$this->log('Made CURL request to '. $query);
-	}
+    if ($this->debug) {
+      $this->log('Made cURL request to '. $query);
+    }
 
+    // handle errors if cURL request fails
+    if (!$resultXML) {
+      if ($this->debug) {
+        $this->log('cURL error #'. curl_errno($ch) .': '. curl_error($ch));
+      }
+      throw new GoogleMiniResultException('There was a cURL error while connecting with the Google device.');
+      return FALSE;
+    }
+
+    // if request succeeded, return formatted result set
     return self::resultFactory($resultXML, $iteratorClass);
   }
 
   function resultFactory($resultXML, $className = 'GoogleMiniResultIterator') {
     $results = array();
 
-    $payload = simplexml_load_string($resultXML);
+    libxml_use_internal_errors(TRUE);
+    if (!$payload = simplexml_load_string($resultXML)) {
+      $errors = array();
+      foreach (libxml_get_errors() as $error) {
+        $errors[] = $error->message;
+      }
+      $errors = join(', ', $errors);
+      throw new GoogleMiniResultException('There was an error parsing the result XML: '. $errors);
+      return FALSE;
+    }
 
     $totalResults = $payload->RES->M;    
     
