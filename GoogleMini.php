@@ -1,5 +1,4 @@
 <?php
-// $Id$
 
 if (!defined('GOOGLE_MINI_MAX_RESULTS')) {
   define('GOOGLE_MINI_MAX_RESULTS', 1000);

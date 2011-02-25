@@ -1,5 +1,4 @@
 <?php
-// $Id$
 
 define('GOOGLE_MINI_MAX_RESULTS', variable_get('google_appliance_max_results', 1000));
 

@@ -1,4 +1,3 @@
-; $Id$
 name = "Google Search Appliance Integration"
 description = "Provides a search interface to a Google Mini or GSA, meta-data generators to allow for advanced search, and a class for talking to the appliance."
 package = "Google Search Appliance"
