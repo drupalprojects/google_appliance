@@ -987,7 +987,7 @@ function _google_appliance_search(&$gm) {
     // Process search results
     foreach ($result_iterator as $key => $result) {      
       if (is_numeric($key)) {
-        $result_array = theme('google_appliance_search_result_array', $result);
+        $result_array = theme('google_appliance_search_result_array', $result, $keys);
         $results[] = $result_array;
       }
     }
@@ -1235,7 +1235,8 @@ function theme_google_appliance_add_meta_tags($node) {
  *   An array, usable by the search module.
  *   @see template_preprocess_search_result()
  */
-function theme_google_appliance_search_result_array($result) {
+function theme_google_appliance_search_result_array($result, $keys) {
+
   $result = $result->result;
 
   // Attributes
@@ -1283,7 +1284,7 @@ function theme_google_appliance_search_result_array($result) {
     'user' => $meta_data['author'][0],
     'date' => strtotime($meta_data['modified'][0]),
     'extra' => array(
-      'cached_link' => theme('google_appliance_cached_link', $link, $cid),
+      'cached_link' => theme('google_appliance_cached_link', $link, $cid, $keys),
     ),
   );
 }
@@ -1320,15 +1321,18 @@ function theme_google_appliance_synonyms($synonyms) {
 /**
  * Theme cached link
  */
-function theme_google_appliance_cached_link($link, $cid) {
+function theme_google_appliance_cached_link($link, $cid, $keys) {
   $google_appliance_host_name = variable_get('google_appliance_host_name', '');
+  $google_appliance_default_client = variable_get('google_appliance_default_client', '');
+  $keys = '+' . str_replace(' ', '+', $keys);
+  
   if (isset($google_appliance_host_name)) {
     
     // lose protocol part of the $link url.
     preg_match('/^\w+\:\/\/(.+)/', $link, $matches);
     
     if (!empty($matches)) {
-      $url = 'http://'. $google_appliance_host_name .'/search?q=cache:'. $cid .':'. $matches[1];
+      $url = 'http://'. $google_appliance_host_name .'/search?q=cache:'. $cid .':'. $matches[1] . $keys . '&proxystylesheet=' . $google_appliance_default_client;
       return l('cached version', $url);
     }
   }
