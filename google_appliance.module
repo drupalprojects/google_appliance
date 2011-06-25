@@ -1121,6 +1121,9 @@ function theme_google_appliance_search_view($search_view, $title = 'Search resul
     $output .= $search_view['form'];
 
     if ($search_view['results']) {
+      foreach($search_view['results'] as $key => $result) {
+        $search_view['results'][$key]['title'] = drupal_html_to_text($result['title']);
+      }
       // We can call theme('search_results') regardless of whether
       // search.module is enabled. See google_appliance_theme()
       // and google_appliance_preprocess_search_results()
