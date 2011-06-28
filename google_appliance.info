@@ -1,4 +1,13 @@
-; $Id: 
-name = "Google Search Appliance Integration"
-description = "Provides a search interace to the googleMini or GSA, meta-data generators which will allow for advanced search and a class for talking to a GoogleMini or GSA."
-package = "Other"
+; $Id google_appliance.info $
+name = "Google Appliance"
+package = Google Appliance
+description = "Provides a search interface to a dedicated Google Search Appliance (GSA) hardware device."
+core = 7.x
+configure = admin/config/search/google_appliance/settings
+
+files[] = testing/google_appliance.test
+
+stylesheets[all][] = theme/google_appliance.css
+
+
+

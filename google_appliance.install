@@ -1,35 +1,31 @@
 <?php
-function google_appliance_install() {
-  $q = "
-CREATE TABLE IF NOT EXISTS `{cache_google}` (
-  `cid` varchar(255) NOT NULL default '',
-  `data` longblob,
-  `expire` int(11) NOT NULL default '0',
-  `created` int(11) NOT NULL default '0',
-  `headers` text,
-  PRIMARY KEY  (`cid`),
-  KEY `expire` (`expire`)
-) ENGINE=innoDB DEFAULT CHARSET=utf8
-";
-  
-  $ret[] = db_query($q);
-  return $ret;
-}
+// $Id: google_appliance.install $
 
-function google_appliance_update_1() {
-  $q = "
-CREATE TABLE IF NOT EXISTS `{cache_google}` (
-  `cid` varchar(255) NOT NULL default '',
-  `data` longblob,
-  `expire` int(11) NOT NULL default '0',
-  `created` int(11) NOT NULL default '0',
-  `headers` text,
-  PRIMARY KEY  (`cid`),
-  KEY `expire` (`expire`)
-) ENGINE=innoDB DEFAULT CHARSET=utf8
-";
+/**
+ * @file 
+ *    install, update, and uninstall hooks
+ * @see
+ *    google_appliance.module
+ */
+ 
+/**
+ * Implements hook_uninstall()
+ *   drop settings
+ */
+function google_appliance_uninstall() {
   
-  $ret[] = update_sql($q);  
-  return $ret;
+  $field_keys =  array(
+    'hostname',
+    'collection',
+    'frontend',
+    'timeout',
+    'autofilter',
+    'query_inspection',
+    'search_title',
+    'results_per_page',
+  );
+  
+  foreach ($field_keys as $field) {
+    variable_del('google_appliance_' . $field);
+  }
 }
-?>

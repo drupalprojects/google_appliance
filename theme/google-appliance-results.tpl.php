@@ -1,0 +1,39 @@
+<?php
+// $Id$
+/**
+ * @file 
+ *    default theme implementation for displaying Google Search Appliance results
+ *
+ * This template collects each invocation of theme_google_appliance_result(). This and
+ * the child template are dependent on one another sharing the markup for the 
+ * results listing
+ *
+ * @see template_preprocess_google_appliance_results()
+ * @see template_preprocess_google_appliance_result()
+ * @see google-appliance-result.tpl.php
+ */
+//dsm($variables);
+?>
+<?php print drupal_render($search_form); ?>
+<h2><?php print $results_heading; ?></h2>
+<?php if (!isset($response_data['error'])) : ?>
+  
+  <div class="google-appliance-results-control-bar clearfix">
+    <?php print $search_stats; ?>
+    <?php print $sort_headers; ?>
+  </div>
+  
+  <ol class="search-results google-appliance-results">
+    <?php print $search_results; ?>
+  </ol>
+  
+  <div class="google-appliance-results-control-bar clearfix">
+    <?php print $search_stats; ?>
+    <?php print $sort_headers; ?>
+  </div>
+  
+  <?php print $pager; ?>
+
+<?php else : ?>
+  <p><?php print $error_reason ?></p>
+<?php endif; ?>
