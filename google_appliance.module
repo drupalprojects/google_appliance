@@ -354,6 +354,12 @@ function google_appliance_theme() {
         'cid' => NULL,
       ),
     ),
+    'google_appliance_theme_form' => array(
+      'arguments' => array(
+        'form' => NULL,
+      ),
+      'template' => 'google-appliance-theme-form',
+    )
   );
 
   // If the search.module is disabled, replicate theme_search_result(s).
@@ -1118,7 +1124,7 @@ function theme_google_appliance_search_view($search_view, $title = 'Search resul
 
   if (!empty($search_view['keys'])) {
     // Show the form
-    $output .= $search_view['form'];
+    $output .= theme('google_appliance_theme_form', $search_view['form']);
 
     if ($search_view['results']) {
       foreach($search_view['results'] as $key => $result) {
