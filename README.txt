@@ -63,3 +63,5 @@ if you are leaving the core search.module enabled.</p>
 available to the templates. You may wish to print the $range at the
 top of your search-results template, for instance.</p>
 
+<p>To theme the search form, copy google-appliance-theme-form.tpl.php into 
+your theme directory and modify as desired.</p>
