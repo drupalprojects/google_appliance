@@ -1126,6 +1126,13 @@ function theme_google_appliance_search_view($search_view, $title = 'Search resul
     // Show the form
     $output .= theme('google_appliance_theme_form', $search_view['form']);
 
+    // In some cases, Google Appliance returns a message instead of a result
+    // array; for example, when results beyond 1,000 records are requested.
+    if (!is_array($search_view['results'])) {
+      $output .= $search_view['results'];
+      return $output;
+    }
+
     if ($search_view['results']) {
       foreach($search_view['results'] as $key => $result) {
         $search_view['results'][$key]['title'] = drupal_html_to_text($result['title']);
