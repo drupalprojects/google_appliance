@@ -426,6 +426,17 @@ function google_appliance_parse_device_response_xml($gsa_xml) {
       return $results;
     }
     else {  // parse results
+      
+      foreach ($payload->xpath('//GM') as $km) {
+        $keymatch = array();
+        
+        // keymatch information
+        $keymatch['description'] = (string) $km->GD;
+        $keymatch['url'] = (string) $km->GL;
+
+        $results['keymatch'][] = $keymatch;
+      }
+
       foreach ($payload->xpath('//R') as $res) {
         $result = array();
         

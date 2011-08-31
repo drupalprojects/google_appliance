@@ -23,6 +23,10 @@
     <?php print $sort_headers; ?>
   </div>
   
+  <ol class="keymatch-results google-appliance-keymatch-results">
+    <?php print $keymatch_results; ?>
+  </ol>
+
   <ol class="search-results google-appliance-results">
     <?php print $search_results; ?>
   </ol>

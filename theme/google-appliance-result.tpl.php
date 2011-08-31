@@ -3,7 +3,7 @@
 /**
  * @file 
  *    default theme implementation for displaying a single search result.
- 
+ *
  * This template renders a single search result and is collected into
  * google-applinace-results.tpl.php. This and the parent template are
  * dependent on one another sharing the markup for results listings.

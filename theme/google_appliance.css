@@ -8,8 +8,9 @@
   margin-top: 0;
   margin-bottom: 4px;
 }
-.google-appliance-results {
-  list-style: none;
+.google-appliance-results,
+.google-appliance-keymatch-results {
+  list-style: none;  
 }
 
 /* result entries */
@@ -25,9 +26,30 @@
 .google-appliance-results .google-appliance-snippet-info {
   padding-left:0; 
 }
-.google-appliance-results .google-appliance-info {
+.google-appliance-results .google-appliance-info,
+.google-appliance-keymatch-results {
   font-size: 0.85em;
   color: #aaa;
+}
+
+/* key match results */
+.google-appliance-keymatch-results {
+  padding-left:0;
+}
+.google-appliance-keymatch-results li {
+  background:#f1f1ed;
+  border-bottom:1px solid #e7e7e3;
+  padding:10px 10px;
+  border-radius: 6px;
+  -webkit-border-radius:6px;
+  -moz-border-radius:6px;
+  margin-bottom:10px;
+}
+.google-appliance-keymatch-results h3 {
+  margin: 0;
+}
+.google-appliance-keymatch-results p {
+  margin:0;
 }
 
 /* results listings "control" bar */
@@ -49,9 +71,9 @@
   float: right;
 }
 .google-appliance-sort-headers .google-appliance-sorter {
-	padding-right: 14px;
-	display: block;
-	float: left;
+  padding-right: 14px;
+  display: block;
+  float: left;
 }
 .google-appliance-sort-headers .google-appliance-sorter:last-child {
   padding-right: 4px;
