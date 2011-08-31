@@ -439,6 +439,7 @@ function google_appliance_parse_device_response_xml($gsa_xml) {
         $result['title'] = (string) $res->T;                  
         $result['snippet'] = (string) $res->S;                
         $result['crawl_date'] = (string) $res->FS['VALUE'];
+        $result['level'] = isset($res['L']) ? (int) $res['L'] : 1;
         
         $results['entry'][] = $result;
       }

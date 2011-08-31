@@ -27,36 +27,38 @@
 }
 .google-appliance-results .google-appliance-info {
   font-size: 0.85em;
-  color:#aaa;
+  color: #aaa;
 }
 
 /* results listings "control" bar */
 .google-appliance-results-control-bar {
-  border:1px solid #ddd;
+  border: 1px solid #ddd;
   background-color: #F6F6F2;
   border-color: #eee;
   border-radius: 6px;
-  -webkit-border-radius:6px;
-  -moz-border-radius:6px;
+  -webkit-border-radius: 6px;
+  -moz-border-radius: 6px;
   padding: 4px 6px;
-  margin-top:15px;
-  margin-bottom:15px;
+  margin-top: 15px;
+  margin-bottom: 15px;
 }
 .google-appliance-results-control-bar .google-appliance-search-stats {
-  float:left;
+  float: left;
 }
 .google-appliance-results-control-bar .google-appliance-sort-headers {
-  float:right;
+  float: right;
 }
 .google-appliance-sort-headers .google-appliance-sorter {
-	padding-right:14px;
-	display:block;
-	float:left;
+	padding-right: 14px;
+	display: block;
+	float: left;
 }
 .google-appliance-sort-headers .google-appliance-sorter:last-child {
-  padding-right:4px;
+  padding-right: 4px;
 }
 .google-appliance-sorter .active-sort {
-	font-weight:bold;
+  font-weight: bold;
 }
-
+.google-appliance-level2 {
+  margin-left: 1.5em;
+}

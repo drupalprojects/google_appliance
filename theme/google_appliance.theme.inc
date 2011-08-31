@@ -231,6 +231,11 @@ function template_preprocess_google_appliance_result(&$vars) {
   // sanitize crawl date
   $vars['crawl_date'] = check_plain($vars['crawl_date']);
 
+  // Add a google-appliance-levelx class if we're sub-levels
+  if ((int) $vars['level'] > 1) {
+    $vars['classes_array'][] = 'google-appliance-level' . $vars['level'];
+  }
+
   // render template
 }
 
