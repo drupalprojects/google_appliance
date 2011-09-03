@@ -83,7 +83,10 @@ function template_preprocess_google_appliance_block_form(&$vars) {
   // Vars named after form keys so themers can print each element independently.
   foreach (element_children($vars['form']) as $key) {
     
-    $type = $vars['form'][$key]['#type'];
+    // token = FALSE on search form means '#type' wont be there
+    // put the option check here while we wait and see if the tooken-to-false
+    // solution for Varnish caching issue actually solves the problem in the wild
+    $type = array_key_exists('#type', $vars['form'][$key]) ? $vars['form'][$key]['#type'] : '';
     if ($type == 'hidden' || $type == 'token') {
       $hidden[] = drupal_render($vars['form'][$key]);
     }
@@ -112,7 +115,10 @@ function template_preprocess_google_appliance_search_form(&$vars) {
   // Vars named after form keys so themers can print each element independently.
   foreach (element_children($vars['form']) as $key) {
     
-    $type = $vars['form'][$key]['#type'];
+    // token = FALSE on search form means '#type' wont be there
+    // put the option check here while we wait and see if the tooken-to-false
+    // solution for Varnish caching issue actually solves the problem in the wild
+    $type = array_key_exists('#type', $vars['form'][$key]) ? $vars['form'][$key]['#type'] : '';
     if ($type == 'hidden' || $type == 'token') {
       $hidden[] = drupal_render($vars['form'][$key]);
     }
@@ -196,10 +202,14 @@ function template_preprocess_google_appliance_results(&$vars) {
     
     // Get themed keymatch listing.
     $vars['keymatch_results'] = '';
-    $count = 0;
-    foreach ($vars['response_data']['keymatch'] as $keymatch) {
-      $keymatch['keymatch_idx'] = ++$count;
-      $vars['keymatch_results'] .= theme('google_appliance_keymatch', $keymatch);
+    
+    // GSA device may not be configured for keymatches
+    if (array_key_exists('keymatch', $vars['response_data'])) { 
+      $count = 0;
+      foreach ($vars['response_data']['keymatch'] as $keymatch) {
+        $keymatch['keymatch_idx'] = ++$count;
+        $vars['keymatch_results'] .= theme('google_appliance_keymatch', $keymatch);
+      }
     }
 
     // Get themed results listing.
