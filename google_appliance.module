@@ -189,12 +189,7 @@ function google_appliance_block_form($form, &$form_state) {
     ),
     */
   );
-  // Getting "form is outdated" errors when using Varnish can be eliminated
-  // by setting #token to false. On paper CSRF is more likely, but this is just a 
-  // search form--CSRF is largely irrelavant.
-  // see also google_appliance_search_form()
-  $form['#token'] = FALSE;
-  
+    
   $form['actions'] = array(
     '#type' => 'actions',
     'submit' => array(
@@ -248,12 +243,7 @@ function google_appliance_search_form($form, &$form_state, $query = '', $prompt 
     '#title' => check_plain($prompt),
     '#title_display' => 'invisible',
   );
-  // Getting "form is outdated" errors when using Varnish can be eliminated
-  // by setting #token to false. On paper CSRF is more likely, but this is just a 
-  // search form--CSRF is largely irrelavant.
-  // see also google_appliance_block_form()
-  $form['#token'] = FALSE;  
-  
+    
   // only prompt if we haven't searched yet
   if ($query == '') {
     $form['basic']['prompt'] = array(
