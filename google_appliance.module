@@ -213,7 +213,7 @@ function google_appliance_block_form_submit($form, &$form_state) {
   }
 
   // set the redirect
-  $search_query = check_plain($form_state['values']['search_keys']);
+  $search_query = urlencode($form_state['values']['search_keys']);
   $form_state['redirect'] = url('gsearch/' . $search_query, array('absolute' => TRUE));
   // search execution happens in page callback 
 }
@@ -275,7 +275,7 @@ function google_appliance_search_form($form, &$form_state, $query = '', $prompt 
 function google_appliance_search_form_submit($form, &$form_state) {
   
   // set the redirect
-  $search_query = check_plain($form_state['values']['search_keys']);
+  $search_query = urlencode($form_state['values']['search_keys']);
   $form_state['redirect'] = url($form_state['action'] . $search_query, array('absolute' => TRUE));
 }
 
@@ -284,9 +284,9 @@ function google_appliance_search_form_submit($form, &$form_state) {
  * - performs a query of the GSA device for a SINGLE PAGE of search results 
  *
  * @arg $query
- *    the search query from url 
+ *    the search query from url [ arg(1) ]
  * @arg $sort
- *    optional sort parameter, either "rel" (default) or "date"
+ *    optional sort parameter, either "rel" (default) or "date" [ arg(2) ]
  * @return 
  *    themed results: error messages or results listing
  */
