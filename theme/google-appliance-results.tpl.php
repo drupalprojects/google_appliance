@@ -12,6 +12,7 @@
  * @see template_preprocess_google_appliance_result()
  * @see google-appliance-result.tpl.php
  */
+//dsm($variables);
 ?>
 <?php print drupal_render($search_form); ?>
   

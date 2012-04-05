@@ -8,6 +8,14 @@
  * google-applinace-results.tpl.php. This and the parent template are
  * dependent on one another sharing the markup for results listings.
  *
+ * Result items that are files (pdf and whatnot) can be decorated with file icons
+ * as we use theme_file_icon in template_preprocess_google_appliance_result(). Copy this
+ * template to your theme directory and use code like the following to display an icon
+ * for each result if it has an iconable mime type:
+ * @code
+ *		<?php print (isset($mime['icon'])) ? $mime['icon'] : ''; ?>
+ * @endcode
+ *
  * @see template_preprocess_google_appliance_result()
  * @see google-appliance-results.tpl.php
  */

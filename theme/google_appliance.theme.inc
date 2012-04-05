@@ -30,7 +30,7 @@ function google_appliance_theme() {
   
   // Results page (top level template for the rest).
   $registry['google_appliance_results'] = array(
-    'variables' => array('search_query_data' => NULL, 'response_data' => NULL, 'synonyms_label'=>t('You might also try:')),
+    'variables' => array('search_query_data' => NULL, 'response_data' => NULL, 'synonyms_label' => t('You might also try:')),
     'template' => 'google-appliance-results',
     'path' => $ga_template_dir,
   );
@@ -221,7 +221,7 @@ function template_preprocess_google_appliance_results(&$vars) {
 
     // Get themed synonym listing.
     $vars['synonyms'] = '';
-    $vars['show_synonyms'] = false;
+    $vars['show_synonyms'] = FALSE;
     
     // GSA device may not be configured for synonyms
     if (array_key_exists('synonyms', $vars['response_data'])) { 
@@ -268,6 +268,17 @@ function template_preprocess_google_appliance_result(&$vars) {
   $vars['short_url'] = check_url($vars['short_url']);
   $vars['enc_url'] = check_url($vars['enc_url']);
   $vars['abs_url'] = check_url($vars['abs_url']);
+  
+  // if the result has a mime type value, generate file icon image
+  // that themes can optionally display
+  if ( $vars['mime']['type'] != '' ) {
+    $file = new stdClass;
+    $file->filemime = $vars['mime']['type'];
+    $vars['mime']['icon'] = theme_file_icon( array(
+      'file' => $file, 
+      'icon_directory' => variable_get('file_icon_directory', drupal_get_path('module', 'file') . '/icons')
+    ));
+  }
 
   // Sanatize snippet and title ... 
   // Allow boldface through for keywork highlighting.
@@ -303,7 +314,7 @@ function template_preprocess_google_appliance_keymatch(&$vars) {
 function template_preprocess_google_appliance_synonym(&$vars) {
   $description = filter_xss($vars['description'], array('b', 'strong'));
   $url = check_url('gsearch/' . $vars['url']);
-  $vars['link'] = l($description, $url, array('atrributes'=>array('class'=>array('synonym-description'))));
+  $vars['link'] = l($description, $url, array('atrributes' => array('class' => array('synonym-description'))));
 }
 
 /**
