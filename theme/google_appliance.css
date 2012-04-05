@@ -18,7 +18,11 @@
   margin-top: 0;
 }
 .google-appliance-result .title {
+  margin-bottom: 0px;
   font-size: 1.2em;
+}
+.google-appliance-result .google-appliance-snippet {
+  margin-bottom: 0px;
 }
 .google-appliance-result li {
   margin-bottom: 1em;
@@ -29,7 +33,7 @@
 .google-appliance-results .google-appliance-info,
 .google-appliance-keymatch-results {
   font-size: 0.85em;
-  color: #aaa;
+  color: #888;
 }
 
 /* key match results */
@@ -50,6 +54,22 @@
 }
 .google-appliance-keymatch-results p {
   margin:0;
+}
+
+/* synonyms */
+/* allow synonyms on search results page to be snug under the search box */
+form.search-google-appliance-search-form {
+  margin-bottom: 2px;
+}
+
+/* add back the margin that formerly separated the search box from the "Search Results" heading */
+#search-results-heading {
+  margin-top: 1em;
+}
+
+.google-appliance-synonyms ul, .google-appliance-synonyms li {
+  display: inline;
+  list-style-type: none;
 }
 
 /* results listings "control" bar */
@@ -82,5 +102,5 @@
   font-weight: bold;
 }
 .google-appliance-level2 {
-  margin-left: 1.5em;
+  /*margin-left: 1.5em;*/
 }

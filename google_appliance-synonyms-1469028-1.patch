@@ -1,0 +1,223 @@
+diff --git a/google_appliance.module b/google_appliance.module
+index 5b10f2f..45f2271 100644
+--- a/google_appliance.module
++++ b/google_appliance.module
+@@ -437,6 +437,18 @@ function google_appliance_parse_device_response_xml($gsa_xml) {
+         $results['keymatch'][] = $keymatch;
+       }
+ 
++      // If there are any synonyms returned by the appliance, put them in the results as a new array
++      // @see http://code.google.com/apis/searchappliance/documentation/50/xml_reference.html#tag_onesynonym
++      foreach ($payload->xpath('//OneSynonym') as $syn_element) {
++        $synonym = array();
++        
++        // synonym information
++        $synonym['description'] = (string) $syn_element;
++        $synonym['url'] = (string) $syn_element['q'];
++
++        $results['synonyms'][] = $synonym;
++      }
++
+       foreach ($payload->xpath('//R') as $res) {
+         $result = array();
+         
+@@ -455,6 +467,7 @@ function google_appliance_parse_device_response_xml($gsa_xml) {
+         $results['entry'][] = $result;
+       }
+     }
++    drupal_alter('google_appliance_results', &$results, $payload);
+   }
+   return $results;
+ }
+diff --git a/theme/google-appliance-result.tpl.php b/theme/google-appliance-result.tpl.php
+index 8a2c97c..70b35df 100644
+--- a/theme/google-appliance-result.tpl.php
++++ b/theme/google-appliance-result.tpl.php
+@@ -28,7 +28,7 @@
+       </p>
+     <?php endif; ?>
+     <p class="search-info google-appliance-info">
+-      <?php print $short_url; ?>
++      <?php print $abs_url; ?>
+     </p>
+   </div>
+ </li>
+diff --git a/theme/google-appliance-results.tpl.php b/theme/google-appliance-results.tpl.php
+index 2a006fe..0708023 100644
+--- a/theme/google-appliance-results.tpl.php
++++ b/theme/google-appliance-results.tpl.php
+@@ -15,14 +15,21 @@
+ //dsm($variables);
+ ?>
+ <?php print drupal_render($search_form); ?>
+-<h2><?php print $results_heading; ?></h2>
++  
++ <?php if ($show_synonyms) : ?>
++  <div class="synonyms google-appliance-synonyms">
++    <span class="p"><?php print $synonyms_label ?></span> <ul><?php print $synonyms; ?></ul>
++  </div>
++ <?php endif; ?>
++
++<h2 id="search-results-heading"><?php print $results_heading; ?></h2>
+ <?php if (!isset($response_data['error'])) : ?>
+   
+   <div class="google-appliance-results-control-bar clearfix">
+     <?php print $search_stats; ?>
+     <?php print $sort_headers; ?>
+   </div>
+-  
++
+   <ol class="keymatch-results google-appliance-keymatch-results">
+     <?php print $keymatch_results; ?>
+   </ol>
+diff --git a/b/theme/google-appliance-synonym.tpl.php b/theme/google-appliance-synonym.tpl.php
+new file mode 100644
+index 0000000..d182f74
+--- /dev/null
++++ b/theme/google-appliance-synonym.tpl.php
+@@ -0,0 +1,17 @@
++<?php
++// $Id$
++/**
++ * @file 
++ *    default theme implementation for displaying a single synonym
++ *
++ * This template renders a single synonym result and is collected into
++ * google-applinace-results.tpl.php. This and the parent template are
++ * dependent on one another sharing the markup for synonym listings.
++ *
++ * @see template_preprocess_google_appliance_synonym()
++ * @see google-appliance-results.tpl.php
++ */
++?>
++<li class="synonym <?php print $classes; ?>" id="synonym-<?php print $synonym_idx; ?>"<?php print $attributes; ?>>
++  <?php print render($link); ?>
++</li>
+diff --git a/theme/google_appliance.css b/theme/google_appliance.css
+index 10267b4..d7a67d1 100644
+--- a/theme/google_appliance.css
++++ b/theme/google_appliance.css
+@@ -18,8 +18,12 @@
+   margin-top: 0;
+ }
+ .google-appliance-result .title {
++  margin-bottom: 0px;
+   font-size: 1.2em;
+ }
++.google-appliance-result .google-appliance-snippet {
++  margin-bottom: 0px;
++}
+ .google-appliance-result li {
+   margin-bottom: 1em;
+ }
+@@ -29,7 +33,7 @@
+ .google-appliance-results .google-appliance-info,
+ .google-appliance-keymatch-results {
+   font-size: 0.85em;
+-  color: #aaa;
++  color: #888;
+ }
+ 
+ /* key match results */
+@@ -52,6 +56,22 @@
+   margin:0;
+ }
+ 
++/* synonyms */
++/* allow synonyms on search results page to be snug under the search box */
++form.search-google-appliance-search-form {
++  margin-bottom: 2px;
++}
++
++/* add back the margin that formerly separated the search box from the "Search Results" heading */
++#search-results-heading {
++  margin-top: 1em;
++}
++
++.google-appliance-synonyms ul, .google-appliance-synonyms li {
++  display: inline;
++  list-style-type: none;
++}
++
+ /* results listings "control" bar */
+ .google-appliance-results-control-bar {
+   border: 1px solid #ddd;
+@@ -82,5 +102,5 @@
+   font-weight: bold;
+ }
+ .google-appliance-level2 {
+-  margin-left: 1.5em;
++  /*margin-left: 1.5em;*/
+ }
+diff --git a/theme/google_appliance.theme.inc b/theme/google_appliance.theme.inc
+index 01eac13..08c798b 100644
+--- a/theme/google_appliance.theme.inc
++++ b/theme/google_appliance.theme.inc
+@@ -30,7 +30,7 @@ function google_appliance_theme() {
+   
+   // Results page (top level template for the rest).
+   $registry['google_appliance_results'] = array(
+-    'variables' => array('search_query_data' => NULL, 'response_data' => NULL),
++    'variables' => array('search_query_data' => NULL, 'response_data' => NULL, 'synonyms_label'=>t('You might also try:')),
+     'template' => 'google-appliance-results',
+     'path' => $ga_template_dir,
+   );
+@@ -49,6 +49,13 @@ function google_appliance_theme() {
+     'path' => $ga_template_dir,
+   );
+   
++  // Single synonym within the results page.
++  $registry['google_appliance_synonym'] = array(
++    'variables' => array('synonyms' => NULL),
++    'template' => 'google-appliance-synonym',
++    'path' => $ga_template_dir,
++  );
++  
+   // Pager.
+   $registry['google_appliance_pager'] = array(
+     'varaibles' => array('pager_data' => NULL),
+@@ -212,6 +219,20 @@ function template_preprocess_google_appliance_results(&$vars) {
+       }
+     }
+ 
++    // Get themed synonym listing.
++    $vars['synonyms'] = '';
++    $vars['show_synonyms'] = false;
++    
++    // GSA device may not be configured for synonyms
++    if (array_key_exists('synonyms', $vars['response_data'])) { 
++      $count = 0;
++      foreach ($vars['response_data']['synonyms'] as $synonym) {
++        $synonym['synonym_idx'] = ++$count;
++        $vars['synonyms'] .= theme('google_appliance_synonym', $synonym);
++      }
++      $vars['show_synonyms'] = $count;
++    }
++
+     // Get themed results listing.
+     $vars['search_results'] = '';
+     $count = 0;
+@@ -271,12 +292,21 @@ function template_preprocess_google_appliance_keymatch(&$vars) {
+ 
+   // Sanatize urls.
+   $vars['url'] = check_url($vars['url']);
+-  $vars['description'] = filter_xss($vars['description'], array('b', 'string'));
++  $vars['description'] = filter_xss($vars['description'], array('b', 'strong'));
+ 
+   // Render template.
+ }
+ 
+ /**
++ * Preprocess a single synonym.
++ */
++function template_preprocess_google_appliance_synonym(&$vars) {
++  $description = filter_xss($vars['description'], array('b', 'strong'));
++  $url = check_url('gsearch/' . $vars['url']);
++  $vars['link'] = l($description, $url, array('atrributes'=>array('class'=>array('synonym-description'))));
++}
++
++/**
+  * Set up Drupal pager for pagination of GSA-provided search results.
+  *
+  * We're not paging druppal-database content in this version, so the core
+  

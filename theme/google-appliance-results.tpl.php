@@ -15,14 +15,21 @@
 //dsm($variables);
 ?>
 <?php print drupal_render($search_form); ?>
-<h2><?php print $results_heading; ?></h2>
+  
+ <?php if ($show_synonyms) : ?>
+  <div class="synonyms google-appliance-synonyms">
+    <span class="p"><?php print $synonyms_label ?></span> <ul><?php print $synonyms; ?></ul>
+  </div>
+ <?php endif; ?>
+
+<h2 id="search-results-heading"><?php print $results_heading; ?></h2>
 <?php if (!isset($response_data['error'])) : ?>
   
   <div class="google-appliance-results-control-bar clearfix">
     <?php print $search_stats; ?>
     <?php print $sort_headers; ?>
   </div>
-  
+
   <ol class="keymatch-results google-appliance-keymatch-results">
     <?php print $keymatch_results; ?>
   </ol>

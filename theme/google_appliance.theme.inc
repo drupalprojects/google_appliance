@@ -30,7 +30,7 @@ function google_appliance_theme() {
   
   // Results page (top level template for the rest).
   $registry['google_appliance_results'] = array(
-    'variables' => array('search_query_data' => NULL, 'response_data' => NULL),
+    'variables' => array('search_query_data' => NULL, 'response_data' => NULL, 'synonyms_label'=>t('You might also try:')),
     'template' => 'google-appliance-results',
     'path' => $ga_template_dir,
   );
@@ -46,6 +46,13 @@ function google_appliance_theme() {
   $registry['google_appliance_keymatch'] = array(
     'variables' => array('keymatch_data' => NULL),
     'template' => 'google-appliance-keymatch',
+    'path' => $ga_template_dir,
+  );
+  
+  // Single synonym within the results page.
+  $registry['google_appliance_synonym'] = array(
+    'variables' => array('synonyms' => NULL),
+    'template' => 'google-appliance-synonym',
     'path' => $ga_template_dir,
   );
   
@@ -212,6 +219,20 @@ function template_preprocess_google_appliance_results(&$vars) {
       }
     }
 
+    // Get themed synonym listing.
+    $vars['synonyms'] = '';
+    $vars['show_synonyms'] = false;
+    
+    // GSA device may not be configured for synonyms
+    if (array_key_exists('synonyms', $vars['response_data'])) { 
+      $count = 0;
+      foreach ($vars['response_data']['synonyms'] as $synonym) {
+        $synonym['synonym_idx'] = ++$count;
+        $vars['synonyms'] .= theme('google_appliance_synonym', $synonym);
+      }
+      $vars['show_synonyms'] = $count;
+    }
+
     // Get themed results listing.
     $vars['search_results'] = '';
     $count = 0;
@@ -271,9 +292,18 @@ function template_preprocess_google_appliance_keymatch(&$vars) {
 
   // Sanatize urls.
   $vars['url'] = check_url($vars['url']);
-  $vars['description'] = filter_xss($vars['description'], array('b', 'string'));
+  $vars['description'] = filter_xss($vars['description'], array('b', 'strong'));
 
   // Render template.
+}
+
+/**
+ * Preprocess a single synonym.
+ */
+function template_preprocess_google_appliance_synonym(&$vars) {
+  $description = filter_xss($vars['description'], array('b', 'strong'));
+  $url = check_url('gsearch/' . $vars['url']);
+  $vars['link'] = l($description, $url, array('atrributes'=>array('class'=>array('synonym-description'))));
 }
 
 /**

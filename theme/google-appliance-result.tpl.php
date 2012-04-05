@@ -28,7 +28,7 @@
       </p>
     <?php endif; ?>
     <p class="search-info google-appliance-info">
-      <?php print $short_url; ?>
+      <?php print $abs_url; ?>
     </p>
   </div>
 </li>

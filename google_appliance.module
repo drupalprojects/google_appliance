@@ -437,6 +437,18 @@ function google_appliance_parse_device_response_xml($gsa_xml) {
         $results['keymatch'][] = $keymatch;
       }
 
+      // If there are any synonyms returned by the appliance, put them in the results as a new array
+      // @see http://code.google.com/apis/searchappliance/documentation/50/xml_reference.html#tag_onesynonym
+      foreach ($payload->xpath('//OneSynonym') as $syn_element) {
+        $synonym = array();
+        
+        // synonym information
+        $synonym['description'] = (string) $syn_element;
+        $synonym['url'] = (string) $syn_element['q'];
+
+        $results['synonyms'][] = $synonym;
+      }
+
       foreach ($payload->xpath('//R') as $res) {
         $result = array();
         
@@ -455,6 +467,7 @@ function google_appliance_parse_device_response_xml($gsa_xml) {
         $results['entry'][] = $result;
       }
     }
+    drupal_alter('google_appliance_results', &$results, $payload);
   }
   return $results;
 }
