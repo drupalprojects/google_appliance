@@ -472,7 +472,7 @@ function google_appliance_parse_device_response_xml($gsa_xml) {
         $results['entry'][] = $result;
       }
     }
-    drupal_alter('google_appliance_results', &$results, $payload);
+    drupal_alter('google_appliance_results', $results, $payload);
   }
   return $results;
 }
