@@ -16,6 +16,9 @@
  *		<?php print (isset($mime['icon'])) ? $mime['icon'] : ''; ?>
  * @endcode
  *
+ * Metadata for each result is also available to be themed, but is not part of the default
+ * implementation here. Have a look at $variables['meta'] to see what data you have available.
+ *
  * @see template_preprocess_google_appliance_result()
  * @see google-appliance-results.tpl.php
  */

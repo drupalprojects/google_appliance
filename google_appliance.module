@@ -467,6 +467,16 @@ function google_appliance_parse_device_response_xml($gsa_xml) {
         $result['crawl_date'] = (string) $res->FS['VALUE'];
         $result['level'] = isset($res['L']) ? (int) $res['L'] : 1;
         
+        // result meta data
+        // here we just collect the data from the device and leave implementing
+        // display of meta data to the themer (use-case specific)
+        // @see google-appliance-result.tpl.php
+        $meta = array();
+        foreach ($res->xpath('./MT') as $mt) {
+          $meta[(string) $mt['N']] = (string) $mt['V'];
+        }
+        $result['meta'] = $meta;
+        
         // detect the mime type to allow themes to decorate with mime icons
         // @see google-appliance-result.tpl.php
         $result['mime']['type'] = (string) $res['MIME'];
