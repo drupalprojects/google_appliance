@@ -352,6 +352,9 @@ function google_appliance_search_view($query = '', $sort = NULL) {
     );
     }
     
+    // allow implementation of hook_google_appliance_query_alter() by other modules
+    drupal_alter('google_appliance_query', $search_query_data);
+    
     // query the GSA for search results
     $gsa_response = _curl_get(
       $search_query_data['gsa_host'], 
