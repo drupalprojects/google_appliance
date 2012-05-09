@@ -487,7 +487,7 @@ function google_appliance_parse_device_response_xml($gsa_xml) {
     }
     drupal_alter('google_appliance_results', $results, $payload);
   }
-  return $results;
+  return google_appliance_static_response_cache($results);
 }
 
 /**
@@ -549,3 +549,23 @@ function google_appliance_get_clusters() {
   return $cluster_content;
 }
 
+
+/**
+ * Stores Google Appliance response data so that other modules can utilize
+ * the result without re-querying the GSA.
+ *
+ * @param array $response
+ *   The final, parsed response from the GSA run through all hooks.
+ *
+ * @return
+ *   The same response.
+ */
+function &google_appliance_static_response_cache($response = NULL) {
+  static $_google_appliance_response;
+
+  if (!empty($response)) {
+    $_google_appliance_response = $response;
+  }
+
+  return $_google_appliance_response;
+}
