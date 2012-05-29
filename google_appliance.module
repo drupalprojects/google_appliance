@@ -399,95 +399,98 @@ function google_appliance_search_view($query = '', $sort = NULL) {
  */
 function google_appliance_parse_device_response_xml($gsa_xml) {
 
-  $results = array();
+  $results = &drupal_static(__FUNCTION__);
+  if (!isset($results)) {
 
-  // look for xml parse errors 
-  libxml_use_internal_errors(TRUE);
-  $payload = simplexml_load_string($gsa_xml);
-  
-  if (!$payload) {  // XML parse error(s)
-    $errors = array();
-    foreach (libxml_get_errors() as $error) {
-      $errors[] = $error->message;
-    }
-    // roll up the errors
-    $errors = join(', ', $errors);
-    $results['error'] =  array('lib_xml_parse_error' => $errors);
-    // displaying useful error messages depends upon the use of the array key
-    // 'lib_xml_parse_error' ... the actual error code/response is replaced by hook_help messages
-    // @see google_appliance.theme.inc
-    // @see google_appliance_help()
-  }
-  else {
-    
-    // store metrics for stat reporting
-    $results['total_results'] = (integer) $payload->RES->M; // somewhat unreliable
-    $results['last_result'] = (string) $payload->RES['EN'];
-    
-    if ($results['total_results'] == 0) { // search returned zero results
-      $results['error'] =  array('gsa_no_results' => TRUE);
-      return $results;
-    }
-    else {  // parse results
-      
-      foreach ($payload->xpath('//GM') as $km) {
-        $keymatch = array();
-        
-        // keymatch information
-        $keymatch['description'] = (string) $km->GD;
-        $keymatch['url'] = (string) $km->GL;
+    // look for xml parse errors
+    libxml_use_internal_errors(TRUE);
+    $payload = simplexml_load_string($gsa_xml);
 
-        $results['keymatch'][] = $keymatch;
+    if (!$payload) {  // XML parse error(s)
+      $errors = array();
+      foreach (libxml_get_errors() as $error) {
+        $errors[] = $error->message;
       }
+      // roll up the errors
+      $errors = join(', ', $errors);
+      $results['error'] =  array('lib_xml_parse_error' => $errors);
+      // displaying useful error messages depends upon the use of the array key
+      // 'lib_xml_parse_error' ... the actual error code/response is replaced by hook_help messages
+      // @see google_appliance.theme.inc
+      // @see google_appliance_help()
+    }
+    else {
 
-      // If there are any synonyms returned by the appliance, put them in the results as a new array
-      // @see http://code.google.com/apis/searchappliance/documentation/50/xml_reference.html#tag_onesynonym
-      foreach ($payload->xpath('//OneSynonym') as $syn_element) {
-        $synonym = array();
-        
-        // synonym information
-        $synonym['description'] = (string) $syn_element;
-        $synonym['url'] = (string) $syn_element['q'];
+      // store metrics for stat reporting
+      $results['total_results'] = (integer) $payload->RES->M; // somewhat unreliable
+      $results['last_result'] = (string) $payload->RES['EN'];
 
-        $results['synonyms'][] = $synonym;
+      if ($results['total_results'] == 0) { // search returned zero results
+        $results['error'] =  array('gsa_no_results' => TRUE);
+        return $results;
       }
+      else {  // parse results
 
-      foreach ($payload->xpath('//R') as $res) {
-        $result = array();
-        
-        // handy variants of the url for the result
-        $result['abs_url'] = (string) $res->U; 
-        $result['enc_url'] = (string) $res->UE; // urlencoded URL of result
-        $result['short_url'] = substr($result['abs_url'], 0, 80) 
-          . (strlen($result['abs_url']) > 80 ? '...' : '');  
-        
-        // result info
-        $result['title'] = (string) $res->T;                  
-        $result['snippet'] = (string) $res->S;                
-        $result['crawl_date'] = (string) $res->FS['VALUE'];
-        $result['level'] = isset($res['L']) ? (int) $res['L'] : 1;
-        
-        // result meta data
-        // here we just collect the data from the device and leave implementing
-        // display of meta data to the themer (use-case specific)
-        // @see google-appliance-result.tpl.php
-        $meta = array();
-        foreach ($res->xpath('./MT') as $mt) {
-          $meta[(string) $mt['N']] = (string) $mt['V'];
+        foreach ($payload->xpath('//GM') as $km) {
+          $keymatch = array();
+
+          // keymatch information
+          $keymatch['description'] = (string) $km->GD;
+          $keymatch['url'] = (string) $km->GL;
+
+          $results['keymatch'][] = $keymatch;
         }
-        $result['meta'] = $meta;
-        
-        // detect the mime type to allow themes to decorate with mime icons
-        // @see google-appliance-result.tpl.php
-        $result['mime']['type'] = (string) $res['MIME'];
-        
-        // collect
-        $results['entry'][] = $result;
+
+        // If there are any synonyms returned by the appliance, put them in the results as a new array
+        // @see http://code.google.com/apis/searchappliance/documentation/50/xml_reference.html#tag_onesynonym
+        foreach ($payload->xpath('//OneSynonym') as $syn_element) {
+          $synonym = array();
+
+          // synonym information
+          $synonym['description'] = (string) $syn_element;
+          $synonym['url'] = (string) $syn_element['q'];
+
+          $results['synonyms'][] = $synonym;
+        }
+
+        foreach ($payload->xpath('//R') as $res) {
+          $result = array();
+
+          // handy variants of the url for the result
+          $result['abs_url'] = (string) $res->U;
+          $result['enc_url'] = (string) $res->UE; // urlencoded URL of result
+          $result['short_url'] = substr($result['abs_url'], 0, 80)
+            . (strlen($result['abs_url']) > 80 ? '...' : '');
+
+          // result info
+          $result['title'] = (string) $res->T;
+          $result['snippet'] = (string) $res->S;
+          $result['crawl_date'] = (string) $res->FS['VALUE'];
+          $result['level'] = isset($res['L']) ? (int) $res['L'] : 1;
+
+          // result meta data
+          // here we just collect the data from the device and leave implementing
+          // display of meta data to the themer (use-case specific)
+          // @see google-appliance-result.tpl.php
+          $meta = array();
+          foreach ($res->xpath('./MT') as $mt) {
+            $meta[(string) $mt['N']] = (string) $mt['V'];
+          }
+          $result['meta'] = $meta;
+
+          // detect the mime type to allow themes to decorate with mime icons
+          // @see google-appliance-result.tpl.php
+          $result['mime']['type'] = (string) $res['MIME'];
+
+          // collect
+          $results['entry'][] = $result;
+        }
       }
+      drupal_alter('google_appliance_results', $results, $payload);
     }
-    drupal_alter('google_appliance_results', $results, $payload);
   }
-  return google_appliance_static_response_cache($results);
+
+  return $results;
 }
 
 /**
@@ -547,25 +550,4 @@ function google_appliance_get_clusters() {
   }
   
   return $cluster_content;
-}
-
-
-/**
- * Stores Google Appliance response data so that other modules can utilize
- * the result without re-querying the GSA.
- *
- * @param array $response
- *   The final, parsed response from the GSA run through all hooks.
- *
- * @return
- *   The same response.
- */
-function &google_appliance_static_response_cache($response = NULL) {
-  static $_google_appliance_response;
-
-  if (!empty($response)) {
-    $_google_appliance_response = $response;
-  }
-
-  return $_google_appliance_response;
 }
