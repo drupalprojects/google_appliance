@@ -128,7 +128,7 @@ function google_appliance_block_info() {
   // block search form
   $blocks['ga_block_search_form'] = array(
     'info' => t('Google Appliance search form'),
-    'cache' => DRUPAL_CACHE_GLOBAL,
+    'cache' => DRUPAL_NO_CACHE,
   );
   
   // related searches block
