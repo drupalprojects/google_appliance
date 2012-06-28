@@ -309,7 +309,7 @@ function google_appliance_search_view($query = '', $sort = NULL) {
     // response processing structures
     $search_query_data = array();     // cURL arguments for the query
     $query_response = array();        // raw XML response
-    $respnose_data = array();         // processd response
+    $response_data = array();         // processd response
     
     // get the sort parameter from the url
     $sort_param = '';
