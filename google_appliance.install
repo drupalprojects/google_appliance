@@ -23,6 +23,7 @@ function google_appliance_uninstall() {
     'query_inspection',
     'search_title',
     'results_per_page',
+    'block_visibility_settings',
   );
   
   foreach ($field_keys as $field) {

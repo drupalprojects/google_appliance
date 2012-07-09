@@ -218,6 +218,131 @@ function google_appliance_block_form_submit($form, &$form_state) {
   // search execution happens in page callback 
 }
 
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ *
+ * This function adds a custom field to block editing forms to allow editors to
+ * conditionally hide content from the crawler using googleon/googleoff tags.
+ */
+function google_appliance_form_block_admin_configure_alter(&$form, &$form_state, $form_id) {
+  $settings = _google_appliance_get_settings(TRUE);
+
+  // Determine the default value for this block.
+  $default = 'none';
+  $module = $form['module']['#value'];
+  $delta = $form['delta']['#value'];
+  if (isset($settings['block_visibility_settings'][$module][$delta])) {
+    $default = $settings['block_visibility_settings'][$module][$delta];
+  }
+
+  // Add a Google Appliance visibility fieldset.
+  $read_more_link = 'https://developers.google.com/search-appliance/documentation/64/admin_crawl/Preparing';
+  $form['visibility']['google_appliance'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Google Appliance'),
+    '#collapsible' => 1,
+    '#collapsed' => 1,
+    '#group' => 'visibility',
+    '#weight' => 30,
+    'crawler' => array(
+      '#type' => 'radios',
+      '#title' => t('Visible to Google Appliance crawler'),
+      '#description' => '<p>' . t('Configure how the Google Search Appliance crawler handles the contents of this block.') . '</p>' .
+        '<p>' . t('For more information, see the relevant') . ' ' .
+        l(t('Google Search Appliance documentation'), $read_more_link, array(
+          'fragment' => 'pagepart', 'attributes' => array('target' => '_blank')
+        )) . '.</p>',
+      '#options' => array(
+        'none' => t('No restrictions'),
+        'index' => t('Exclude block contents from index'),
+        'anchor' => t('Disassociate anchor text from target pages within this block'),
+        'snippet' => t('Exclude block contents from search snippets'),
+        'all' => t('All of the above'),
+      ),
+      '#default_value' => $default,
+    ),
+  );
+
+  // Attach a submit handler to save our preferences.
+  $form['#submit'][] = 'google_appliance_block_visibility_submit';
+}
+
+/**
+ * Submit handler to save block-specific crawler visibility settings.
+ */
+function google_appliance_block_visibility_submit($form, &$form_state) {
+  $settings = _google_appliance_get_settings(TRUE);
+  $module = $form_state['values']['module'];
+  $delta = $form_state['values']['delta'];
+
+  // Clear out our block settings array if no restrictions are applied.
+  if ($form_state['values']['crawler'] == 'none') {
+    if (isset($settings['block_visibility_settings'][$module][$delta])) {
+      unset($settings['block_visibility_settings'][$module][$delta]);
+    }
+  }
+  // Otherwise, add the setting to our block settings array.
+  else {
+    $settings['block_visibility_settings'][$module][$delta] = $form_state['values']['crawler'];
+  }
+
+  // Save the settings.
+  variable_set('google_appliance_block_visibility_settings', $settings['block_visibility_settings']);
+}
+
+/**
+ * Implements hook_block_view_alter().
+ *
+ * This function is used to hide user-specified blocks from the crawler by
+ * wrapping them in google on/off tags.
+ *
+ * @see google_appliance_form_block_admin_configure_alter()
+ * @see _google_appliance_get_googleonoff()
+ * @see https://developers.google.com/search-appliance/documentation/64/admin_crawl/Preparing#pagepart
+ */
+function google_appliance_block_view_alter(&$data, $block) {
+  $settings = _google_appliance_get_settings();
+  $module = $block->module;
+  $delta = $block->delta;
+
+  // Only wrap specified blocks.
+  if (isset($settings['block_visibility_settings'][$module][$delta])) {
+    $tags = _google_appliance_get_googleonoff();
+    $tag_type = $settings['block_visibility_settings'][$module][$delta];
+    $prefix = $tags[$tag_type]['prefix'];
+    $suffix = $tags[$tag_type]['suffix'];
+
+    // Sanity check to make sure we have a valid block.
+    if (isset($data['content'])) {
+      // We may be dealing with either a string of HTML or a renderable array.
+      if (is_array($data['content'])) {
+        // Special case if there's already markup.
+        if (isset($data['content']['#markup'])) {
+          $data['content']['#markup'] = $prefix . $data['content']['#markup'] . $suffix;
+        }
+        else {
+          if (isset($data['content']['#prefix'])) {
+            $data['content']['#prefix'] = $prefix . $data['content']['#prefix'];
+          }
+          else {
+            $data['content']['#prefix'] = $prefix;
+          }
+          if (isset($data['content']['#suffix'])) {
+            $data['content']['#suffix'] .= $suffix;
+          }
+          else {
+            $data['content']['#suffix'] = $suffix;
+          }
+        }
+      }
+      else {
+        $data['content'] = $prefix . $data['content'] . $suffix;
+      }
+    }
+  }
+}
+
 /**
  * Form builder ouputs the search form for results pages
  *

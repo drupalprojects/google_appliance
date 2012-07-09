@@ -169,7 +169,7 @@ function google_appliance_admin_settings_submit($form, &$form_state) {
 
   // save settings
   foreach ($field_keys as $field) {
-    variable_set('google_appliance_' . $field, $form_state['values'][$field]);
+    variable_set('google_appliance_' . $field, trim($form_state['values'][$field]));
   }
   
   // refresh settings getter
