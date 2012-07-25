@@ -52,12 +52,20 @@ function _google_appliance_get_settings($refresh = FALSE) {
   
   if ($refresh || empty($settings)) {
     
+    // Settings fall back to default constants.
     foreach ($field_keys as $field) {  
       $settings[$field] = variable_get(
         'google_appliance_' . $field,
         constant('SGA_DEFAULT_' . strtoupper($field))
       );
-    
+    }
+
+    // The empty string in the define block above for block visibility 
+    // settings is really just a flag that nothing has been set yet. 
+    // Using an empty string is problematic, so we just set it to an 
+    // empty array instead.
+    if ($settings['block_visibility_settings'] == '') {
+      $settings['block_visibility_settings'] = array();
     }
   }
 

@@ -277,6 +277,8 @@ function google_appliance_block_visibility_submit($form, &$form_state) {
   $delta = $form_state['values']['delta'];
 
   // Clear out our block settings array if no restrictions are applied.
+  // @TODO: clean up array keys with empty values, i.e., those that once
+  // had settings for block visibility, but have been reverted to none.
   if ($form_state['values']['crawler'] == 'none') {
     if (isset($settings['block_visibility_settings'][$module][$delta])) {
       unset($settings['block_visibility_settings'][$module][$delta]);
