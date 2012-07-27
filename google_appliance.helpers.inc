@@ -64,7 +64,7 @@ function _google_appliance_get_settings($refresh = FALSE) {
     // settings is really just a flag that nothing has been set yet. 
     // Using an empty string is problematic, so we just set it to an 
     // empty array instead.
-    if ($settings['block_visibility_settings'] == '') {
+    if ($settings['block_visibility_settings'] === '') {
       $settings['block_visibility_settings'] = array();
     }
   }
