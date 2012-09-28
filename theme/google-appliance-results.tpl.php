@@ -16,7 +16,7 @@
 ?>
 <?php print drupal_render($search_form); ?>
   
- <?php if ($show_synonyms) : ?>
+ <?php if (isset($show_synonyms)) : ?>
   <div class="synonyms google-appliance-synonyms">
     <span class="p"><?php print $synonyms_label ?></span> <ul><?php print $synonyms; ?></ul>
   </div>
