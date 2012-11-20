@@ -30,9 +30,11 @@
     <?php print $sort_headers; ?>
   </div>
 
-  <ol class="keymatch-results google-appliance-keymatch-results">
-    <?php print $keymatch_results; ?>
-  </ol>
+  <?php if (!empty($keymatch_results)) : ?>
+    <ol class="keymatch-results google-appliance-keymatch-results">
+      <?php print $keymatch_results; ?>
+    </ol>
+  <?php endif; ?>
 
   <ol class="search-results google-appliance-results">
     <?php print $search_results; ?>
