@@ -100,7 +100,7 @@ function google_appliance_admin_settings($form) {
     '#title' => t('Results per page'),
     '#type' => 'textfield',
     '#default_value' => $settings['results_per_page'],
-    '#description' => t('Number of results to show on the results page. More results will be avialable via a Drupal pager.'),
+    '#description' => t('Number of results to show on the results page. More results will be available via a Drupal pager.'),
     '#required' => TRUE,
   );
   $form['#submit'][] = 'google_appliance_admin_settings_submit';

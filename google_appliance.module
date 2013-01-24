@@ -29,13 +29,13 @@ function google_appliance_help($path, $arg) {
       $output .= '<h3>' . t('Teaming up with core Search') . '</h3>';
       $output .= '<p>' . t('The Google Appliance module can act as a replacement for core <i>Search</i>, or it may operate in tandem with it. Say you want to provide search results for the public to include both drupal and non-drupal content, but you want administrative searches to only provide results for local site content. In this case you use the Google Appliance searches for public search, and core Search for admin searches.') . '</p>' . PHP_EOL; 
       
-      $output .= '<p>' . t('If you will use core search along with this module, core search results will show up normally at <code>serach/{search terms}</code>, while Google Appliance searches will show upt at <code>gsearch/{search terms}</code>.') . '</p>' . PHP_EOL;
+      $output .= '<p>' . t('If you will use core search along with this module, core search results will show up normally at <code>search/{search terms}</code>, while Google Appliance searches will show up at <code>gsearch/{search terms}</code>.') . '</p>' . PHP_EOL;
       
       $output .= '<h2>' . t('Blocks') . '</h2>';
       $output .= '<p>' . t('The module provides two blocks:') . '</p>' . PHP_EOL; 
       $output .= '<ol><li>' . t('the block search form') . '</li>' . PHP_EOL;
       $output .= '<li>' . t('the related searches block') . '</li></ol>' . PHP_EOL;
-      $output .= '<p>' . t('Both can be enabled and configured on the <a href="@blocks-admin">Blocks administration page</a>. The block search form provides search form that can be placed into any block. The related searches block displays a list of links to related results. The related search block only makes sense to appear on results pages, so it should be configured accordingly (i.e. specify <code>gsearch*</code> as the pages for the block to appear on).', array('@blocks-admin' => url('admin/structure/block'))) . '</p>';
+      $output .= '<p>' . t('Both can be enabled and configured on the <a href="@blocks-admin">Blocks administration page</a>. The block search form provides a search form that can be placed into any block. The related searches block displays a list of links to related results. The related search block only makes sense to appear on results pages, so it should be configured accordingly (i.e. specify <code>gsearch*</code> as the pages for the block to appear on).', array('@blocks-admin' => url('admin/structure/block'))) . '</p>';
       
       return $output;
       
@@ -169,7 +169,7 @@ function google_appliance_block_view($delta = '') {
 }
 
 /**
- * Form builder ouputs the search form for the search block
+ * Form builder outputs the search form for the search block
  *
  * @ingroup forms
  * @see google_appliance_block_form_submit()
@@ -346,7 +346,7 @@ function google_appliance_block_view_alter(&$data, $block) {
 }
 
 /**
- * Form builder ouputs the search form for results pages
+ * Form builder outputs the search form for results pages
  *
  * @ingroup forms
  * @see google_appliance_search_form_submit()
@@ -517,7 +517,7 @@ function google_appliance_search_view($query = '', $sort = NULL) {
 }
 
 /**
- * Parse the response form the Google Search Appliance device into a php array
+ * Parse the response from the Google Search Appliance device into a php array
  *
  * @arg $gsa_xml
  *    response text obtained from the device query

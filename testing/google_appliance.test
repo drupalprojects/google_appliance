@@ -2,7 +2,7 @@
 // $Id$
 /**
  * @file 
- * Implements automated simpletest routines for integtration testing of the Google
+ * Implements automated simpletest routines for integration testing of the Google
  * Appliance module. 
  */
  
@@ -559,7 +559,7 @@ class GoogleApplianceResultsDisplaySettingsCheck extends DrupalWebTestCase {
     return array(
       'name' => 'Results Page Settings',
       'description' => 'Check that module settings manifest in changes to the results page. <b>You must provide connection settings in a file</b> in the /testing directory within the module in
-      order for real searches to execute. See the example file {module_directory}/google_appliance/testing/test-settings.example.inc for more info. Not providing the file simply aborts the tests require a connection to your device.',
+      order for real searches to execute. See the example file {module_directory}/google_appliance/testing/test-settings.example.inc for more info. Not providing the file simply aborts the tests requiring a connection to your device.',
       'group' => 'Google Appliance',
     );
   }
@@ -838,7 +838,7 @@ class GoogleApplianceRelatedSearchesBlock extends DrupalWebTestCase {
   
    public function testCase() {
    
-    // set block title to confirm that the interface is availble.
+    // set block title to confirm that the interface is available.
     $block_title = $this->randomName(16);
     $this->drupalPost(
       'admin/structure/block/manage/google_appliance/ga_related_searches/configure', 
@@ -850,7 +850,7 @@ class GoogleApplianceRelatedSearchesBlock extends DrupalWebTestCase {
       t('<b>{MTP:2.3.6.5}</b> Block title set (successful interaction).')
     );
 
-    // Set the block to a region to confirm block is availble.
+    // Set the block to a region to confirm block is available.
     $edit = array();
     $edit['blocks[google_appliance_ga_related_searches][region]'] = 'content';
     $this->drupalPost(

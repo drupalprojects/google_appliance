@@ -10,7 +10,7 @@
  * knowing in advance (at test time) what the connection information is.
  *
  * Since there is no public GSA available for general testing, you must provide a test settings 
- * file that will allow the testing framework to query your Google Search Appliance device. The
+ * file that will allow the testing framework to query your Google Search Appliance device.
  * 
  * Create a file named 'test-settings.inc' and place it alongside this example file in the 
  * testing directory with actual information that will produce search results. Your file must use

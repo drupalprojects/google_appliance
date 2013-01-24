@@ -4,11 +4,11 @@ $Id$
 
 The Google Appliance module provides an interface to obtain search results from a dedicated Google Search Appliance (GSA) hardware device. The module can act as a replacemet for core Search, or it may operate in tandem with it. 
 
-If you will use core search along with this module, core search results will show up normally at serach/{search terms}, while Google Appliance searches will show upt at gsearch/{search terms}. 
+If you will use core search along with this module, core search results will show up normally at search/{search terms}, while Google Appliance searches will show up at gsearch/{search terms}. 
 
 Since search index management for the GSA searches is offloaded to the GSA device, utilizing the module is a two-tier solution: 
 
-  (1) search management with the GSA and it's assocated (Drupal-external) tasks, and 
+  (1) search management with the GSA and its assocated (Drupal-external) tasks, and 
   (2) defining the commiunication interface for Drupal. 
 
 This module simply defines the communication interface for Drupal.
@@ -40,7 +40,7 @@ The module provides two blocks:
   (1) Search Form
   (2) Related Searches
 
-Both blocks will need to be assigned to a region, but the Related Searches block is preconfigured to only appear on results pages. Niether block is required to be used, as you can access the search form on the search page
+Both blocks will need to be assigned to a region, but the Related Searches block is preconfigured to only appear on results pages. Neither block is required to be used, as you can access the search form on the search page
 
   * gsearch/
 
@@ -55,7 +55,7 @@ Automated tests have been written that fall into two categories:
   (1) Basic testing that doesn't require a connection to your GSA
   (2) Connectivity and results listings tests
 
-To execute the second class of tests, you will need to provide an input file for the Simpletest browser to configure your module. See the example file:
+To execute the second class of tests, you will need to provide an input file for the SimpleTest browser to configure your module. See the example file:
 
   * google_appliance/testing/test-settings.example.inc
 
