@@ -481,12 +481,17 @@ function google_appliance_search_view($query = '', $sort = NULL) {
     
     // allow implementation of hook_google_appliance_query_alter() by other modules
     drupal_alter('google_appliance_query', $search_query_data);
-    
+
+    $curl_options = array();
+
+    // allow implementation of hook_google_appliance_curl_alter() by other modules
+    drupal_alter('google_appliance_curl', $curl_options);
+
     // query the GSA for search results
     $gsa_response = _curl_get(
       $search_query_data['gsa_host'], 
       $search_query_data['gsa_query_params'],
-      array(),
+      $curl_options,
       $settings['timeout']
     );
     

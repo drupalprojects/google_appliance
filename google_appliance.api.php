@@ -51,6 +51,30 @@ function hook_google_appliance_query_alter(&$query) {
 
 
 /**
+ * Alter cURL request sent to Google Search Appliance.
+ *
+ * This hook is invoked after Google Search Appliance builds the query, just
+ * before the query is sent to the appliance.
+ *
+ * Use this to alter options of the cURL request.
+ *
+ * @param $options
+ *   The cURL options, represented as multi-dimensional, associative array just
+ *   before it is sent to the search appliance.
+ *
+ * @see google_appliance_search_view()
+ * @see http://www.php.net/manual/en/function.curl-setopt.php
+ */
+function hook_google_appliance_curl_alter(&$options) {
+  // Enable verbose logging to STDERR.
+  $options[CURLOPT_VERBOSE] = TRUE;
+
+  // Set HTTP proxy to tunnel requests through.
+  $options[CURLOPT_PROXY] = 'http://gsa-proxy.example.com';
+}
+
+
+/**
  * Alter Google Search Appliance results.
  *
  * This hook is invoked after the search appliance returns with a response and
