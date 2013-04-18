@@ -557,6 +557,20 @@ function google_appliance_parse_device_response_xml($gsa_xml) {
       $results['total_results'] = (integer) $payload->RES->M; // somewhat unreliable
       $results['last_result'] = (string) $payload->RES['EN'];
 
+      // check if there is an result at all ($payload->RES),
+      // secure search doesn't provide a value for $payload->RES->M
+      if ($results['total_results'] == 0 && isset($payload->RES)) {
+        $results['total_results'] = (integer) $payload->RES['EN'];
+
+        $param_start = $payload->xpath('/GSP/PARAM[@name="start"]');
+        $param_num = $payload->xpath('/GSP/PARAM[@name="num"]');
+        $request_max_total = (integer) $param_start[0]['value'] + (integer) $param_num[0]['value'];
+
+        if($results['total_results'] == $request_max_total){
+          $results['total_results']++;
+        }
+      }
+
       if ($results['total_results'] == 0) { // search returned zero results
         $results['error'] =  array('gsa_no_results' => TRUE);
         return $results;
