@@ -58,7 +58,7 @@ function google_appliance_theme() {
   
   // Pager.
   $registry['google_appliance_pager'] = array(
-    'varaibles' => array('pager_data' => NULL),
+    'variables' => array('pager_data' => NULL),
   );
   
   // Sort headers.
