@@ -471,6 +471,9 @@ function google_appliance_search_view($query = '', $sort = NULL) {
       //'requiredfields' => $filter_param
     );
     
+    // allow implementation of hook_google_appliance_query_alter() by other modules
+    drupal_alter('google_appliance_query', $search_query_data);
+
     // build debug info in case we need to display it
     if ($settings['query_inspection'] == '1') {
       $search_query_data['debug_info'][] = t('GSA host: @host', array('@host' => $search_query_data['gsa_host']));
@@ -478,9 +481,6 @@ function google_appliance_search_view($query = '', $sort = NULL) {
         array('@qp' => print_r($search_query_data['gsa_query_params'], TRUE))
     );
     }
-    
-    // allow implementation of hook_google_appliance_query_alter() by other modules
-    drupal_alter('google_appliance_query', $search_query_data);
 
     $curl_options = array();
 
