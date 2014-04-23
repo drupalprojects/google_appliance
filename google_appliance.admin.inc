@@ -75,6 +75,28 @@ function google_appliance_admin_settings($form) {
     ),
     '#description' => t('Learn more about GSA auto-filtering <a href="@gsa-doc-af">here</a>. In general, employing both filters enhances results, but sites with smaller indexes may suffer from over-filtered results.', array('@gsa-doc-af' => 'http://code.google.com/apis/searchappliance/documentation/68/xml_reference.html#request_filter_auto') ),
   );
+  if (module_exists('locale')) {
+    $form['query_param']['google_appliance_language_filter_toggle'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Enable Language Filtering'),
+      '#default_value' => $settings['language_filter_toggle'],
+    );
+    $form['query_param']['google_appliance_language_filter_options'] = array(
+      '#type' => 'checkboxes',
+      '#title' => t('Restrict searches to specified languages'),
+      '#default_value' => $settings['language_filter_options'],
+      '#options' => array(
+        '***CURRENT_LANGUAGE***' => t("Current user's language"),
+        '***DEFAULT_LANGUAGE***' => t("Default site language"),
+      ) + locale_language_list(),
+      '#states' => array(
+        'visible' => array(
+          ':input[name=google_appliance_language_filter_toggle]' => array('checked' => TRUE),
+        ),
+      ),
+      '#description' => t('If there are no results in the specified language, the search appliance is expected to return results in all languages.'),
+    );
+  }
   $form['query_param']['query_inspection'] = array(
     '#type' => 'checkbox',
     '#title' => t('Enable Query Inspection'),

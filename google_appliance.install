@@ -20,6 +20,8 @@ function google_appliance_uninstall() {
     'frontend',
     'timeout',
     'autofilter',
+    'language_filter_toggle',
+    'language_filter_options',
     'query_inspection',
     'search_title',
     'results_per_page',

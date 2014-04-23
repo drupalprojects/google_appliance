@@ -17,6 +17,7 @@ define('SGA_DEFAULT_COLLECTION', 'default_collection');
 define('SGA_DEFAULT_FRONTEND', 'default_frontend');
 define('SGA_DEFAULT_TIMEOUT', 10);
 define('SGA_DEFAULT_AUTOFILTER', 1);
+define('SGA_DEFAULT_LANGUAGE_FILTER_TOGGLE', FALSE);
 define('SGA_DEFAULT_QUERY_INSPECTION', 0);
 define('SGA_DEFAULT_SEARCH_TITLE', 'Search this site');
 define('SGA_DEFAULT_RESULTS_PER_PAGE', 10);
@@ -44,6 +45,7 @@ function _google_appliance_get_settings($refresh = FALSE) {
     'frontend',
     'timeout',
     'autofilter',
+    'language_filter_toggle',
     'query_inspection',
     'search_title',
     'results_per_page',
@@ -59,6 +61,13 @@ function _google_appliance_get_settings($refresh = FALSE) {
         constant('SGA_DEFAULT_' . strtoupper($field))
       );
     }
+
+    // The default value of language_filter_options is an array, which
+    // cannot be used as a PHP constant. We set it here.
+    $settings['language_filter_options'] = variable_get(
+      'google_appliance_language_filter_options',
+      array('***CURRENT_LANGUAGE***')
+    );
 
     // The empty string in the define block above for block visibility 
     // settings is really just a flag that nothing has been set yet. 
@@ -174,4 +183,33 @@ function _google_appliance_get_googleonoff() {
       'suffix' => '<!--googleon: all-->',
     ),
   );
+}
+
+/**
+ * Format the value of the 'lr' parameter appropriately.
+ *
+ * @param $options
+ *   Array of languages to filter, as defined by the config
+ *   variable google_appliance_language_filter_options.
+ * @return
+ *   String to be passed to the GSA using the 'lr' parameter.
+ */
+function _google_appliance_get_lr($options) {
+  $langcodes = array();
+  $options = array_filter($options);
+  foreach ($options as $option) {
+    switch ($option) {
+      case '***CURRENT_LANGUAGE***':
+        global $language;
+        $langcode = $language->language;
+        break;
+      case '***DEFAULT_LANGUAGE***':
+        $langcode = language_default('language');
+        break;
+      default:
+        $langcode = $option;
+    }
+    $langcodes[$langcode] = "lang_$langcode";
+  }
+  return implode('|', $langcodes);
 }

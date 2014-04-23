@@ -470,6 +470,11 @@ function google_appliance_search_view($query = '', $sort = NULL) {
       'access' => 'p',
       //'requiredfields' => $filter_param
     );
+
+    // Alter request according to language filter settings.
+    if (module_exists('locale') && $settings['language_filter_toggle']) {
+      $search_query_data['gsa_query_params']['lr'] = _google_appliance_get_lr($settings['language_filter_options']);
+    }
     
     // allow implementation of hook_google_appliance_query_alter() by other modules
     drupal_alter('google_appliance_query', $search_query_data);
@@ -668,6 +673,11 @@ function google_appliance_get_clusters() {
     'site' => check_plain($settings['collection']),
     'client' => check_plain($settings['frontend']),
   );
+
+  // Alter request according to language filter settings.
+  if (module_exists('locale') && $settings['language_filter_toggle']) {
+    $clusterQueryParams['lr'] = _google_appliance_get_lr($settings['language_filter_options']);
+  }
   
   // cURL request for the clusters produces JSON result
   $gsa_clusters_json = _curl_post($clusterQueryURL, $clusterQueryParams);
