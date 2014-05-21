@@ -1,8 +1,6 @@
 <?php
-// $Id$
-
 /**
- * @file 
+ * @file
  * Google Appliance module enables searching via a dedicated Google Search Appliance
  * hardware device. See README.txt and the help page at admin/help/google_appliance.
  */
@@ -12,7 +10,7 @@ require_once(drupal_get_path('module', 'google_appliance') . '/google_appliance.
 
 // default theme impementations
 require_once(drupal_get_path('module', 'google_appliance') . '/theme/google_appliance.theme.inc');
- 
+
  /**
  * Implements hook_help().
  */
@@ -22,28 +20,28 @@ function google_appliance_help($path, $arg) {
       $output = '';
       $output .= '<h2>' . t('About') . '</h2>' . PHP_EOL;
       $output .= '<p>' . t('The Google Appliance module provides an interface to obtain search results from a dedicated Google Search Appliance (GSA) hardware device. Please visit the <a href="@project-page">Google Appliance Project Page</a> to learn more about features and development notes.') . '</p>' . PHP_EOL;
-      
+
       $output .= '<h2>' . t('Setup and Usage') . '</h2>' . PHP_EOL;
-      $output .= '<p>' . t('First, you must set up a collection and frontend on your GSA device that can be accessed publicly. Then configure the connection information on the <a href="@settings-page">Google Appliance Settings page</a> To produce results that include Drupal content, the GSA crawl must have crawled your drupal installation and indexed the desired content. No cron-job configuration is required (ala core Search) since index management is handled by the GSA device.', array('@settings-page' , 'admin/config/search/google_appliance/settings')) . '</p>' . PHP_EOL; 
-    
+      $output .= '<p>' . t('First, you must set up a collection and frontend on your GSA device that can be accessed publicly. Then configure the connection information on the <a href="@settings-page">Google Appliance Settings page</a> To produce results that include Drupal content, the GSA crawl must have crawled your drupal installation and indexed the desired content. No cron-job configuration is required (ala core Search) since index management is handled by the GSA device.', array('@settings-page' , 'admin/config/search/google_appliance/settings')) . '</p>' . PHP_EOL;
+
       $output .= '<h3>' . t('Teaming up with core Search') . '</h3>';
-      $output .= '<p>' . t('The Google Appliance module can act as a replacement for core <i>Search</i>, or it may operate in tandem with it. Say you want to provide search results for the public to include both drupal and non-drupal content, but you want administrative searches to only provide results for local site content. In this case you use the Google Appliance searches for public search, and core Search for admin searches.') . '</p>' . PHP_EOL; 
-      
+      $output .= '<p>' . t('The Google Appliance module can act as a replacement for core <i>Search</i>, or it may operate in tandem with it. Say you want to provide search results for the public to include both drupal and non-drupal content, but you want administrative searches to only provide results for local site content. In this case you use the Google Appliance searches for public search, and core Search for admin searches.') . '</p>' . PHP_EOL;
+
       $output .= '<p>' . t('If you will use core search along with this module, core search results will show up normally at <code>search/{search terms}</code>, while Google Appliance searches will show up at <code>gsearch/{search terms}</code>.') . '</p>' . PHP_EOL;
-      
+
       $output .= '<h2>' . t('Blocks') . '</h2>';
-      $output .= '<p>' . t('The module provides two blocks:') . '</p>' . PHP_EOL; 
+      $output .= '<p>' . t('The module provides two blocks:') . '</p>' . PHP_EOL;
       $output .= '<ol><li>' . t('the block search form') . '</li>' . PHP_EOL;
       $output .= '<li>' . t('the related searches block') . '</li></ol>' . PHP_EOL;
       $output .= '<p>' . t('Both can be enabled and configured on the <a href="@blocks-admin">Blocks administration page</a>. The block search form provides a search form that can be placed into any block. The related searches block displays a list of links to related results. The related search block only makes sense to appear on results pages, so it should be configured accordingly (i.e. specify <code>gsearch*</code> as the pages for the block to appear on).', array('@blocks-admin' => url('admin/structure/block'))) . '</p>';
-      
+
       return $output;
-      
+
     case 'admin/config/google_appliance/settings':
       $output =  '<p>' . t('The Google Appliance settings specify the interface to your GSA device. The search results obtained via that interface are controlled by the Google Search Appliance configuration itself. Visit the <a href="@gsa-help">Google Appliance help section</a> for more information on setting up the integration.', array('@gsa-help' => url('admin/help/google_appliance'))) . '</p>';
-      
+
       return $output;
-      
+
     //@TODO: perhaps error messages should be configurable
     case 'google_appliance#error_gsa_no_results':
       $no_results_tactics = array(
@@ -57,17 +55,17 @@ function google_appliance_help($path, $arg) {
         'type' => 'ul',
         'attributes' => array(),
       );
-      $output = theme_item_list($no_results_message); 
+      $output = theme_item_list($no_results_message);
       return $output;
-      
+
     case 'google_appliance#error_curl_error':
       $output = '<p>' . t('We cannot connect to the search service at this time. Please try your seach again in a few minutes. IF the problem persists, please <a href="@contact-url">contact us</a>.', array('@contact-url' => url('contact'))) . '</p>';
-      
+
       return $output;
-      
+
     case 'google_appliance#error_lib_xml_parse_error';
       $output = '<p>' . t('The response from the search service was unreadable. Please try your search again. If the problem persists, please <a href="@contact-url">contact us</a>.', array('@contact-url' => url('contact'))) . '</p>';
-      
+
       return $output;
   }
 }
@@ -77,14 +75,14 @@ function google_appliance_help($path, $arg) {
  */
 function google_appliance_permission() {
   $perms = array();
-  
+
   $perms['administer_google_appliance'] = array(
     'title' => t('Administer Google Appliance settings'),
   );
   $perms['access_google_appliance_content'] = array(
     'title' => t('Use Google Appliance searches'),
   );
-  
+
   return $perms;
 }
 
@@ -95,7 +93,7 @@ function google_appliance_permission() {
 function google_appliance_menu() {
   $items = array();
   $settings = _google_appliance_get_settings();
-  
+
   // search results page
   $items['gsearch'] = array(
     'title' => $settings['search_title'],
@@ -104,18 +102,18 @@ function google_appliance_menu() {
     'access arguments' => array('access_google_appliance_content'),
     'type' => MENU_SUGGESTED_ITEM,
   );
-  
+
   // admin page
   $items['admin/config/search/google_appliance/settings'] = array(
     'title' => 'Google Appliance',
-    'description' => 'Configure options for search via Google Search Appliance.', 
+    'description' => 'Configure options for search via Google Search Appliance.',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('google_appliance_admin_settings'),
     'file' => 'google_appliance.admin.inc',
     'access arguments' => array('administer_google_appliance'),
     'weight' => -30,
   );
-    
+
   return $items;
 }
 
@@ -124,23 +122,23 @@ function google_appliance_menu() {
  */
 function google_appliance_block_info() {
   $blocks = array();
-  
+
   // block search form
   $blocks['ga_block_search_form'] = array(
     'info' => t('Google Appliance search form'),
     'cache' => DRUPAL_NO_CACHE,
   );
-  
+
   // related searches block
   $blocks['ga_related_searches'] = array(
     'info' => t('Google Appliance related searches'),
     'cache' => DRUPAL_NO_CACHE,
-    
+
     // set default visibility to appear only on results pages (just a suggestion)
     'visibility' => 1,
     'pages' => 'gsearch*',
-  );  
-  
+  );
+
   return $blocks;
 }
 
@@ -148,23 +146,23 @@ function google_appliance_block_info() {
  * Implements hook_block_view().
  */
 function google_appliance_block_view($delta = '') {
-  
+
   $block = array();
-  
+
   if (user_access('access_google_appliance_content')) {
     switch ($delta) {
-      
+
       case 'ga_block_search_form':
         $block['content'] = drupal_get_form('google_appliance_block_form');
         break;
-        
+
       case 'ga_related_searches':
         $block['subject'] = 'Related Searches';
         $block['content'] = google_appliance_get_clusters(); // related search links
-        break;        
+        break;
     }
   }
-  
+
   return $block;
 }
 
@@ -176,28 +174,23 @@ function google_appliance_block_view($delta = '') {
  * @see google_appliance-block-form.tpl.php
  */
 function google_appliance_block_form($form, &$form_state) {
-  
+
   $form['search_keys'] = array(
     '#type' => 'textfield',
     '#title' => t('Enter the terms you wish to search for.'),
     '#title_display' => 'invisible',
     '#size' => 15,
     '#default_value' => '',
-    /*
-    '#attributes' => array(
-      'title' => t('Enter the terms you wish to search for.'),
-    ),
-    */
   );
-    
+
   $form['actions'] = array(
     '#type' => 'actions',
     'submit' => array(
-      '#type' => 'submit', 
+      '#type' => 'submit',
       '#value' => t('Search'),
     ),
   );
-  
+
   return $form;
 }
 
@@ -206,7 +199,7 @@ function google_appliance_block_form($form, &$form_state) {
  * based on the search query
  */
 function google_appliance_block_form_submit($form, &$form_state) {
-  
+
   // kill any dynamic destinations, as the results page is always the destination
   if (isset($_GET['destination'])) {
     unset($_GET['destination']);
@@ -215,7 +208,7 @@ function google_appliance_block_form_submit($form, &$form_state) {
   // set the redirect
   $search_query = urlencode($form_state['values']['search_keys']);
   $form_state['redirect'] = url('gsearch/' . $search_query, array('absolute' => TRUE));
-  // search execution happens in page callback 
+  // search execution happens in page callback
 }
 
 
@@ -354,10 +347,10 @@ function google_appliance_block_view_alter(&$data, $block) {
  * @see google_appliance-results.tpl.php
  */
 function google_appliance_search_form($form, &$form_state, $query = '', $prompt = '') {
-  
+
   $prompt = ($prompt == '') ? t('Enter the terms you wish to search for.') : $prompt;
-  
-  // basic search 
+
+  // basic search
   $form['basic'] = array(
     '#type' => 'container'
   );
@@ -370,7 +363,7 @@ function google_appliance_search_form($form, &$form_state, $query = '', $prompt 
     '#title' => check_plain($prompt),
     '#title_display' => 'invisible',
   );
-    
+
   // only prompt if we haven't searched yet
   if ($query == '') {
     $form['basic']['prompt'] = array(
@@ -378,29 +371,29 @@ function google_appliance_search_form($form, &$form_state, $query = '', $prompt 
       '#markup' => '<p><b>' . $prompt . '</b></p>'
     );
   }
-  
+
   $form['basic']['submit'] = array(
-    '#type' => 'submit', 
+    '#type' => 'submit',
     '#value' => t('Search')
   );
-  
+
   // submit points to search page without any keys (pre-search state)
   // the redirect happens in _submit handler
   $form_state['action'] = 'gsearch/';
-  
+
   // use core search CSS in addition to this module's css
   // (keep it general in case core search is enabled)
   $form['#attributes']['class'][] = 'search-form';
   $form['#attributes']['class'][] = 'search-google-appliance-search-form';
-  
+
   return $form;
 }
 
 /**
- * Submit handler for full search form 
+ * Submit handler for full search form
  */
 function google_appliance_search_form_submit($form, &$form_state) {
-  
+
   // set the redirect
   $search_query = urlencode($form_state['values']['search_keys']);
   $form_state['redirect'] = url($form_state['action'] . $search_query, array('absolute' => TRUE));
@@ -408,51 +401,49 @@ function google_appliance_search_form_submit($form, &$form_state) {
 
 /**
  * Top level search execution (menu callback)
- * - performs a query of the GSA device for a SINGLE PAGE of search results 
+ * - performs a query of the GSA device for a SINGLE PAGE of search results
  *
  * @arg $query
  *    the search query from url [ arg(1) ]
  * @arg $sort
  *    optional sort parameter, either "rel" (default) or "date" [ arg(2) ]
- * @return 
+ * @return
  *    themed results: error messages or results listing
  */
 function google_appliance_search_view($query = '', $sort = NULL) {
-  
-  $query = urldecode($query); 
-  
-  // get the results page form 
+
+  $query = urldecode($query);
+
+  // get the results page form
   $form = drupal_get_form('google_appliance_search_form', $query);
-  
+
   // When POSTing back to the search form on a search results page, the original
   // URL is accessed (which re-runs that search) and then the redirect for
   // the new search takes place, executing the second (correct) search.
   // Prevent hitting the device twice per search by checking if we've POSTed yet.
   if ( !isset($_POST['form_id']) && ($query != '') ) {
-  
+
     // grab module settings
     $settings = _google_appliance_get_settings();
-  
+
     // response processing structures
     $search_query_data = array();     // cURL arguments for the query
-    $query_response = array();        // raw XML response
     $response_data = array();         // processd response
-    
+
     // get the sort parameter from the url
     $sort_param = '';
     if (($sort != NULL) && ($sort == 'date')) {
       $sort_param = 'date:D:S:d1';
     }
-      
+
     // determine how deep into the results to start viewing (paging)
-    $results_view_start = '';
     if ( isset($_GET['page']) ) {
-      $results_view_start = check_plain($_GET['page']) * $settings['results_per_page']; 
-    } 
+      $results_view_start = check_plain($_GET['page']) * $settings['results_per_page'];
+    }
     else {
       $results_view_start = 0;
     }
-    
+
     // build cURL request
     $search_query_data['gsa_host'] = check_plain($settings['hostname'] . '/search');
     $search_query_data['gsa_query_params'] = array(
@@ -475,14 +466,14 @@ function google_appliance_search_view($query = '', $sort = NULL) {
     if (module_exists('locale') && $settings['language_filter_toggle']) {
       $search_query_data['gsa_query_params']['lr'] = _google_appliance_get_lr($settings['language_filter_options']);
     }
-    
+
     // allow implementation of hook_google_appliance_query_alter() by other modules
     drupal_alter('google_appliance_query', $search_query_data);
 
     // build debug info in case we need to display it
     if ($settings['query_inspection'] == '1') {
       $search_query_data['debug_info'][] = t('GSA host: @host', array('@host' => $search_query_data['gsa_host']));
-      $search_query_data['debug_info'][] = t('Query Parameters: <pre>@qp</pre>', 
+      $search_query_data['debug_info'][] = t('Query Parameters: <pre>@qp</pre>',
         array('@qp' => print_r($search_query_data['gsa_query_params'], TRUE))
     );
     }
@@ -494,12 +485,12 @@ function google_appliance_search_view($query = '', $sort = NULL) {
 
     // query the GSA for search results
     $gsa_response = _curl_get(
-      $search_query_data['gsa_host'], 
+      $search_query_data['gsa_host'],
       $search_query_data['gsa_query_params'],
       $curl_options,
       $settings['timeout']
     );
-    
+
     // check for handshake errors
     if ( $gsa_response['is_error'] == TRUE ) {  // cURL returned an error (can't connect)
       $response_data['error']['curl_error'] = $gsa_response['response'];
@@ -508,10 +499,10 @@ function google_appliance_search_view($query = '', $sort = NULL) {
       // @see google_appliance.theme.inc
       // @see google_appliance_help()
     }
-    else {  // cURL gave us something back -> attempt to parse	
+    else {  // cURL gave us something back -> attempt to parse
       $response_data = google_appliance_parse_device_response_xml($gsa_response['response']);
     }
-    
+
     // render results
     $search_query_data['gsa_query_params']['urlencoded_q'] = urlencode($query);
     $template_data = array(
@@ -523,7 +514,7 @@ function google_appliance_search_view($query = '', $sort = NULL) {
   else {  // return the form so the (real) second search is performed
     return $form;
   }
-  
+
 }
 
 /**
@@ -571,7 +562,7 @@ function google_appliance_parse_device_response_xml($gsa_xml) {
         $param_num = $payload->xpath('/GSP/PARAM[@name="num"]');
         $request_max_total = (integer) $param_start[0]['value'] + (integer) $param_num[0]['value'];
 
-        if($results['total_results'] == $request_max_total){
+        if ($results['total_results'] == $request_max_total) {
           $results['total_results']++;
         }
       }
@@ -653,11 +644,11 @@ function google_appliance_get_clusters() {
 
   // grab module settings
   $settings = _google_appliance_get_settings();
-  
+
   // get the search qeury
-  $search_query = urldecode( arg(1) ); 
+  $search_query = urldecode( arg(1) );
   $cluster_content = NULL;
-  
+
   // perform POST to acquire the clusters  block
   $clusterQueryURL = check_plain($settings['hostname'] . '/cluster');
   $clusterQueryParams = array(
@@ -678,22 +669,22 @@ function google_appliance_get_clusters() {
   if (module_exists('locale') && $settings['language_filter_toggle']) {
     $clusterQueryParams['lr'] = _google_appliance_get_lr($settings['language_filter_options']);
   }
-  
+
   // cURL request for the clusters produces JSON result
   $gsa_clusters_json = _curl_post($clusterQueryURL, $clusterQueryParams);
 
   if ( ! $gsa_clusters_json['is_error'] ) { // no error -> get the clusters
-    
+
     $clusters = json_decode($gsa_clusters_json['response'], TRUE);
-    
+
     if ( isset($clusters['clusters'][0]) ) {
-      
+
       // build the link list
       $cluster_list_items = array();
       foreach ($clusters['clusters'][0]['clusters'] as $cluster) {
         array_push($cluster_list_items, l($cluster['label'], 'gsearch/' . $cluster['label']));
       }
-      
+
       // create theme-friendly list of links
       $cluster_list = array(
         'items' => $cluster_list_items,
@@ -704,6 +695,6 @@ function google_appliance_get_clusters() {
       $cluster_content = theme_item_list($cluster_list);
     }
   }
-  
+
   return $cluster_content;
 }
