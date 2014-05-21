@@ -1,13 +1,11 @@
 <?php
-// $Id: google_appliance.admin.inc $
-
 /**
  * @file
  *    admin callbacks for the Google Appliance module
  */
- 
+
 /**
- * Implements hook_admin_settings()
+ * Implements hook_admin_settings().
  *    displays the Search Google Appliance module settings page.
  *
  * @ingroup forms
@@ -16,10 +14,10 @@
  * @see google_appliance_admin_settings_submit()
  */
 function google_appliance_admin_settings($form) {
-  
+
   // grab current settings
   $settings = _google_appliance_get_settings();
-  
+
   // connection information
   $form['connection_info'] = array(
     '#title' => t('Connection Information'),
@@ -55,7 +53,7 @@ function google_appliance_admin_settings($form) {
     '#default_value' => $settings['timeout'],
     '#required' => TRUE,
   );
-  
+
   // search query parameter configuration
   $form['query_param'] = array(
     "#title" => t("Search Query Parameter Setup"),
@@ -103,13 +101,13 @@ function google_appliance_admin_settings($form) {
     '#description' => t('Inspect the search query parameters sent to the GSA device in the Drupal message area every time a search is performed. Only really useful for sites not using the Devel module, as dsm() provides more information. The inspector is only shown to administrators, but should be disabled in a production environment.'),
     '#default_value' => $settings['query_inspection'],
   );
-  
+
   // search interface settings
   $form['display_settings'] = array(
     '#title' => t('Search Interface Settings'),
     '#type' => 'fieldset',
     '#collapsible' => TRUE,
-    '#collapsed' => FALSE   
+    '#collapsed' => FALSE
   );
   $form['display_settings']['search_title'] = array(
     '#title' => t('Search Name'),
@@ -126,12 +124,12 @@ function google_appliance_admin_settings($form) {
     '#required' => TRUE,
   );
   $form['#submit'][] = 'google_appliance_admin_settings_submit';
-    
+
   return system_settings_form($form);
 }
 
 /**
- * Implements hook_admin_settings_validate()
+ * Implements hook_admin_settings_validate().
  *    form validation beyond FAPI '#required'
  */
 function google_appliance_admin_settings_validate($form, &$form_state) {
@@ -143,22 +141,22 @@ function google_appliance_admin_settings_validate($form, &$form_state) {
       t('GSA Host name must be a valid-format URL or IPv4 address, including <em>http(s)://</em>. Example: http://my.googlebox.net.')
     );
   }
-  
+
   // timeout should be a reasonable number seconds
   $timeout_validate_options = array( 'options' => array(
-    'max_range' => 30, 
-    'min_range' => 3,   
+    'max_range' => 30,
+    'min_range' => 3,
   ));
   if ( filter_var($form_state['values']['timeout'], FILTER_VALIDATE_INT, $timeout_validate_options) === FALSE ) {
     form_set_error(
       'timeout',
       t('Search Timeout should be an integer from @min - @max, indicating the number of seconds to wait before the search request times out.', array(
         '@min' => $timeout_validate_options['options']['min_range'],
-        '@max' => $timeout_validate_options['options']['max_range']
+        '@max' => $timeout_validate_options['options']['max_range'],
       ))
     );
   }
-  
+
   // results per page must be on a range that will be accepted by the device upon querying
   $results_per_page_validate_options = array('options' => array(
     'max_range' => 1000,
@@ -167,17 +165,20 @@ function google_appliance_admin_settings_validate($form, &$form_state) {
   if ( filter_var($form_state['values']['results_per_page'], FILTER_VALIDATE_INT, $results_per_page_validate_options) === FALSE ) {
     form_set_error(
       'results_per_page',
-      t('Results per page should be an integer from ' . $results_per_page_validate_options['options']['min_range'] . ' - ' . $results_per_page_validate_options['options']['max_range'] . '.')
+      t('Results per page should be an integer from @min - @max.', array(
+        '@min' => $results_per_page_validate_options['options']['min_range'],
+        '@max' => $results_per_page_validate_options['options']['max_range'],
+      ))
     );
   }
 }
 
 /**
- * Implements hook_admin_settings_submit()
+ * Implements hook_admin_settings_submit().
  *    submit handler for admin settings
  */
 function google_appliance_admin_settings_submit($form, &$form_state) {
-  
+
   $field_keys =  array(
     'hostname',
     'collection',
@@ -193,10 +194,10 @@ function google_appliance_admin_settings_submit($form, &$form_state) {
   foreach ($field_keys as $field) {
     variable_set('google_appliance_' . $field, trim($form_state['values'][$field]));
   }
-  
+
   // refresh settings getter
-  $settings = _google_appliance_get_settings(TRUE); 
-  
+  $settings = _google_appliance_get_settings(TRUE);
+
   // make the 'search_title' setting change take effect right away
   menu_rebuild();
 }
