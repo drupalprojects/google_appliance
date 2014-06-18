@@ -34,6 +34,13 @@ function google_appliance_theme() {
     'path' => $ga_template_dir,
   );
 
+  // Spelling suggestion.
+  $registry['google_appliance_spelling_suggestion'] = array(
+    'variables' => array('spelling_suggestion' => NULL),
+    'template' => 'google-appliance-spelling-suggestion',
+    'path' => $ga_template_dir,
+  );
+
   // Single result within the results page.
   $registry['google_appliance_result'] = array(
     'variables' => array('result_data' => NULL),
@@ -165,6 +172,11 @@ function template_preprocess_google_appliance_results(&$vars) {
     $vars['search_query_data']['gsa_query_params']['q']
   );
 
+  // Get spelling suggestion.
+  $vars['spelling_suggestion'] = $settings['spelling_suggestions'] && isset($vars['response_data']['spelling_suggestion'])
+   ? theme('google_appliance_spelling_suggestion', $vars['response_data'])
+   : '';
+
   // If we have errors, decode them and skip building results entities.
   if (isset($vars['response_data']['error'])) {
 
@@ -254,6 +266,25 @@ function template_preprocess_google_appliance_results(&$vars) {
     );
     $vars['pager'] = theme('google_appliance_pager', $pager_data);
   }
+
+  // Render template.
+}
+
+/**
+ * Preprocess a spelling suggestion.
+ */
+function template_preprocess_google_appliance_spelling_suggestion(&$vars) {
+  $menu_item = menu_get_item();
+
+  // Pop the existing search query to get the base path for the search results.
+  array_pop($menu_item['original_map']);
+  $search_base = implode('/', $menu_item['original_map']);
+  $query_plain = filter_xss($vars['spelling_suggestion'], array());
+
+  $link = l($vars['spelling_suggestion'], $search_base . '/' . $query_plain, array(
+    'html' => TRUE,
+  ));
+  $vars['spelling_suggestion'] = t('Did you mean !linked_suggestion?', array('!linked_suggestion' => $link));
 
   // Render template.
 }

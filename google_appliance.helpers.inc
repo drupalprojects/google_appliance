@@ -18,6 +18,7 @@ define('SGA_DEFAULT_LANGUAGE_FILTER_TOGGLE', FALSE);
 define('SGA_DEFAULT_QUERY_INSPECTION', 0);
 define('SGA_DEFAULT_SEARCH_TITLE', 'Search this site');
 define('SGA_DEFAULT_RESULTS_PER_PAGE', 10);
+define('SGA_DEFAULT_SPELLING_SUGGESTIONS', FALSE);
 define('SGA_DEFAULT_BLOCK_VISIBILITY_SETTINGS', '');
 
 /**
@@ -46,6 +47,7 @@ function _google_appliance_get_settings($refresh = FALSE) {
     'query_inspection',
     'search_title',
     'results_per_page',
+    'spelling_suggestions',
     'block_visibility_settings',
   );
 

@@ -567,6 +567,12 @@ function google_appliance_parse_device_response_xml($gsa_xml) {
         }
       }
 
+      // Spelling suggestions.
+      if (isset($payload->Spelling->Suggestion)) {
+        $spelling_suggestion = (string) $payload->Spelling->Suggestion;
+        $results['spelling_suggestion'] = filter_xss($spelling_suggestion, array('b', 'i'));
+      }
+
       if ($results['total_results'] == 0) { // search returned zero results
         $results['error'] =  array('gsa_no_results' => TRUE);
         return $results;

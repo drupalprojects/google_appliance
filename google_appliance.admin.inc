@@ -123,6 +123,11 @@ function google_appliance_admin_settings($form) {
     '#description' => t('Number of results to show on the results page. More results will be available via a Drupal pager.'),
     '#required' => TRUE,
   );
+  $form['display_settings']['spelling_suggestions'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Display Spelling Suggestions'),
+    '#default_value' => $settings['spelling_suggestions'],
+  );
   $form['#submit'][] = 'google_appliance_admin_settings_submit';
 
   return system_settings_form($form);
@@ -187,6 +192,7 @@ function google_appliance_admin_settings_submit($form, &$form_state) {
     'autofilter',
     'query_inspection',
     'search_title',
+    'spelling_suggestions',
     'results_per_page',
   );
 
