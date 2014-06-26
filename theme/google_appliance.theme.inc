@@ -265,6 +265,25 @@ function template_preprocess_google_appliance_results(&$vars) {
       'last_result_index' => $vars['response_data']['last_result'],
     );
     $vars['pager'] = theme('google_appliance_pager', $pager_data);
+
+    // Add Advanced Search Reporting if applicable.
+    if ($settings['advanced_search_reporting']) {
+      // Path to callback.
+      // When clean URLs are disabled we do not want the '?q=' version which won't work.
+      // Hence we do not use url() -- we build the path ourselves from $base_url.
+      global $base_url;
+      $callback_path = $base_url . '/' . drupal_get_path('module', 'google_appliance') . '/google_appliance.callback.click.php';
+      // Add javascript.
+      drupal_add_js(array(
+        'google_appliance' => array(
+          'path' => $callback_path,
+          'site' => $vars['search_query_data']['gsa_query_params']['site'],
+          'q' => $vars['search_query_data']['gsa_query_params']['q'],
+          's' => $vars['search_query_data']['gsa_query_params']['start'],
+        ),
+      ), 'setting');
+      drupal_add_js(drupal_get_path('module', 'google_appliance') . '/js/clicklog.js');
+    }
   }
 
   // Render template.

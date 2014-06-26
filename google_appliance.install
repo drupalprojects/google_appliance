@@ -22,6 +22,7 @@ function google_appliance_uninstall() {
     'query_inspection',
     'search_title',
     'results_per_page',
+    'advanced_search_reporting',
     'spelling_suggestions',
     'block_visibility_settings',
   );
