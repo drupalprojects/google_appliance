@@ -290,12 +290,29 @@ function template_preprocess_google_appliance_results(&$vars) {
       // Add javascript.
       drupal_add_js(array(
         'google_appliance' => array(
-          'path' => $callback_path,
-          'site' => $vars['search_query_data']['gsa_query_params']['site'],
-          'q' => $vars['search_query_data']['gsa_query_params']['q'],
-          's' => $vars['search_query_data']['gsa_query_params']['start'],
+          'clickTracking' => array(
+            'host' => $callback_path,
+            'pathPart' => '',
+            'collection' => $vars['search_query_data']['gsa_query_params']['site'],
+            'query' => $vars['search_query_data']['gsa_query_params']['q'],
+            'start' => $vars['search_query_data']['gsa_query_params']['start'],
+            'clickTypes' => array(
+              'c' => '.google-appliance-result a',
+              'cluster' => '#block-google-appliance-ga-related-searches .content a',
+              'logo' => 'a#logo',
+              'nav.page' => '.content .pager-item a',
+              'nav.next' => '.content .pager-next a',
+              'nav.prev' => '.content .pager-previous a, .content .pager-first a',
+              'keymatch' => '.google-appliance-keymatch-results a',
+              'onebox' => '.google-appliance-onebox-module a',
+              'sort' => '.google-appliance-sorter a',
+              'synonym' => '.google-appliance-synonym a',
+              'spell' => '.google-appliance-spelling-suggestion a',
+            ),
+          ),
         ),
       ), 'setting');
+      drupal_add_library('google_appliance', 'jquery.gsa-clicks');
       drupal_add_js(drupal_get_path('module', 'google_appliance') . '/js/clicklog.js');
     }
   }

@@ -118,6 +118,25 @@ function google_appliance_menu() {
 }
 
 /**
+ * Implements hook_library().
+ */
+function google_appliance_library() {
+  $libraries['jquery.gsa-clicks'] = array(
+    'title' => 'Google Search Appliance Click Tracking',
+    'website' => 'https://github.com/asmallwebfirm/gsa-clicks',
+    'version' => '1.0.0',
+    'js' => array(
+      drupal_get_path('module', 'google_appliance') . '/js/jquery.gsa-clicks.min.js' => array(),
+    ),
+    'dependencies' => array(
+      array('system', 'jquery'),
+    ),
+  );
+
+  return $libraries;
+}
+
+/**
  * Implements hook_block_info().
  */
 function google_appliance_block_info() {
