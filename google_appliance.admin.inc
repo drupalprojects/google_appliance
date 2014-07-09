@@ -134,6 +134,12 @@ function google_appliance_admin_settings($form) {
     '#default_value' => $settings['advanced_search_reporting'],
     '#description' => t('Learn more about !this_feature. You need to enable Advanced Search Reporting on the front end client. The device should provide a file named "/clicklog_compiled.js" when using the search interface on the GSA.', array('!this_feature' => l(t('this feature'), 'http://www.google.com/support/enterprise/static/gsa/docs/admin/70/gsa_doc_set/xml_reference/advanced_search_reporting.html'))),
   );
+  $form['display_settings']['google_appliance_onebox_modules'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Onebox modules'),
+    '#description' => t('A list of Onebox modules, one per line. Each module listed will have a corresponding block. These blocks must be placed via the block configuration page, or another layout mechanism like Context or Panels.'),
+    '#default_value' => implode("\n", $settings['onebox_modules']),
+  );
   $form['#submit'][] = 'google_appliance_admin_settings_submit';
 
   return system_settings_form($form);

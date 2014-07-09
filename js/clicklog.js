@@ -64,6 +64,7 @@
    * - nav.next - navigation, next page.
    * - nav.page - navigation, specific page.
    * - nav.prev - navigation, previous page.
+   * - onebox   - onebox on results page.
    * - sort     - sort link on results page.
    * - spell    - spelling suggestion.
    * - synonym  - related query on results page.
@@ -77,6 +78,7 @@
     $(".content .pager-next a, .content .pager-last a").data("ct", "nav.next");
     $(".content .pager-previous a, .content .pager-first a").data("ct", "nav.prev");
     $(".google-appliance-keymatch-results a").data("ct", "keymatch");
+    $(".google-appliance-onebox-module a").data("ct", "onebox");
     $(".google-appliance-sorter a").data("ct", "sort");
     $(".google-appliance-synonym a").data("ct", "synonym");
     $(".google-appliance-spelling-suggestion a").data("ct", "spell");

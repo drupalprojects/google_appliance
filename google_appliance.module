@@ -122,6 +122,17 @@ function google_appliance_menu() {
  */
 function google_appliance_block_info() {
   $blocks = array();
+  $settings = _google_appliance_get_settings();
+
+  // Onebox blocks.
+  foreach ($settings['onebox_modules'] as $module) {
+    $blocks[$module] = array(
+      'info' => t('Google Appliance Onebox: @module', array('@module' => $module)),
+      'cache' => DRUPAL_NO_CACHE,
+      'visibility' => 1,
+      'pages' => 'gsearch*',
+    );
+  }
 
   // block search form
   $blocks['ga_block_search_form'] = array(
@@ -160,6 +171,18 @@ function google_appliance_block_view($delta = '') {
         $block['subject'] = 'Related Searches';
         $block['content'] = google_appliance_get_clusters(); // related search links
         break;
+    }
+
+    $results = drupal_static('google_appliance_parse_device_response_xml');
+    if (isset($results['onebox'][$delta])) {
+      $onebox = $results['onebox'][$delta];
+      $subject = empty($onebox['url_text']) ? '' : $onebox['url_text'];
+      $subject = empty($onebox['url_link']) ? $subject : l($subject, $onebox['url_link']);
+      $block['subject'] = $subject;
+      $block['content'] = array(
+        '#theme' => 'google_appliance_onebox_module',
+        '#onebox' => $onebox,
+      );
     }
   }
 
@@ -526,7 +549,6 @@ function google_appliance_search_view($query = '', $sort = NULL) {
  *    php array structure to iterate when displaying results
  */
 function google_appliance_parse_device_response_xml($gsa_xml) {
-
   $results = &drupal_static(__FUNCTION__);
   if (!isset($results)) {
 
@@ -571,6 +593,34 @@ function google_appliance_parse_device_response_xml($gsa_xml) {
       if (isset($payload->Spelling->Suggestion)) {
         $spelling_suggestion = (string) $payload->Spelling->Suggestion;
         $results['spelling_suggestion'] = filter_xss($spelling_suggestion, array('b', 'i'));
+      }
+
+      // Onebox results.
+      // @see https://developers.google.com/search-appliance/documentation/614/oneboxguide#providerresultsschema
+      // @see https://developers.google.com/search-appliance/documentation/614/oneboxguide#mergingobs
+      foreach ($payload->xpath('//ENTOBRESULTS/OBRES') as $mod) {
+        $result_code = empty($mod->resultCode) ? '' : (string) $mod->resultCode;
+        if (empty($result_code) || $result_code == 'success') {
+          $module_name = (string) $mod['module_name'];
+          $onebox = array();
+          $onebox['module_name'] = $module_name;
+          $onebox['provider'] = (string) $mod->provider;
+          $onebox['url_text'] = (string) $mod->title->urlText;
+          $onebox['url_link'] = (string) $mod->title->urlLink;
+          $onebox['image'] = (string) $mod->IMAGE_SOURCE;
+          $onebox['description'] = (string) $mod->description;
+          foreach ($mod->xpath('./MODULE_RESULT') as $res) {
+            $result = array();
+            $result['abs_url'] = (string) $res->U;
+            $result['title'] = (string) $res->Title;
+            foreach ($res->xpath('./Field') as $field) {
+              $field_name = (string) $field['name'];
+              $result['fields'][$field_name] = (string) $field;
+            }
+            $onebox['results'][] = $result;
+          }
+          $results['onebox'][$module_name] = $onebox;
+        }
       }
 
       if ($results['total_results'] == 0) { // search returned zero results

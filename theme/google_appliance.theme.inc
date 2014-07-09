@@ -62,6 +62,20 @@ function google_appliance_theme() {
     'path' => $ga_template_dir,
   );
 
+  // Single Onebox module within a block.
+  $registry['google_appliance_onebox_module'] = array(
+    'variables' => array('onebox' => NULL),
+    'template' => 'google-appliance-onebox-module',
+    'path' => $ga_template_dir,
+  );
+
+  // Single Onebox result within a Onebox module.
+  $registry['google_appliance_onebox_result'] = array(
+    'variables' => array('result' => NULL),
+    'template' => 'google-appliance-onebox-result',
+    'path' => $ga_template_dir,
+  );
+
   // Pager.
   $registry['google_appliance_pager'] = array(
     'variables' => array('pager_data' => NULL),
@@ -367,6 +381,41 @@ function template_preprocess_google_appliance_synonym(&$vars) {
 }
 
 /**
+ * Preprocess a single Onebox module.
+ */
+function template_preprocess_google_appliance_onebox_module(&$vars) {
+  // Render results.
+  $vars['results'] = array();
+  foreach ($vars['onebox']['results'] as $key => $result) {
+    $vars['results'][$key]['rendered'] = theme('google_appliance_onebox_result', array('result' => $result));
+  }
+
+  // Provide top-level variables for the onebox.
+  $vars['module_name'] = $vars['onebox']['module_name'];
+  $vars['provider'] = $vars['onebox']['provider'];
+  $vars['url_text'] = $vars['onebox']['url_text'];
+  $vars['url_link'] = $vars['onebox']['url_link'];
+  $vars['image'] = $vars['onebox']['image'];
+  $vars['description'] = $vars['onebox']['description'];
+}
+
+/**
+ * Preprocess a single Onebox result.
+ */
+function template_preprocess_google_appliance_onebox_result(&$vars) {
+  // Combine <U> and <Title> to build a linked title.
+  $title_linked = empty($vars['result']['title']) ? '' : $vars['result']['title'];
+  $title_linked = empty($vars['result']['abs_url']) ? $title_linked : l($title_linked, $vars['result']['abs_url']);
+
+  // Provide top-level variables for this onebox result.
+  $vars['abs_url'] = $vars['result']['abs_url'];
+  $vars['title'] = $vars['result']['title'];
+  $vars['title_linked'] = $title_linked;
+  $vars['fields'] = $vars['result']['fields'];
+}
+
+
+/**
  * Set up Drupal pager for pagination of GSA-provided search results.
  *
  * We're not paging druppal-database content in this version, so the core
@@ -524,4 +573,15 @@ function template_preprocess_google_appliance_search_stats(&$vars) {
   );
 
   // render
+}
+
+/**
+ * Implements hook_preprocess_block().
+ *
+ * Used to target onebox links for advanced search click tracking.
+ */
+function google_appliance_preprocess_block(&$vars) {
+  if (isset($vars['elements']['#onebox'])) {
+    $vars['classes_array'][] = 'google-appliance-onebox-module';
+  }
 }

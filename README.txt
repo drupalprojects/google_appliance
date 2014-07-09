@@ -48,6 +48,14 @@ To setup your blocks, administer them in the normal way at
   
   * admin/structure/block
 
+-- ONEBOX INTEGRATION --
+
+This module provides a basic framework for adding onebox modules to the search interface. For the purposes of this documentation, we assume you already have oneboxes configured and running on your search appliance.
+
+Onebox modules are represented as blocks--one block per onebox. To add onebox blocks to Drupal, add each name (exactly as it appears in the search appliance) to the "onebox modules" text area on the module configuration page, each onebox on its own line.
+
+After saving your configuration changes, blocks will be created for each onebox. You'll want to place these blocks on the search result page. You can place them as described above (in the blocks section), or via your preferred Drupal layout module (like Context or Panels).
+
 -- TESTING --
 
 Automated tests have been written that fall into two categories:
@@ -58,5 +66,3 @@ Automated tests have been written that fall into two categories:
 To execute the second class of tests, you will need to provide an input file for the SimpleTest browser to configure your module. See the example file:
 
   * google_appliance/testing/test-settings.example.inc
-
-   

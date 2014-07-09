@@ -20,6 +20,7 @@ define('SGA_DEFAULT_SEARCH_TITLE', 'Search this site');
 define('SGA_DEFAULT_RESULTS_PER_PAGE', 10);
 define('SGA_DEFAULT_ADVANCED_SEARCH_REPORTING', FALSE);
 define('SGA_DEFAULT_SPELLING_SUGGESTIONS', FALSE);
+define('SGA_DEFAULT_ONEBOX_MODULES', '');
 define('SGA_DEFAULT_BLOCK_VISIBILITY_SETTINGS', '');
 
 /**
@@ -50,6 +51,7 @@ function _google_appliance_get_settings($refresh = FALSE) {
     'results_per_page',
     'advanced_search_reporting',
     'spelling_suggestions',
+    'onebox_modules',
     'block_visibility_settings',
   );
 
@@ -69,6 +71,11 @@ function _google_appliance_get_settings($refresh = FALSE) {
       'google_appliance_language_filter_options',
       array('***CURRENT_LANGUAGE***')
     );
+
+    // Convert onebox_modules from string to array.
+    $settings['onebox_modules'] = explode("\n", $settings['onebox_modules']);
+    $settings['onebox_modules'] = array_map('trim', $settings['onebox_modules']);
+    $settings['onebox_modules'] = array_filter($settings['onebox_modules'], 'strlen');
 
     // The empty string in the define block above for block visibility
     // settings is really just a flag that nothing has been set yet.

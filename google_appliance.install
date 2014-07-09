@@ -24,6 +24,7 @@ function google_appliance_uninstall() {
     'results_per_page',
     'advanced_search_reporting',
     'spelling_suggestions',
+    'onebox_modules',
     'block_visibility_settings',
   );
 
