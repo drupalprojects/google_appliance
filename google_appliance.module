@@ -59,7 +59,7 @@ function google_appliance_help($path, $arg) {
       return $output;
 
     case 'google_appliance#error_curl_error':
-      $output = '<p>' . t('We cannot connect to the search service at this time. Please try your seach again in a few minutes. IF the problem persists, please <a href="@contact-url">contact us</a>.', array('@contact-url' => url('contact'))) . '</p>';
+      $output = '<p>' . t('We cannot connect to the search service at this time. Please try your search again in a few minutes. If the problem persists, please <a href="@contact-url">contact us</a>.', array('@contact-url' => url('contact'))) . '</p>';
 
       return $output;
 
