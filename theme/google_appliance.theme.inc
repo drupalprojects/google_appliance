@@ -394,7 +394,7 @@ function template_preprocess_google_appliance_keymatch(&$vars) {
 function template_preprocess_google_appliance_synonym(&$vars) {
   $description = filter_xss($vars['description'], array('b', 'strong'));
   $url = check_url('gsearch/' . $vars['url']);
-  $vars['link'] = l($description, $url, array('atrributes' => array('class' => array('synonym-description'))));
+  $vars['link'] = l($description, $url, array('attributes' => array('class' => array('synonym-description'))));
 }
 
 /**
