@@ -187,7 +187,7 @@ function google_appliance_block_view($delta = '') {
         break;
 
       case 'ga_related_searches':
-        $block['subject'] = 'Related Searches';
+        $block['subject'] = t('Related Searches');
         $block['content'] = google_appliance_get_clusters(); // related search links
         break;
     }
