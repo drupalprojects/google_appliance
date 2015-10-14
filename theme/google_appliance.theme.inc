@@ -392,8 +392,9 @@ function template_preprocess_google_appliance_keymatch(&$vars) {
  * Preprocess a single synonym.
  */
 function template_preprocess_google_appliance_synonym(&$vars) {
+  $settings = _google_appliance_get_settings();
   $description = filter_xss($vars['description'], array('b', 'strong'));
-  $url = check_url('gsearch/' . $vars['url']);
+  $url = check_url($settings['drupal_path'] . '/' . $vars['url']);
   $vars['link'] = l($description, $url, array('attributes' => array('class' => array('synonym-description'))));
 }
 
@@ -494,6 +495,7 @@ function theme_google_appliance_pager(&$vars) {
  * Preprocess google-appliance-sort-headers.tpl.php.
  */
 function template_preprocess_google_appliance_sort_headers(&$vars) {
+  $settings = _google_appliance_get_settings();
 
   // Possible sort options.
   $vars['sort_options'] = array(
@@ -562,7 +564,7 @@ function template_preprocess_google_appliance_sort_headers(&$vars) {
       );
 
       // Append the query to the base url of the serach page.
-      $link_path = 'gsearch/' . $vars['gsa_query_params']['q'];
+      $link_path = $settings['drupal_path'] . '/' . $vars['gsa_query_params']['q'];
 
       // Append the sort param if any.
       $link_path .= '/' . $sort_opt['sort'];

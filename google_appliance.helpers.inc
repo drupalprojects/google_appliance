@@ -22,6 +22,7 @@ define('SGA_DEFAULT_ADVANCED_SEARCH_REPORTING', FALSE);
 define('SGA_DEFAULT_SPELLING_SUGGESTIONS', FALSE);
 define('SGA_DEFAULT_ONEBOX_MODULES', '');
 define('SGA_DEFAULT_BLOCK_VISIBILITY_SETTINGS', '');
+define('SGA_DEFAULT_DRUPAL_PATH', 'gsearch');
 
 /**
  * Minimize redundant trips to the db when looking for module settings.
@@ -53,6 +54,7 @@ function _google_appliance_get_settings($refresh = FALSE) {
     'spelling_suggestions',
     'onebox_modules',
     'block_visibility_settings',
+    'drupal_path',
   );
 
   if ($refresh || empty($settings)) {
@@ -156,6 +158,7 @@ function _curl_get($url, array $get = NULL, array $options = array(), $sga_timeo
  * report search errors to the log
  */
 function _google_appliance_log_search_error($search_keys = NULL, $error_string = NULL) {
+  $settings = _google_appliance_get_settings();
 
   // build log entry
   $type = 'google_appliance';
@@ -164,7 +167,7 @@ function _google_appliance_log_search_error($search_keys = NULL, $error_string =
     '%keys' => isset($search_keys) ? $search_keys : 'nothing (empty search submit)',
     '%error_string' => isset($error_string) ? $error_string : 'undefinded error',
   );
-  $link = l(t('view reproduction'), 'gsearch/' . check_plain($search_keys));
+  $link = l(t('view reproduction'), $settings['drupal_path'] . '/' . check_plain($search_keys));
 
   watchdog($type, $message, $vars, WATCHDOG_NOTICE, $link);
 }

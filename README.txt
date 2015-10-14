@@ -4,7 +4,7 @@ $Id$
 
 The Google Appliance module provides an interface to obtain search results from a dedicated Google Search Appliance (GSA) hardware device. The module can act as a replacemet for core Search, or it may operate in tandem with it. 
 
-If you will use core search along with this module, core search results will show up normally at search/{search terms}, while Google Appliance searches will show up at gsearch/{search terms}. 
+If you will use core search along with this module, core search results will show up normally at search/{search terms}, while Google Appliance searches will show up at gsearch/{search terms} by default. You can also configure Google Appliance searches to appear at a path other than gsearch, even taking over the Core Search module's path.
 
 Since search index management for the GSA searches is offloaded to the GSA device, utilizing the module is a two-tier solution: 
 
@@ -40,7 +40,7 @@ The module provides two blocks:
   (1) Search Form
   (2) Related Searches
 
-Both blocks will need to be assigned to a region, but the Related Searches block is preconfigured to only appear on results pages. Neither block is required to be used, as you can access the search form on the search page
+Both blocks will need to be assigned to a region, but the Related Searches block is preconfigured to only appear on results pages. Neither block is required to be used, as you can access the search form on the search page located here by default:
 
   * gsearch/
 

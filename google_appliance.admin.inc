@@ -109,6 +109,15 @@ function google_appliance_admin_settings($form) {
     '#collapsible' => TRUE,
     '#collapsed' => FALSE
   );
+  $form['display_settings']['drupal_path'] = array(
+    '#title' => t('Search path'),
+    '#type' => 'textfield',
+    '#field_prefix' => '<span dir="ltr">' . url(NULL, array('absolute' => TRUE)) . (variable_get('clean_url', 0) ? '' : '?q='),
+    '#field_suffix' => '</span>&lrm;',
+    '#default_value' => $settings['drupal_path'],
+    '#description' => t('The URL of the search page provided by this module. Include neither leading nor trailing slash.'),
+    '#required' => TRUE,
+  );
   $form['display_settings']['search_title'] = array(
     '#title' => t('Search Name'),
     '#type' => 'textfield',
@@ -174,6 +183,10 @@ function google_appliance_admin_settings_validate($form, &$form_state) {
     );
   }
 
+  // Trim slashes and whitespace from drupal_path to save headaches.
+  $drupal_path = trim($form_state['values']['drupal_path'], ' /');
+  form_set_value($form['display_settings']['drupal_path'], $drupal_path, $form_state);
+
   // results per page must be on a range that will be accepted by the device upon querying
   $results_per_page_validate_options = array('options' => array(
     'max_range' => 1000,
@@ -206,6 +219,7 @@ function google_appliance_admin_settings_submit($form, &$form_state) {
     'search_title',
     'spelling_suggestions',
     'results_per_page',
+    'drupal_path',
     'advanced_search_reporting',
   );
 
@@ -217,6 +231,6 @@ function google_appliance_admin_settings_submit($form, &$form_state) {
   // refresh settings getter
   $settings = _google_appliance_get_settings(TRUE);
 
-  // make the 'search_title' setting change take effect right away
+  // make the 'search_title' and 'drupal_path' settings take effect right away
   menu_rebuild();
 }

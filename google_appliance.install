@@ -26,6 +26,7 @@ function google_appliance_uninstall() {
     'spelling_suggestions',
     'onebox_modules',
     'block_visibility_settings',
+    'drupal_path',
   );
 
   foreach ($field_keys as $field) {
