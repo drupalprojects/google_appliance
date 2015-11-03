@@ -27,6 +27,12 @@ function google_appliance_uninstall() {
     'onebox_modules',
     'block_visibility_settings',
     'drupal_path',
+    'error_gsa_no_results',
+    'error_gsa_no_results_format',
+    'error_curl_error',
+    'error_curl_error_format',
+    'error_lib_xml_parse_error',
+    'error_lib_xml_parse_error_format',
   );
 
   foreach ($field_keys as $field) {

@@ -23,6 +23,12 @@ define('SGA_DEFAULT_SPELLING_SUGGESTIONS', FALSE);
 define('SGA_DEFAULT_ONEBOX_MODULES', '');
 define('SGA_DEFAULT_BLOCK_VISIBILITY_SETTINGS', '');
 define('SGA_DEFAULT_DRUPAL_PATH', 'gsearch');
+define('SGA_DEFAULT_ERROR_GSA_NO_RESULTS', "<div class=\"item-list\">\n  <ul>\n    <li>Check if your spelling is correct.</li>\n    <li>Remove quotes around phrases: <em>bike parking</em> will often show more results than <em>\"bike parking\"</em>.</li>\n    <li>Try more general or different keywords.</li>\n  </ul>\n</div>");
+define('SGA_DEFAULT_ERROR_GSA_NO_RESULTS_FORMAT', NULL);
+define('SGA_DEFAULT_ERROR_CURL_ERROR', '<p>We cannot connect to the search service at this time. Please try your search again in a few minutes. If the problem persists, please contact us.</p>');
+define('SGA_DEFAULT_ERROR_CURL_ERROR_FORMAT', NULL);
+define('SGA_DEFAULT_ERROR_LIB_XML_PARSE_ERROR', '<p>The response from the search service was unreadable. Please try your search again. If the problem persists, please contact us.</p>');
+define('SGA_DEFAULT_ERROR_LIB_XML_PARSE_ERROR_FORMAT', NULL);
 
 /**
  * Minimize redundant trips to the db when looking for module settings.
@@ -55,6 +61,12 @@ function _google_appliance_get_settings($refresh = FALSE) {
     'onebox_modules',
     'block_visibility_settings',
     'drupal_path',
+    'error_gsa_no_results',
+    'error_gsa_no_results_format',
+    'error_curl_error',
+    'error_curl_error_format',
+    'error_lib_xml_parse_error',
+    'error_lib_xml_parse_error_format',
   );
 
   if ($refresh || empty($settings)) {

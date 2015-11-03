@@ -149,6 +149,30 @@ function google_appliance_admin_settings($form) {
     '#description' => t('A list of Onebox modules, one per line. Each module listed will have a corresponding block. These blocks must be placed via the block configuration page, or another layout mechanism like Context or Panels.'),
     '#default_value' => implode("\n", $settings['onebox_modules']),
   );
+  $form['display_settings']['error_gsa_no_results'] = array(
+    '#title' => t('No results error message'),
+    '#type' => 'text_format',
+    '#default_value' => $settings['error_gsa_no_results'],
+    '#format' => $settings['error_gsa_no_results_format'],
+    '#description' => t('The message displayed to the user when no results are found for the given search query.'),
+    '#required' => TRUE,
+  );
+  $form['display_settings']['error_curl_error'] = array(
+    '#title' => t('Connection error message'),
+    '#type' => 'text_format',
+    '#default_value' => $settings['error_curl_error'],
+    '#format' => $settings['error_curl_error_format'],
+    '#description' => t('The message displayed to the user when there is an error connecting to the search appliance.'),
+    '#required' => TRUE,
+  );
+  $form['display_settings']['error_lib_xml_parse_error'] = array(
+    '#title' => t('XML parse error message'),
+    '#type' => 'text_format',
+    '#default_value' => $settings['error_lib_xml_parse_error'],
+    '#format' => $settings['error_lib_xml_parse_error_format'],
+    '#description' => t('The message displayed to the user when the XML returned by the appliance is malformed.'),
+    '#required' => TRUE,
+  );
   $form['#submit'][] = 'google_appliance_admin_settings_submit';
 
   return system_settings_form($form);
@@ -201,6 +225,19 @@ function google_appliance_admin_settings_validate($form, &$form_state) {
       ))
     );
   }
+
+  // For security, we check that the user has access to use these filters.
+  $field_text_format_keys = array(
+    'error_gsa_no_results',
+    'error_curl_error',
+    'error_lib_xml_parse_error',
+  );
+  $formats = filter_formats();
+  foreach ($field_text_format_keys as $field) {
+    if (!filter_access($formats[$form_state['values'][$field]['format']])) {
+      form_set_error($field . '][format', t('An illegal choice has been detected. Please contact the site administrator.'));
+    }
+  }
 }
 
 /**
@@ -226,6 +263,18 @@ function google_appliance_admin_settings_submit($form, &$form_state) {
   // save settings
   foreach ($field_keys as $field) {
     variable_set('google_appliance_' . $field, trim($form_state['values'][$field]));
+  }
+
+  $field_text_format_keys = array(
+    'error_gsa_no_results',
+    'error_curl_error',
+    'error_lib_xml_parse_error',
+  );
+
+  // save formatted text area settings
+  foreach ($field_text_format_keys as $field) {
+    variable_set('google_appliance_' . $field, trim($form_state['values'][$field]['value']));
+    variable_set('google_appliance_' . $field . '_format', $form_state['values'][$field]['format']);
   }
 
   // refresh settings getter

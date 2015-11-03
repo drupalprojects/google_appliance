@@ -41,32 +41,6 @@ function google_appliance_help($path, $arg) {
       $output =  '<p>' . t('The Google Appliance settings specify the interface to your GSA device. The search results obtained via that interface are controlled by the Google Search Appliance configuration itself. Visit the <a href="@gsa-help">Google Appliance help section</a> for more information on setting up the integration.', array('@gsa-help' => url('admin/help/google_appliance'))) . '</p>';
 
       return $output;
-
-    //@TODO: perhaps error messages should be configurable
-    case 'google_appliance#error_gsa_no_results':
-      $no_results_tactics = array(
-        t('Check if your spelling is correct.'),
-        t('Remove quotes around phrases: <em>bike parking</em> will often show more results than <em>&quot;bike parking&quot;</em>.'),
-        t('Try more general or different keywords.'),
-      );
-      $no_results_message = array(
-        'items' => $no_results_tactics,
-        'title' => NULL,
-        'type' => 'ul',
-        'attributes' => array(),
-      );
-      $output = theme_item_list($no_results_message);
-      return $output;
-
-    case 'google_appliance#error_curl_error':
-      $output = '<p>' . t('We cannot connect to the search service at this time. Please try your search again in a few minutes. If the problem persists, please <a href="@contact-url">contact us</a>.', array('@contact-url' => url('contact'))) . '</p>';
-
-      return $output;
-
-    case 'google_appliance#error_lib_xml_parse_error';
-      $output = '<p>' . t('The response from the search service was unreadable. Please try your search again. If the problem persists, please <a href="@contact-url">contact us</a>.', array('@contact-url' => url('contact'))) . '</p>';
-
-      return $output;
   }
 }
 
@@ -552,9 +526,8 @@ function google_appliance_search_view($query = '', $sort = NULL) {
     if ( $gsa_response['is_error'] == TRUE ) {  // cURL returned an error (can't connect)
       $response_data['error']['curl_error'] = $gsa_response['response'];
       // displaying useful error messages depends upon the use of the array key
-      // 'curl_error' ... the actual error code/response is replaced by hook_help messages
+      // 'curl_error' ... the actual error code/response is displayed elsewhere.
       // @see google_appliance.theme.inc
-      // @see google_appliance_help()
     }
     else {  // cURL gave us something back -> attempt to parse
       $response_data = google_appliance_parse_device_response_xml($gsa_response['response']);
@@ -599,9 +572,8 @@ function google_appliance_parse_device_response_xml($gsa_xml) {
       $errors = join(', ', $errors);
       $results['error'] =  array('lib_xml_parse_error' => $errors);
       // displaying useful error messages depends upon the use of the array key
-      // 'lib_xml_parse_error' ... the actual error code/response is replaced by hook_help messages
+      // 'lib_xml_parse_error' ... the actual error is displayed elsewhere.
       // @see google_appliance.theme.inc
-      // @see google_appliance_help()
     }
     else {
 

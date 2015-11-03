@@ -200,12 +200,8 @@ function template_preprocess_google_appliance_results(&$vars) {
 
     // Build hook_help-based error messages for display.
     foreach ($vars['response_data']['error'] as $error_key => $error_response) {
-      // Replace error responses with hook_help messages that exist,
-      // if they don't exist, just relay the error response.
-      $help_message = google_appliance_help(
-        'google_appliance#error_' . $error_key,
-        drupal_help_arg()
-      );
+      // Replace error responses with those configured.
+      $help_message = check_markup($settings['error_' . $error_key], $settings['error_' . $error_key . '_format']);
       $vars['error_reason'] .= ($help_message != '') ? $help_message : $error_response;
 
       // Build error message for the log (ignore 'no results' condition).
