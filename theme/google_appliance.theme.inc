@@ -354,9 +354,10 @@ function template_preprocess_google_appliance_result(&$vars) {
   if ( $vars['mime']['type'] != '' ) {
     $file = new stdClass;
     $file->filemime = $vars['mime']['type'];
-    $vars['mime']['icon'] = theme_file_icon( array(
+    $vars['mime']['icon'] = theme('file_icon', array(
       'file' => $file,
-      'icon_directory' => variable_get('file_icon_directory', drupal_get_path('module', 'file') . '/icons')
+      'icon_directory' => variable_get('file_icon_directory', drupal_get_path('module', 'file') . '/icons'),
+      'alt' => $vars['mime']['type']
     ));
   }
 
