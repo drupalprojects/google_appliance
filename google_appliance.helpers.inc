@@ -23,6 +23,7 @@ define('SGA_DEFAULT_ADVANCED_SEARCH_REPORTING', FALSE);
 define('SGA_DEFAULT_SPELLING_SUGGESTIONS', FALSE);
 define('SGA_DEFAULT_ONEBOX_MODULES', '');
 define('SGA_DEFAULT_BLOCK_VISIBILITY_SETTINGS', '');
+define('SGA_DEFAULT_SITELINKS_SEARCH_BOX', FALSE);
 define('SGA_DEFAULT_DRUPAL_PATH', 'gsearch');
 define('SGA_DEFAULT_ERROR_GSA_NO_RESULTS', "<div class=\"item-list\">\n  <ul>\n    <li>Check if your spelling is correct.</li>\n    <li>Remove quotes around phrases: <em>bike parking</em> will often show more results than <em>\"bike parking\"</em>.</li>\n    <li>Try more general or different keywords.</li>\n  </ul>\n</div>");
 define('SGA_DEFAULT_ERROR_GSA_NO_RESULTS_FORMAT', NULL);
@@ -53,6 +54,7 @@ function _google_appliance_get_settings() {
     'spelling_suggestions',
     'onebox_modules',
     'block_visibility_settings',
+    'sitelinks_search_box',
     'drupal_path',
     'error_gsa_no_results',
     'error_gsa_no_results_format',

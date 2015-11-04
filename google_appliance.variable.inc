@@ -158,7 +158,16 @@ function google_appliance_variable_info($options) {
     'title' => t('Enable Advanced Search Reporting', array(), $options),
     'description' => t('Learn more about !this_feature. You need to enable Advanced Search Reporting on the front end client. The device should provide a file named "/clicklog_compiled.js" when using the search interface on the GSA.', array('!this_feature' => l(t('this feature'), 'http://www.google.com/support/enterprise/static/gsa/docs/admin/70/gsa_doc_set/xml_reference/advanced_search_reporting.html')), $options),
     'type' => 'boolean',
-    'default' => SGA_DEFAULT_SPELLING_SUGGESTIONS,
+    'default' => SGA_DEFAULT_ADVANCED_SEARCH_REPORTING,
+    'group' => 'google_appliance',
+  );
+
+  // Sitelinks search box.
+  $variables['google_appliance_sitelinks_search_box'] = array(
+    'title' => t('Enable Google.com Sitelinks Search Box', array(), $options),
+    'description' => t('Learn more about !this_feature. Note: your site may not necessarily be a candidate for the google.com Sitelinks search box.', array('!this_feature' => l(t('this feature'), 'https://developers.google.com/structured-data/slsb-overview')), $options),
+    'type' => 'boolean',
+    'default' => SGA_DEFAULT_SITELINKS_SEARCH_BOX,
     'group' => 'google_appliance',
   );
 

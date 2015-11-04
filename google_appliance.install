@@ -26,6 +26,7 @@ function google_appliance_uninstall() {
     'spelling_suggestions',
     'onebox_modules',
     'block_visibility_settings',
+    'sitelinks_search_box',
     'drupal_path',
     'error_gsa_no_results',
     'error_gsa_no_results_format',
