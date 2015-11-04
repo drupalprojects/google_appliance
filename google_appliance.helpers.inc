@@ -15,6 +15,7 @@ define('SGA_DEFAULT_FRONTEND', 'default_frontend');
 define('SGA_DEFAULT_TIMEOUT', 10);
 define('SGA_DEFAULT_AUTOFILTER', 1);
 define('SGA_DEFAULT_LANGUAGE_FILTER_TOGGLE', FALSE);
+define('SGA_DEFAULT_LANGUAGE_FILTER_OPTIONS', '');
 define('SGA_DEFAULT_QUERY_INSPECTION', 0);
 define('SGA_DEFAULT_SEARCH_TITLE', 'Search this site');
 define('SGA_DEFAULT_RESULTS_PER_PAGE', 10);
@@ -31,21 +32,12 @@ define('SGA_DEFAULT_ERROR_LIB_XML_PARSE_ERROR', '<p>The response from the search
 define('SGA_DEFAULT_ERROR_LIB_XML_PARSE_ERROR_FORMAT', NULL);
 
 /**
- * Minimize redundant trips to the db when looking for module settings.
- * Hooks that change module settings should run this function with
- * $refresh = TRUE so other hooks can just get settings without a db
- * query.
+ * Returns all module settings for the Google Appliance module.
  *
- * @arg $refresh
- *    TRUE >> query the db for the settings
- *
- * @return
- *    a keyed array of module settings keyed by $field_keys
+ * @return array
+ *    An associative array of module settings keyed by $field_keys.
  */
-function _google_appliance_get_settings($refresh = FALSE) {
-
-  static $settings;
-
+function _google_appliance_get_settings() {
   $field_keys =  array(
     'hostname',
     'collection',
@@ -53,6 +45,7 @@ function _google_appliance_get_settings($refresh = FALSE) {
     'timeout',
     'autofilter',
     'language_filter_toggle',
+    'language_filter_options',
     'query_inspection',
     'search_title',
     'results_per_page',
@@ -69,35 +62,28 @@ function _google_appliance_get_settings($refresh = FALSE) {
     'error_lib_xml_parse_error_format',
   );
 
-  if ($refresh || empty($settings)) {
-
-    // Settings fall back to default constants.
-    foreach ($field_keys as $field) {
-      $settings[$field] = variable_get(
-        'google_appliance_' . $field,
-        constant('SGA_DEFAULT_' . strtoupper($field))
-      );
-    }
-
-    // The default value of language_filter_options is an array, which
-    // cannot be used as a PHP constant. We set it here.
-    $settings['language_filter_options'] = variable_get(
-      'google_appliance_language_filter_options',
-      array('***CURRENT_LANGUAGE***')
+  // Settings fall back to default constants.
+  foreach ($field_keys as $field) {
+    $settings[$field] = variable_get(
+      'google_appliance_' . $field,
+      constant('SGA_DEFAULT_' . strtoupper($field))
     );
+  }
 
-    // Convert onebox_modules from string to array.
-    $settings['onebox_modules'] = explode("\n", $settings['onebox_modules']);
-    $settings['onebox_modules'] = array_map('trim', $settings['onebox_modules']);
-    $settings['onebox_modules'] = array_filter($settings['onebox_modules'], 'strlen');
+  // Convert onebox_modules from string to array.
+  $settings['onebox_modules'] = explode("\n", $settings['onebox_modules']);
+  $settings['onebox_modules'] = array_map('trim', $settings['onebox_modules']);
+  $settings['onebox_modules'] = array_filter($settings['onebox_modules'], 'strlen');
 
-    // The empty string in the define block above for block visibility
-    // settings is really just a flag that nothing has been set yet.
-    // Using an empty string is problematic, so we just set it to an
-    // empty array instead.
-    if ($settings['block_visibility_settings'] === '') {
-      $settings['block_visibility_settings'] = array();
-    }
+  // The empty string in the define block above for block visibility
+  // settings is really just a flag that nothing has been set yet.
+  // Using an empty string is problematic, so we just set it to an
+  // empty array instead.
+  if ($settings['block_visibility_settings'] === '') {
+    $settings['block_visibility_settings'] = array();
+  }
+  if ($settings['language_filter_options'] === '') {
+    $settings['language_filter_options'] = array();
   }
 
   return $settings;

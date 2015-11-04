@@ -249,7 +249,7 @@ function google_appliance_block_form_submit($form, &$form_state) {
  * conditionally hide content from the crawler using googleon/googleoff tags.
  */
 function google_appliance_form_block_admin_configure_alter(&$form, &$form_state, $form_id) {
-  $settings = _google_appliance_get_settings(TRUE);
+  $settings = _google_appliance_get_settings();
 
   // Determine the default value for this block.
   $default = 'none';
@@ -295,7 +295,7 @@ function google_appliance_form_block_admin_configure_alter(&$form, &$form_state,
  * Submit handler to save block-specific crawler visibility settings.
  */
 function google_appliance_block_visibility_submit($form, &$form_state) {
-  $settings = _google_appliance_get_settings(TRUE);
+  $settings = _google_appliance_get_settings();
   $module = $form_state['values']['module'];
   $delta = $form_state['values']['delta'];
 

@@ -25,28 +25,28 @@ function google_appliance_admin_settings($form) {
     '#collapsible' => TRUE,
     '#collapsed' => FALSE
   );
-  $form['connection_info']['hostname'] = array(
+  $form['connection_info']['google_appliance_hostname'] = array(
     '#type' => 'textfield',
     '#title' => t('Google Search Appliance Host Name'),
     '#description' => t('Valid URL or IP address of the GSA device, including <em>http://</em> or <em>https://</em>. Do <b>not</b> include <em>/search</em> at the end, or a trailing slash, but you should include a port number if needed. Example: <em>http://my.gsabox.com:8443</em>'),
     '#default_value' => $settings['hostname'],
     '#required' => TRUE,
   );
-  $form['connection_info']['collection'] = array(
+  $form['connection_info']['google_appliance_collection'] = array(
     '#type' => 'textfield',
     '#title' => t('Collection'),
     '#description' => t('The name of a valid collection on the GSA device (case sensitive).'),
     '#default_value' => $settings['collection'],
     '#required' => TRUE,
   );
-  $form['connection_info']['frontend'] = array(
+  $form['connection_info']['google_appliance_frontend'] = array(
     '#type' => 'textfield',
     '#title' => t('Frontend client'),
     '#description' => t('The name of a valid frontend client on the GSA device (case sensitive).'),
     '#default_value' => $settings['frontend'],
     '#required' => TRUE,
   );
-  $form['connection_info']['timeout'] = array(
+  $form['connection_info']['google_appliance_timeout'] = array(
     '#type' => 'textfield',
     '#title' => t('Search Timeout'),
     '#description' => t('Length of time to wait for response from the GSA device before giving up (timeout in seconds).'),
@@ -61,7 +61,7 @@ function google_appliance_admin_settings($form) {
     "#collapsible" => TRUE,
     "#collapsed" => FALSE,
   );
-  $form['query_param']['autofilter'] = array(
+  $form['query_param']['google_appliance_autofilter'] = array(
     '#type' => 'select',
     '#title' => t('Search Results Auto-Filtering Options'),
     '#default_value' => $settings['autofilter'],
@@ -95,7 +95,7 @@ function google_appliance_admin_settings($form) {
       '#description' => t('If there are no results in the specified language, the search appliance is expected to return results in all languages.'),
     );
   }
-  $form['query_param']['query_inspection'] = array(
+  $form['query_param']['google_appliance_query_inspection'] = array(
     '#type' => 'checkbox',
     '#title' => t('Enable Query Inspection'),
     '#description' => t('Inspect the search query parameters sent to the GSA device in the Drupal message area every time a search is performed. Only really useful for sites not using the Devel module, as dsm() provides more information. The inspector is only shown to administrators, but should be disabled in a production environment.'),
@@ -109,7 +109,7 @@ function google_appliance_admin_settings($form) {
     '#collapsible' => TRUE,
     '#collapsed' => FALSE
   );
-  $form['display_settings']['drupal_path'] = array(
+  $form['display_settings']['google_appliance_drupal_path'] = array(
     '#title' => t('Search path'),
     '#type' => 'textfield',
     '#field_prefix' => '<span dir="ltr">' . url(NULL, array('absolute' => TRUE)) . (variable_get('clean_url', 0) ? '' : '?q='),
@@ -118,26 +118,26 @@ function google_appliance_admin_settings($form) {
     '#description' => t('The URL of the search page provided by this module. Include neither leading nor trailing slash.'),
     '#required' => TRUE,
   );
-  $form['display_settings']['search_title'] = array(
+  $form['display_settings']['google_appliance_search_title'] = array(
     '#title' => t('Search Name'),
     '#type' => 'textfield',
     '#default_value' => $settings['search_title'],
     '#description' => t('Serves as the page title on results pages and the default menu item title'),
     '#required' => TRUE,
   );
-  $form['display_settings']['results_per_page'] = array(
+  $form['display_settings']['google_appliance_results_per_page'] = array(
     '#title' => t('Results per page'),
     '#type' => 'textfield',
     '#default_value' => $settings['results_per_page'],
     '#description' => t('Number of results to show on the results page. More results will be available via a Drupal pager.'),
     '#required' => TRUE,
   );
-  $form['display_settings']['spelling_suggestions'] = array(
+  $form['display_settings']['google_appliance_spelling_suggestions'] = array(
     '#type' => 'checkbox',
     '#title' => t('Display Spelling Suggestions'),
     '#default_value' => $settings['spelling_suggestions'],
   );
-  $form['display_settings']['advanced_search_reporting'] = array(
+  $form['display_settings']['google_appliance_advanced_search_reporting'] = array(
     '#type' => 'checkbox',
     '#title' => t('Enable Advanced Search Reporting'),
     '#default_value' => $settings['advanced_search_reporting'],
@@ -149,7 +149,7 @@ function google_appliance_admin_settings($form) {
     '#description' => t('A list of Onebox modules, one per line. Each module listed will have a corresponding block. These blocks must be placed via the block configuration page, or another layout mechanism like Context or Panels.'),
     '#default_value' => implode("\n", $settings['onebox_modules']),
   );
-  $form['display_settings']['error_gsa_no_results'] = array(
+  $form['display_settings']['google_appliance_error_gsa_no_results'] = array(
     '#title' => t('No results error message'),
     '#type' => 'text_format',
     '#default_value' => $settings['error_gsa_no_results'],
@@ -157,7 +157,7 @@ function google_appliance_admin_settings($form) {
     '#description' => t('The message displayed to the user when no results are found for the given search query.'),
     '#required' => TRUE,
   );
-  $form['display_settings']['error_curl_error'] = array(
+  $form['display_settings']['google_appliance_error_curl_error'] = array(
     '#title' => t('Connection error message'),
     '#type' => 'text_format',
     '#default_value' => $settings['error_curl_error'],
@@ -165,7 +165,7 @@ function google_appliance_admin_settings($form) {
     '#description' => t('The message displayed to the user when there is an error connecting to the search appliance.'),
     '#required' => TRUE,
   );
-  $form['display_settings']['error_lib_xml_parse_error'] = array(
+  $form['display_settings']['google_appliance_error_lib_xml_parse_error'] = array(
     '#title' => t('XML parse error message'),
     '#type' => 'text_format',
     '#default_value' => $settings['error_lib_xml_parse_error'],
@@ -185,7 +185,7 @@ function google_appliance_admin_settings($form) {
 function google_appliance_admin_settings_validate($form, &$form_state) {
 
   // host name should be a valid-format URL or IPv4 address including 'http(s)://'
-  if ( filter_var($form_state['values']['hostname'], FILTER_VALIDATE_URL) === FALSE) {
+  if ( filter_var($form_state['values']['google_appliance_hostname'], FILTER_VALIDATE_URL) === FALSE) {
     form_set_error(
       'hostname',
       t('GSA Host name must be a valid-format URL or IPv4 address, including <em>http(s)://</em>. Example: http://my.googlebox.net.')
@@ -197,7 +197,7 @@ function google_appliance_admin_settings_validate($form, &$form_state) {
     'max_range' => 30,
     'min_range' => 3,
   ));
-  if ( filter_var($form_state['values']['timeout'], FILTER_VALIDATE_INT, $timeout_validate_options) === FALSE ) {
+  if ( filter_var($form_state['values']['google_appliance_timeout'], FILTER_VALIDATE_INT, $timeout_validate_options) === FALSE ) {
     form_set_error(
       'timeout',
       t('Search Timeout should be an integer from @min - @max, indicating the number of seconds to wait before the search request times out.', array(
@@ -208,15 +208,15 @@ function google_appliance_admin_settings_validate($form, &$form_state) {
   }
 
   // Trim slashes and whitespace from drupal_path to save headaches.
-  $drupal_path = trim($form_state['values']['drupal_path'], ' /');
-  form_set_value($form['display_settings']['drupal_path'], $drupal_path, $form_state);
+  $drupal_path = trim($form_state['values']['google_appliance_drupal_path'], ' /');
+  form_set_value($form['display_settings']['google_appliance_drupal_path'], $drupal_path, $form_state);
 
   // results per page must be on a range that will be accepted by the device upon querying
   $results_per_page_validate_options = array('options' => array(
     'max_range' => 1000,
     'min_range' => 1
   ));
-  if ( filter_var($form_state['values']['results_per_page'], FILTER_VALIDATE_INT, $results_per_page_validate_options) === FALSE ) {
+  if ( filter_var($form_state['values']['google_appliance_results_per_page'], FILTER_VALIDATE_INT, $results_per_page_validate_options) === FALSE ) {
     form_set_error(
       'results_per_page',
       t('Results per page should be an integer from @min - @max.', array(
@@ -228,14 +228,19 @@ function google_appliance_admin_settings_validate($form, &$form_state) {
 
   // For security, we check that the user has access to use these filters.
   $field_text_format_keys = array(
-    'error_gsa_no_results',
-    'error_curl_error',
-    'error_lib_xml_parse_error',
+    'google_appliance_error_gsa_no_results',
+    'google_appliance_error_curl_error',
+    'google_appliance_error_lib_xml_parse_error',
   );
   $formats = filter_formats();
   foreach ($field_text_format_keys as $field) {
     if (!filter_access($formats[$form_state['values'][$field]['format']])) {
       form_set_error($field . '][format', t('An illegal choice has been detected. Please contact the site administrator.'));
+    }
+    else {
+      // Alter the formatted text area settings to our expectations.
+      $form_state['values'][$field . '_format'] = $form_state['values'][$field]['format'];
+      $form_state['values'][$field] = trim($form_state['values'][$field]['value']);
     }
   }
 }
@@ -245,41 +250,6 @@ function google_appliance_admin_settings_validate($form, &$form_state) {
  *    submit handler for admin settings
  */
 function google_appliance_admin_settings_submit($form, &$form_state) {
-
-  $field_keys =  array(
-    'hostname',
-    'collection',
-    'frontend',
-    'timeout',
-    'autofilter',
-    'query_inspection',
-    'search_title',
-    'spelling_suggestions',
-    'results_per_page',
-    'drupal_path',
-    'advanced_search_reporting',
-  );
-
-  // save settings
-  foreach ($field_keys as $field) {
-    variable_set('google_appliance_' . $field, trim($form_state['values'][$field]));
-  }
-
-  $field_text_format_keys = array(
-    'error_gsa_no_results',
-    'error_curl_error',
-    'error_lib_xml_parse_error',
-  );
-
-  // save formatted text area settings
-  foreach ($field_text_format_keys as $field) {
-    variable_set('google_appliance_' . $field, trim($form_state['values'][$field]['value']));
-    variable_set('google_appliance_' . $field . '_format', $form_state['values'][$field]['format']);
-  }
-
-  // refresh settings getter
-  $settings = _google_appliance_get_settings(TRUE);
-
   // make the 'search_title' and 'drupal_path' settings take effect right away
   menu_rebuild();
 }
