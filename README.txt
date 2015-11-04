@@ -18,6 +18,7 @@ This module simply defines the communication interface for Drupal.
 
 Before using this module, you (obviously) must have a dedicated Goodle Search Appliance (GSA) device, and you must also set up a collection and frontend on the GSA that can be accessed publicly. To produce results that include Drupal content, the GSA crawl must have visited your drupal installation and indexed the desired content. This will allow off-platform content to be integrated into your drupal search solution.
 
+Note that the PHP cURL library is required.
 
 -- INSTALLATION --
 
