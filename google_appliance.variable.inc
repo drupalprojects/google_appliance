@@ -115,7 +115,7 @@ function google_appliance_variable_info($options) {
   );
 
   // Search page path.
-  $variables['google_appliance_search_title'] = array(
+  $variables['google_appliance_drupal_path'] = array(
     'title' => t('Search path', array(), $options),
     'description' => t('The URL of the search page provided by this module. Include neither leading nor trailing slash.', array(), $options),
     'type' => 'string',
