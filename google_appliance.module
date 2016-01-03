@@ -629,12 +629,14 @@ function google_appliance_search_view($query = '', $sort = NULL) {
  *
  * @arg $gsa_xml
  *    response text obtained from the device query
+ * @arg $use_cached
+ *    Whether or not to use the cached version of this query
  * @return
  *    php array structure to iterate when displaying results
  */
-function google_appliance_parse_device_response_xml($gsa_xml) {
+function google_appliance_parse_device_response_xml($gsa_xml, $use_cached = TRUE) {
   $results = &drupal_static(__FUNCTION__);
-  if (!isset($results)) {
+  if (!isset($results) || $use_cached === FALSE) {
 
     // look for xml parse errors
     libxml_use_internal_errors(TRUE);
