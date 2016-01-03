@@ -786,8 +786,9 @@ function google_appliance_get_clusters() {
   // grab module settings
   $settings = _google_appliance_get_settings();
 
-  // get the search qeury
-  $search_query = urldecode( arg(1) );
+  // get the search query
+  $query_pos = substr_count($settings['drupal_path'], '/') + 1;
+  $search_query = urldecode(arg($query_pos));
   $cluster_content = NULL;
 
   // perform POST to acquire the clusters  block
