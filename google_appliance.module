@@ -818,20 +818,26 @@ function google_appliance_get_clusters() {
 
     if ( isset($clusters['clusters'][0]) ) {
 
-      // build the link list
+      // Build the link list.
       $cluster_list_items = array();
       foreach ($clusters['clusters'][0]['clusters'] as $cluster) {
         array_push($cluster_list_items, l($cluster['label'], $settings['drupal_path'] . '/' . $cluster['label']));
       }
 
-      // create theme-friendly list of links
+      // Create theme-friendly list of links render array.
       $cluster_list = array(
-        'items' => $cluster_list_items,
-        'title' => NULL,
-        'type' => 'ul',
-        'attributes' => array(),
+        '#theme' => 'item_list',
+        '#items' => $cluster_list_items,
+        '#title' => NULL,
+        '#type' => 'ul',
+        '#attributes' => array(),
       );
-      $cluster_content = theme_item_list($cluster_list);
+
+      // Allow implementation of hook_google_appliance_cluster_list_alter() by
+      // other modules.
+      drupal_alter('google_appliance_cluster_list', $cluster_list);
+
+      $cluster_content = drupal_render($cluster_list);
     }
   }
 

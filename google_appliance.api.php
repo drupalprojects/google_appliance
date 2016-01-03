@@ -109,6 +109,27 @@ function hook_google_appliance_results_alter(&$results, &$payload) {
   }
 }
 
+/**
+ * Alter the cluster list render array containing related searches.
+ *
+ * This hook is invoked after the list render array is constructed and just
+ * before it is passed to drupal_render().
+ *
+ * Use this to alter the render array properties.
+ *
+ * @param $cluster_list
+ *   A renderable array conforming to theme_item_list().
+ *
+ * @see google_appliance_get_clusters()
+ * @see theme_item_list()
+ */
+function hook_google_appliance_cluster_list_alter(&$cluster_list) {
+  // Add some CSS classes.
+  $cluster_list['#attributes']['class'][] = 'foo-list';
+
+  // Change the first item of the list.
+  $cluster_list['#items'][0] = '<span>A new item</span>';
+}
 
 /**
  * @}
