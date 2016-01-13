@@ -838,7 +838,7 @@ function google_appliance_get_clusters() {
 
       // Allow implementation of hook_google_appliance_cluster_list_alter() by
       // other modules.
-      drupal_alter('google_appliance_cluster_list', $cluster_list);
+      drupal_alter('google_appliance_cluster_list', $cluster_list, $cluster_results);
 
       $cluster_content = drupal_render($cluster_list);
     }

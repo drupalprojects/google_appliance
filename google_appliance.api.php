@@ -120,12 +120,21 @@ function hook_google_appliance_results_alter(&$results, &$payload) {
  * @param $cluster_list
  *   A renderable array conforming to theme_item_list().
  *
+ * @param $cluster_results
+ *   The raw cluster results returned via the Google Appliance instance.
+ *
  * @see google_appliance_get_clusters()
  * @see theme_item_list()
  */
-function hook_google_appliance_cluster_list_alter(&$cluster_list) {
+function hook_google_appliance_cluster_list_alter(&$cluster_list, $cluster_results) {
   // Add some CSS classes.
   $cluster_list['#attributes']['class'][] = 'foo-list';
+
+  // Construct a new list of links using the raw results with a custom path.
+  foreach ($cluster_results as $ind => $cluster) {
+    $items[] = l($cluster['label'], 'search/my/path/' . $cluster['label']);
+  }
+  $cluster_list['#items'] = $items;
 
   // Change the first item of the list.
   $cluster_list['#items'][0] = '<span>A new item</span>';
