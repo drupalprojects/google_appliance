@@ -85,5 +85,4 @@ function template_preprocess_google_appliance__search_results(array &$variables)
     $variables[$displayKey] = empty($responseData[$displayKey]) ? [] : $responseData[$displayKey];
   }
 
-  dpm($variables);
 }
