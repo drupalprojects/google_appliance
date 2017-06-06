@@ -1,0 +1,62 @@
+{# @todo: send this to someone who knows how to twig properly #}
+<div>
+    <div>
+        {{ form }}
+    </div>
+    <h2 id="search-results-heading">{{ search_title }}</h2>
+    <div>
+        {% if not spelling_suggestions is empty %}
+        <ol>
+            {% for suggestion in spelling_suggestions %}
+                <li>{{ suggestion }}</li>
+            {% endfor %}
+        </ol>
+        {% endif %}
+    </div>
+    <div>
+        {% for synonym in synonyms %}
+        <div class="synonyms google-appliance-synonyms">
+            <span class="p">{{ synonym }}</span>
+            <ul>{{ synonym }}</ul>
+        </div>
+        {% else %}
+            <span>No synonyms found.</span>
+        {% endfor %}
+    </div>
+    <div>
+        <div class="google-appliance-results-control-bar clearfix">
+            {{ search_stats }}
+            {{ sort_headers }}
+        </div>
+        <ol class="keymatch-results google-appliance-keymatch-results">
+            {# @todo: keymatch results #}
+        </ol>
+
+        {% if not error is empty %}
+            <span>Errors</span>
+            <ol>
+            {% for type, item in error  %}
+                <li>{{ type }}, :{{ item }}</li>
+            {% endfor %}
+            </ol>
+        {% endif %}
+
+        {% if entry is empty %}
+            <span>No results found.</span>
+        {% else %}
+            <ol class="search-results google-appliance-results">
+                {% for item in entry %}
+                    <li>{{ item }}</li>
+                {% endfor %}
+            </ol>
+        {% endif %}
+
+        <div class="google-appliance-results-control-bar clearfix">
+            {{ search_stats }}
+            {{ sort_headers }}
+        </div>
+    </div>
+    <div>
+        {{ pager }}
+    </div>
+</div>
