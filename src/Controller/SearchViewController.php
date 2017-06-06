@@ -38,7 +38,7 @@ class SearchViewController extends ControllerBase {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('google_appliance.parser'),
+      $container->get('google_appliance.parser')
     );
   }
 
