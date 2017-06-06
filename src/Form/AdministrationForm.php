@@ -44,7 +44,7 @@ class AdministrationForm extends ConfigFormBase {
       '#collapsed' => FALSE,
     ];
     $form['connection_info']['hostname'] = [
-      '#type' => 'link',
+      '#type' => 'url',
       '#title' => $this->t('Google Search Appliance Host Name'),
       '#description' => $this->t('Valid URL or IP address of the GSA device, including <em>http://</em> or <em>https://</em>. Do <b>not</b> include <em>/search</em> at the end, or a trailing slash, but you should include a port number if needed. Example: <em>http://my.gsabox.com:8443</em>'),
       '#default_value' => $settings['connection_info']['hostname'],
