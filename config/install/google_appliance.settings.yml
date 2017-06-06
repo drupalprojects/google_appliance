@@ -7,14 +7,13 @@ query_param:
   autofilter: '1'
   query_inspection: false
 display_settings:
-  drupal_path:
-    - gsearch
+  drupal_path: gsearch
   search_title: ''
   results_per_page: 20
   spelling_suggestions: false
   advanced_search_reporting: false
   sitelinks_search_box: false
-  onebox_modules: ''
+  onebox_modules: {}
   error_gsa_no_results:
     value: "<div class=\"item-list\">\n  <ul>\n    <li>Check if your spelling is correct.</li>\n    <li>Remove quotes around phrases: <em>bike parking</em> will often show more results than <em>\"bike parking\"</em>.</li>\n    <li>Try more general or different keywords.</li>\n  </ul>\n</div>"
     format: ''

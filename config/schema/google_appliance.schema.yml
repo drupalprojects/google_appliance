@@ -1,5 +1,5 @@
 google_appliance.settings:
-  type: mapping
+  type: config_object
   label: 'Google Appliance Settings'
   mapping:
     connection_info:
@@ -45,8 +45,8 @@ google_appliance.settings:
             mapping:
               value: string
         error_gsa_no_results:
-          type: field.value.text
+          type: text_format
         error_curl_error:
-          type: field.value.text
+          type: text_format
         error_lib_xml_parse_error:
-          type: field.value.text
+          type: text_format
