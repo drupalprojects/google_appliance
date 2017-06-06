@@ -2,7 +2,6 @@
 
 namespace Drupal\google_appliance\Form;
 
-use Drupal\Component\Utility\Html;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 

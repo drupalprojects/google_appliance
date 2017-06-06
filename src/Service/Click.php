@@ -1,10 +1,15 @@
 <?php
 
 /**
+ * @file
  * Created by PhpStorm.
  * User: mhavelant
  * Date: 2017.05.23.
- * Time: 18:01
+ * Time: 18:01.
+ */
+
+/**
+ *
  */
 class Click {
 
@@ -74,7 +79,7 @@ function google_appliance_locate_root($start_path = NULL) {
     $parts = parse_url($_SERVER['REQUEST_URI']);
     $start_path = $_SERVER['DOCUMENT_ROOT'] . $parts['path'];
   }
-  foreach (array(TRUE, FALSE) as $follow_symlinks) {
+  foreach ([TRUE, FALSE] as $follow_symlinks) {
     $path = $start_path;
     if ($follow_symlinks && is_link($path)) {
       $path = realpath($path);
@@ -110,17 +115,17 @@ require_once DRUPAL_ROOT . '/includes/common.inc';
 // Bootstrap Drupal and pull GSA configuration.
 drupal_bootstrap(DRUPAL_BOOTSTRAP_VARIABLES);
 $gsa_hostname = variable_get('google_appliance_hostname', FALSE);
-$gsa_timeout  = variable_get('google_appliance_timeout', 10);
+$gsa_timeout = variable_get('google_appliance_timeout', 10);
 
 // Make sure we have a valid GSA host to connect to.
 if (!$gsa_hostname) {
-  watchdog('google_appliance', 'No valid GSA host to connect to.', array(), WATCHDOG_ERROR);
+  watchdog('google_appliance', 'No valid GSA host to connect to.', [], WATCHDOG_ERROR);
   exit;
 }
 
 // Filter parameters.
 // @see https://www.google.com/support/enterprise/static/gsa/docs/admin/70/gsa_doc_set/xml_reference/advanced_search_reporting.html#1080237
-$parameters_allowed = array(
+$parameters_allowed = [
   'cd' => 1,
   'ct' => 1,
   'q' => 1,
@@ -128,13 +133,13 @@ $parameters_allowed = array(
   's' => 1,
   'url' => 1,
   'site' => 1,
-);
+];
 $parameters = array_intersect_key($_GET, $parameters_allowed);
 
 // Fire off the request to the GSA.
 // Re-inject GET parameters received from the browser.
-$url = url($gsa_hostname . '/click', array('query' => $parameters));
-$result = drupal_http_request($url, array('timeout' => $gsa_timeout));
+$url = url($gsa_hostname . '/click', ['query' => $parameters]);
+$result = drupal_http_request($url, ['timeout' => $gsa_timeout]);
 
 // If GSA did     return 204, then everything went well. Forward the response and prevent it from being cached.
 // If GSA did not return 204, then something went wrong. Return 404 and log the error.
@@ -147,16 +152,17 @@ switch ($result->code) {
     drupal_add_http_header('Pragma', 'no-cache');
     drupal_add_http_header('Expires', '0');
     break;
+
   default:
     drupal_add_http_header('Status', '404 Not Found');
     drupal_add_http_header('Cache-Control', 'no-cache, no-store, must-revalidate');
     drupal_add_http_header('Pragma', 'no-cache');
     drupal_add_http_header('Expires', '0');
     $message = 'GSA returned response code @code. Request: !url. Response: @response';
-    $vars = array(
+    $vars = [
       '@code' => $result->code,
       '!url' => l($url, $url),
       '@response' => $result->status_message,
-    );
+    ];
     watchdog('google_appliance', $message, $vars, WATCHDOG_WARNING);
 }

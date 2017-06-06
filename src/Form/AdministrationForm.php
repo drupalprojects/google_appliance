@@ -99,30 +99,30 @@ class AdministrationForm extends ConfigFormBase {
         ]
       ),
     ];
-//    // @todo: FIX
-//    if (\Drupal::moduleHandler()->moduleExists('locale')) {
-//      $form['query_param']['language_filter_toggle'] = [
-//        '#type' => 'checkbox',
-//        '#title' => $this->t('Enable Language Filtering'),
-//        '#default_value' => $settings['query_param']['language_filter_toggle'],
-//      ];
-//      $form['query_param']['language_filter_options'] = [
-//        '#type' => 'checkboxes',
-//        '#title' => $this->t('Restrict searches to specified languages'),
-//        '#default_value' => $settings['query_param']['language_filter_options'],
-//        // @todo: FIX
-//        '#options' => [
-//            '***CURRENT_LANGUAGE***' => $this->t("Current user's language"),
-//            '***DEFAULT_LANGUAGE***' => $this->t('Default site language'),
-//          ] + locale_language_list(),
-//        '#states' => [
-//          'visible' => [
-//            ':input[name=language_filter_toggle]' => ['checked' => TRUE],
-//          ],
-//        ],
-//        '#description' => $this->t('If there are no results in the specified language, the search appliance is expected to return results in all languages.'),
-//      ];
-//    }
+    // // @todo: FIX
+    //    if (\Drupal::moduleHandler()->moduleExists('locale')) {
+    //      $form['query_param']['language_filter_toggle'] = [
+    //        '#type' => 'checkbox',
+    //        '#title' => $this->t('Enable Language Filtering'),
+    //        '#default_value' => $settings['query_param']['language_filter_toggle'],
+    //      ];
+    //      $form['query_param']['language_filter_options'] = [
+    //        '#type' => 'checkboxes',
+    //        '#title' => $this->t('Restrict searches to specified languages'),
+    //        '#default_value' => $settings['query_param']['language_filter_options'],
+    //        // @todo: FIX
+    //        '#options' => [
+    //            '***CURRENT_LANGUAGE***' => $this->t("Current user's language"),
+    //            '***DEFAULT_LANGUAGE***' => $this->t('Default site language'),
+    //          ] + locale_language_list(),
+    //        '#states' => [
+    //          'visible' => [
+    //            ':input[name=language_filter_toggle]' => ['checked' => TRUE],
+    //          ],
+    //        ],
+    //        '#description' => $this->t('If there are no results in the specified language, the search appliance is expected to return results in all languages.'),
+    //      ];
+    //    }.
     $form['query_param']['query_inspection'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Enable Query Inspection'),
@@ -271,23 +271,23 @@ class AdministrationForm extends ConfigFormBase {
     parent::validateForm($form, $form_state);
 
     // @todo
-//    // For security, we check that the user has access to use these filters.
-//    $field_text_format_keys = [
-//      'error_gsa_no_results',
-//      'error_curl_error',
-//      'error_lib_xml_parse_error',
-//    ];
-//    $formats = filter_formats();
-//    foreach ($field_text_format_keys as $field) {
-//      if (!filter_access($formats[$form_state['values'][$field]['format']])) {
-//        form_set_error($field . '][format', $this->t('An illegal choice has been detected. Please contact the site administrator.'));
-//      }
-//      else {
-//        // Alter the formatted text area settings to our expectations.
-//        $form_state['values'][$field . '_format'] = $form_state['values'][$field]['format'];
-//        $form_state['values'][$field] = trim($form_state['values'][$field]['value']);
-//      }
-//    }
+    //   For security, we check that the user has access to use these filters.
+    //    $field_text_format_keys = [
+    //      'error_gsa_no_results',
+    //      'error_curl_error',
+    //      'error_lib_xml_parse_error',
+    //    ];
+    //    $formats = filter_formats();
+    //    foreach ($field_text_format_keys as $field) {
+    //      if (!filter_access($formats[$form_state['values'][$field]['format']])) {
+    //        form_set_error($field . '][format', $this->t('An illegal choice has been detected. Please contact the site administrator.'));
+    //      }
+    //      else {
+    //        // Alter the formatted text area settings to our expectations.
+    //        $form_state['values'][$field . '_format'] = $form_state['values'][$field]['format'];
+    //        $form_state['values'][$field] = trim($form_state['values'][$field]['value']);
+    //      }
+    //    }
   }
 
 }

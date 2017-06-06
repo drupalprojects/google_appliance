@@ -16,7 +16,7 @@ class GoogleApplianceSearch {
    * Send a GET request using cURL.
    *
    * @param $url
-   * @param array|NULL $get
+   * @param array|null $get
    * @param array $options
    * @param int $sga_timeout
    *
@@ -48,7 +48,7 @@ class GoogleApplianceSearch {
    * Send a POST request using cURL.
    *
    * @param $url
-   * @param array|NULL $post
+   * @param array|null $post
    * @param array $options
    *
    * @return array
@@ -277,25 +277,25 @@ class GoogleApplianceSearch {
 // @todo: Finish these.
 
 /**
- * get related search via the Google Search Appliance clustering service
+ * Get related search via the Google Search Appliance clustering service.
  *
  * @return
- *    themed list of links
+ *   themed list of links
  */
 function google_appliance_get_clusters() {
 
-  // grab module settings
+  // Grab module settings.
   $settings = _google_appliance_get_settings();
 
-  // get the search query
+  // Get the search query.
   $query_pos = substr_count($settings['drupal_path'], '/') + 1;
   $search_query = urldecode(arg($query_pos));
   $cluster_content = NULL;
 
-  // perform POST to acquire the clusters  block
-  $clusterQueryURL = \Drupal\Component\Utility\Html::escape($settings['hostname'] . '/cluster');
+  // Perform POST to acquire the clusters  block.
+  $clusterQueryURL = Html::escape($settings['hostname'] . '/cluster');
   $clusterQueryParams = [
-    'q' => \Drupal\Component\Utility\Html::escape($search_query),
+    'q' => Html::escape($search_query),
     'btnG' => 'Google+Search',
     'access' => 'p',
     'entqr' => '0',
@@ -304,21 +304,22 @@ function google_appliance_get_clusters() {
     'output' => 'xml_no_dtd',
     'oe' => 'utf8',
     'ie' => 'utf8',
-    'site' => \Drupal\Component\Utility\Html::escape($settings['collection']),
-    'client' => \Drupal\Component\Utility\Html::escape($settings['frontend']),
+    'site' => Html::escape($settings['collection']),
+    'client' => Html::escape($settings['frontend']),
   ];
 
   // Alter request according to language filter settings.
   if (\Drupal::moduleHandler()
-      ->moduleExists('locale') && $settings['language_filter_toggle']
+    ->moduleExists('locale') && $settings['language_filter_toggle']
   ) {
     $clusterQueryParams['lr'] = _google_appliance_get_lr($settings['language_filter_options']);
   }
 
-  // cURL request for the clusters produces JSON result
+  // cURL request for the clusters produces JSON result.
   $gsa_clusters_json = _curl_post($clusterQueryURL, $clusterQueryParams);
 
-  if (!$gsa_clusters_json['is_error']) { // no error -> get the clusters
+  // No error -> get the clusters.
+  if (!$gsa_clusters_json['is_error']) {
 
     $clusters = json_decode($gsa_clusters_json['response'], TRUE);
 
@@ -330,7 +331,6 @@ function google_appliance_get_clusters() {
         // @FIXME
         // l() expects a Url object, created from a route name or external URI.
         // array_push($cluster_list_items, l($cluster['label'], $settings['drupal_path'] . '/' . $cluster['label']));
-
       }
 
       // Create theme-friendly list of links render array.
@@ -354,14 +354,13 @@ function google_appliance_get_clusters() {
   return $cluster_content;
 }
 
-
 /**
- * report search errors to the log
+ * Report search errors to the log.
  */
 function _google_appliance_log_search_error($search_keys = NULL, $error_string = NULL) {
   $settings = _google_appliance_get_settings();
 
-  // build log entry
+  // Build log entry.
   $type = 'google_appliance';
   $message = 'Search for %keys produced error: %error_string';
   $vars = [
@@ -371,8 +370,6 @@ function _google_appliance_log_search_error($search_keys = NULL, $error_string =
   // @FIXME
   // l() expects a Url object, created from a route name or external URI.
   // $link = l(t('view reproduction'), $settings['drupal_path'] . '/' . \Drupal\Component\Utility\Html::escape($search_keys));
-
-
   \Drupal::logger($type)->notice($message, []);
 }
 
@@ -419,9 +416,11 @@ function _google_appliance_get_lr($options) {
         $language = \Drupal::languageManager()->getCurrentLanguage();
         $langcode = $language->language;
         break;
+
       case '***DEFAULT_LANGUAGE***':
         $langcode = language_default('language');
         break;
+
       default:
         $langcode = $option;
     }

@@ -117,8 +117,8 @@ function google_appliance_page_attachments(array &$attachments) {
         'type' => 'application/ld+json',
       ],
       '#value' => Json::encode($jsld),
-// @todo: What's this?
-//      '_json' => $jsld,
+      // @todo: What's this?
+      //      '_json' => $jsld,
     ];
 
     $attachments['#attached']['html_head'][] = [

@@ -14,6 +14,9 @@ use Drupal\google_appliance\Form\SearchFrom;
  */
 class SearchViewController extends ControllerBase {
 
+  /**
+   *
+   */
   public function get(Request $request, $search_query = '', $result_sort = NULL) {
     $search_query = urldecode($search_query);
 
@@ -42,7 +45,7 @@ class SearchViewController extends ControllerBase {
           'output' => 'xml_no_dtd',
           'sort' => $sort_param,
           'access' => 'p',
-          //'requiredfields' => $filter_param
+          // 'requiredfields' => $filter_param.
         ],
       ];
 
@@ -53,7 +56,7 @@ class SearchViewController extends ControllerBase {
         && TRUE === $gsaSettings['query_param']['language_filter_toggle']
         && \Drupal::moduleHandler()->moduleExists('locale')
       ) {
-//        $search_query_data['gsa_query_params']['lr'] = _google_appliance_get_lr($gsaSettings['language_filter_options']);
+        // $search_query_data['gsa_query_params']['lr'] = _google_appliance_get_lr($gsaSettings['language_filter_options']);.
       }
 
       // Allow implementation of
@@ -62,7 +65,7 @@ class SearchViewController extends ControllerBase {
 
       // Build debug info in case we need to display it.
       if ($gsaSettings['query_param']['query_inspection'] === TRUE) {
-        $search_query_data['debug_info'][] = $this->t('GSA host: @host', array('@host' => $search_query_data['gsa_host']));
+        $search_query_data['debug_info'][] = $this->t('GSA host: @host', ['@host' => $search_query_data['gsa_host']]);
         $search_query_data['debug_info'][] = $this->t('Query Parameters: <pre>@qp</pre>',
           ['@qp' => print_r($search_query_data['gsa_query_params'], TRUE)]
         );
@@ -90,7 +93,7 @@ class SearchViewController extends ControllerBase {
       // Check for errors.
       if ($gsa_response['is_error'] === TRUE) {
         $response_data['error']['curl_error'] = $gsa_response['response'];
-        // displaying useful error messages depends upon the use of the array key
+        // Displaying useful error messages depends upon the use of the array key
         // 'curl_error' ... the actual error code/response is displayed elsewhere.
         // @see google_appliance.theme.inc
       }
@@ -119,15 +122,18 @@ class SearchViewController extends ControllerBase {
     return $form;
   }
 
-  // @todo
+  /**
+   * @todo
+   */
   private function proxySettings() {
     // Use drupal proxy if any.
     $drupal_proxy_server = variable_get('proxy_server', '');
     $drupal_proxy_port = variable_get('proxy_port', '');
     $drupal_proxy_username = variable_get('proxy_username', '');
     $drupal_proxy_password = variable_get('proxy_password', '');
-    $drupal_proxy_user_agent = variable_get('proxy_user_agent', NULL); // NULL as default value.
-    $drupal_proxy_exceptions = variable_get('proxy_exceptions', array());
+    // NULL as default value.
+    $drupal_proxy_user_agent = variable_get('proxy_user_agent', NULL);
+    $drupal_proxy_exceptions = variable_get('proxy_exceptions', []);
 
     // Add drupal proxy to curl_options.
     if ($drupal_proxy_server != '') {
@@ -137,7 +143,7 @@ class SearchViewController extends ControllerBase {
       // except for some exceptional hosts. If we are not able to confirm that this is indeed an exception
       // better to use the proxy.
       $gsa_hostname_components = \parse_url($gsa_hostname);
-      if ($gsa_hostname_components === false || _drupal_http_use_proxy($gsa_hostname_components['host'])) {
+      if ($gsa_hostname_components === FALSE || _drupal_http_use_proxy($gsa_hostname_components['host'])) {
         $curl_options[CURLOPT_PROXY] = $drupal_proxy_server;
         // Add port, if provided.
         if ($drupal_proxy_port != '') {
