@@ -3,6 +3,8 @@
 namespace Drupal\google_appliance\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
+use Drupal\google_appliance\Service\ParserInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Drupal\Component\Utility\Html;
 use Drupal\google_appliance\Form\SearchFrom;
@@ -13,6 +15,32 @@ use Drupal\google_appliance\Form\SearchFrom;
  * @package Drupal\google_appliance\Controller
  */
 class SearchViewController extends ControllerBase {
+
+  /**
+   * Parser.
+   *
+   * @var \Drupal\google_appliance\Service\ParserInterface
+   */
+  protected $parser;
+
+  /**
+   * Constructs a new SearchViewController object.
+   *
+   * @param \Drupal\google_appliance\Service\ParserInterface $parser
+   *   Parser.
+   */
+  public function __construct(ParserInterface $parser) {
+    $this->parser = $parser;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container) {
+    return new static(
+      $container->get('google_appliance.parser'),
+    );
+  }
 
   /**
    *
@@ -99,7 +127,7 @@ class SearchViewController extends ControllerBase {
       }
       // cURL gave us something back -> attempt to parse.
       else {
-        $response_data = $searchService->parseDeviceResponseXml($gsa_response['response']);
+        $response_data = $this->parser->parseResponse($gsa_response['response']);
       }
 
       // Render the results.
