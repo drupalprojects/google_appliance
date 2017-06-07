@@ -38,13 +38,18 @@ class SearchResultsTest extends GoogleApplianceFunctionalTestBase {
     // Change the results per page count to 1 to verify that we have an exact
     // match for the results per page setting.
     $config = $this->container->get('config.factory')->getEditable('google_appliance.settings');
-    $config->set('display_settings.results_per_page', 1)->save();
+    $config
+      ->set('display_settings.results_per_page', 1)
+      ->set('display_settings.search_title', 'Here are the results')
+      ->save();
     // Search via URL again.
     $this->drupalGet('gsearch/ponies');
     $results = $page->findAll('css', 'li.search-result');
     $this->assertNotEmpty($results);
     // 1 result.
     $this->assertCount(1, $results);
+    $title = $page->find('css', 'h2:contains("Here are the results")');
+    $this->assertNotEmpty($title);
   }
 
 }
