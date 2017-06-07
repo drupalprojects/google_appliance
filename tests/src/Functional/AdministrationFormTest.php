@@ -2,39 +2,12 @@
 
 namespace Drupal\Tests\google_appliance\Functional;
 
-use Drupal\simpletest\UserCreationTrait;
-use Drupal\Tests\BrowserTestBase;
-
 /**
  * Tests Google appliance administration form.
  *
  * @group google_appliance
  */
-class AdministrationFormTest extends BrowserTestBase {
-
-  use UserCreationTrait;
-
-  /**
-   * Admin user.
-   *
-   * @var \Drupal\user\UserInterface
-   */
-  protected $adminUser;
-
-  /**
-   * {@inheritdoc}
-   */
-  protected static $modules = [
-    'filter',
-    'google_appliance',
-  ];
-
-  /**
-   * {@inheritdoc}
-   */
-  protected function setUp() {
-    parent::setUp();
-  }
+class AdministrationFormTest extends GoogleApplianceFunctionalTestBase {
 
   /**
    * Tests admin form.
@@ -46,11 +19,6 @@ class AdministrationFormTest extends BrowserTestBase {
     $assert->statusCodeEquals(403);
 
     // Now login.
-    $this->adminUser = $this->createUser([
-      'administer google appliance',
-      'access google appliance content',
-    ]);
-
     $this->drupalLogin($this->adminUser);
     $this->drupalGet('/admin/config/search/google_appliance/settings');
     $assert->statusCodeEquals(200);
