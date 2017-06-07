@@ -3,13 +3,108 @@
 namespace Drupal\google_appliance\Service;
 
 use Drupal\Component\Utility\Html;
+use Drupal\Core\Config\ConfigFactoryInterface;
+use Drupal\Core\Extension\ModuleHandlerInterface;
+use Drupal\google_appliance\Response\SearchResponse;
+use GuzzleHttp\ClientInterface;
+use GuzzleHttp\Exception\GuzzleException;
 
 /**
- * Class GoogleApplianceSearch.
- *
- * @package Drupal\google_appliance\Service
+ * Defines a search connector to GSA.
  */
-class GoogleApplianceSearch {
+class Search implements SearchInterface {
+
+  /**
+   * Config factory.
+   *
+   * @var \Drupal\Core\Config\ConfigFactoryInterface
+   */
+  protected $configFactory;
+
+  /**
+   * Module handler.
+   *
+   * @var \Drupal\Core\Extension\ModuleHandlerInterface
+   */
+  protected $moduleHandler;
+
+  /**
+   * HTTP Client.
+   *
+   * @var \GuzzleHttp\ClientInterface
+   */
+  protected $httpClient;
+
+  /**
+   * Parser.
+   *
+   * @var \Drupal\google_appliance\Service\ParserInterface
+   */
+  protected $parser;
+
+  /**
+   * Constructs a new Search object.
+   *
+   * @param \Drupal\Core\Config\ConfigFactoryInterface $configFactory
+   *   Config factory.
+   * @param \Drupal\Core\Extension\ModuleHandlerInterface $moduleHandler
+   *   Module handler.
+   * @param \GuzzleHttp\ClientInterface $httpClient
+   *   HTTP client.
+   * @param \Drupal\google_appliance\Service\ParserInterface $parser
+   *   Parser.
+   */
+  public function __construct(ConfigFactoryInterface $configFactory, ModuleHandlerInterface $moduleHandler, ClientInterface $httpClient, ParserInterface $parser) {
+    $this->configFactory = $configFactory;
+    $this->moduleHandler = $moduleHandler;
+    $this->httpClient = $httpClient;
+    $this->parser = $parser;
+  }
+
+  /**
+   * Performs search.
+   *
+   * @param string $searchQuery
+   *   Search terms.
+   * @param string|null $sort
+   *   Sort field. Pass 'Date' for date search. Leave empty for default.
+   * @param int $page
+   *   Results page.
+   * @param array $languages
+   *   Array of language codes.
+   *
+   * @return \Drupal\google_appliance\Response\SearchResponse
+   *   Search response.
+   */
+  public function search($searchQuery, $sort = NULL, $page = 0, array $languages = []) {
+    $config = $this->configFactory->get('google_appliance.settings');
+    $params = [
+      'site' => Html::escape($config->get('connection_info.collection')),
+      'oe' => 'utf8',
+      'ie' => 'utf8',
+      'getfields' => '*',
+      'client' => Html::escape($config->get('connection_info.frontend')),
+      'page' => $page * (int) $config->get('display_settings.results_per_page'),
+      'num' => Html::escape($config->get('display_settings.results_per_page')),
+      'filter' => Html::escape($config->get('query_param.autofilter')),
+      'q' => $searchQuery,
+      'output' => 'xml_no_dtd',
+      'sort' => $sort,
+      'access' => 'p',
+    ];
+    $this->moduleHandler->alter('google_appliance_query', $params);
+    try {
+      $response = $this->httpClient->request('GET', $config->get('connection_info.hostname') . '/search', [
+        'query' => $params,
+      ]);
+      $return = $this->parser->parseResponse((string) $response->getBody());
+    }
+    catch (GuzzleException $e) {
+      $return = (new SearchResponse())->addError($e->getMessage(), SearchResponse::ERROR_HTTP);
+    }
+    $this->moduleHandler->alter('google_appliance_response', $return);
+    return $return;
+  }
 
   /**
    * Send a GET request using cURL.

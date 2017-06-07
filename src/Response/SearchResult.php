@@ -2,6 +2,9 @@
 
 namespace Drupal\google_appliance\Response;
 
+use Drupal\Component\Utility\Xss;
+use Drupal\Core\Render\Markup;
+
 /**
  * Defines a value object representing a search result.
  */
@@ -151,7 +154,7 @@ class SearchResult {
    *   Value of title
    */
   public function getTitle() {
-    return $this->title;
+    return Markup::create(Xss::filter($this->title, ['b', 'i']));
   }
 
   /**
@@ -161,7 +164,7 @@ class SearchResult {
    *   Value of snippet
    */
   public function getSnippet() {
-    return $this->snippet;
+    return Markup::create(Xss::filter($this->snippet, ['b', 'i']));
   }
 
   /**

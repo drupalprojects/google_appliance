@@ -28,6 +28,7 @@ class SearchBlock extends BlockBase implements ContainerFactoryPluginInterface {
 
   /**
    * Constructs a new SearchBlock object.
+   *
    * @param array $configuration
    * @param string $plugin_id
    * @param mixed $plugin_definition

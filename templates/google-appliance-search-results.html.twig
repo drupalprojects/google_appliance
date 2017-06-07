@@ -1,0 +1,76 @@
+{#
+ /**
+  * @file
+  * Contains theme representation of search results
+  *
+  * Available variables:
+  *  - form - the search form
+  *  - response - the search response
+  */
+#}
+<div>
+    <div>
+        {{ form }}
+    </div>
+    <h2 id="search-results-heading">{{ search_title }}</h2>
+    <div>
+        {% if response.hasSpellingSuggestions %}
+            <ol>
+                {% for suggestion in response.getSpellingSuggestions %}
+                    {# @todo split into own tpl #}
+                    <li>{{ suggestion }}</li>
+                {% endfor %}
+            </ol>
+        {% endif %}
+    </div>
+    <div>
+        {% if response.hasSynonyms %}
+            {% for synonym in response.getSynonyms %}
+                <div class="synonyms google-appliance-synonyms">
+                    {# @todo split into own tpl #}
+                    <span class="p">{{ synonym }}</span>
+                    <ul>{{ synonym }}</ul>
+                </div>
+            {% endfor %}
+        {% else %}
+            <span>No synonyms found.</span>
+        {% endif %}
+    </div>
+    <div>
+        {{ pager }}
+    </div>
+    <div>
+        <div class="google-appliance-results-control-bar clearfix">
+            {# @todo {{ search_stats }}
+            {{ sort_headers }}#}
+        </div>
+        {% if response.hasKeyMatch %}
+            <ol class="keymatch-results google-appliance-keymatch-results">
+                {# @todo: keymatch results #}
+            </ol>
+        {% endif %}
+
+        {% if response.hasErrors %}
+            {# @todo
+            <span>Errors</span>
+            <ol>
+                {% for type, item in error %}
+                    <li>{{ type }}, :{{ item }}</li>
+                {% endfor %}
+            </ol>#}
+        {% endif %}
+
+        {% if response.hasResults %}
+            <ol class="search-results google-appliance-results">
+                {% for result in response.getResults %}
+                    <li class="search-result">{% include '@google_appliance/google-appliance-result.html.twig' with {
+                        result: result,
+                        } only %}</li>
+                {% endfor %}
+            </ol>
+        {% else %}
+            <span>No results found.</span>
+        {% endif %}
+
+    </div>
+</div>

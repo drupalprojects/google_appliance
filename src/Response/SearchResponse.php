@@ -9,6 +9,7 @@ class SearchResponse {
 
   const ERROR_PARSING = 'lib_xml_parse_error';
   const ERROR_NO_RESULTS = 'gsa_no_results';
+  const ERROR_HTTP = 'http_error';
 
   /**
    * Response errors keyed by type.
@@ -252,6 +253,46 @@ class SearchResponse {
   public function addOneBoxResultSet($module_name, OneBoxResultSet $onebox) {
     $this->oneBoxResultSets[$module_name] = $onebox;
     return $this;
+  }
+
+  /**
+   * Check if there are results.
+   *
+   * @return bool
+   *   TRUE if there are results.
+   */
+  public function hasResults() {
+    return (bool) count($this->results);
+  }
+
+  /**
+   * Check if there are synonyms.
+   *
+   * @return bool
+   *   TRUE if synonyms exist.
+   */
+  public function hasSynonyms() {
+    return (bool) count($this->synonyms);
+  }
+
+  /**
+   * Check if there are key matches.
+   *
+   * @return bool
+   *   TRUE if key matches exist.
+   */
+  public function hasKeyMatch() {
+    return (bool) count($this->keyMatches);
+  }
+
+  /**
+   * Check if there are suggestions.
+   *
+   * @return bool
+   *   TRUE if suggestions exist.
+   */
+  public function hasSpellingSuggestions() {
+    return (bool) count($this->spellingSuggestions);
   }
 
 }

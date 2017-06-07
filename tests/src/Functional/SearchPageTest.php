@@ -38,6 +38,8 @@ class SearchPageTest extends GoogleApplianceFunctionalTestBase {
     // Go to the results page.
     $this->drupalGet('gsearch');
     $assert->statusCodeEquals(200);
+    // Page title is present.
+    $assert->pageTextContains($settings['search_title']);
 
     // We should have the form.
     $assert->fieldValueEquals('edit-search-keys', '');

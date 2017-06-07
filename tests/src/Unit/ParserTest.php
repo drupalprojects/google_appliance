@@ -26,8 +26,8 @@ class ParserTest extends UnitTestCase {
     /** @var \Drupal\google_appliance\Response\SearchResult $result */
     $result = reset($searchResults);
     $this->assertEquals('http://www.uts.edu.au/research-and-teaching/future-researchers', $result->getAbsoluteUrl());
-    $this->assertContains('Future researchers', strip_tags($result->getTitle()));
-    $this->assertContains('UTS is home to world-leading', $result->getSnippet());
+    $this->assertContains('Future researchers', strip_tags((string) $result->getTitle()));
+    $this->assertContains('UTS is home to world-leading', (string) $result->getSnippet());
   }
 
 }

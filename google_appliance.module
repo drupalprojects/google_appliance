@@ -45,10 +45,12 @@ function google_appliance_help($path, $arg) {
 function google_appliance_theme() {
   $theme = [];
 
-  $theme['google_appliance__search_results'] = [
+  $theme['google_appliance_search_results'] = [
     'file' => 'google_appliance.page.inc',
-    'template' => 'google-appliance--search-results',
-    'render element' => 'elements',
+    'variables' => [
+      'response' => NULL,
+      'form' => '',
+    ],
   ];
 
   return $theme;
