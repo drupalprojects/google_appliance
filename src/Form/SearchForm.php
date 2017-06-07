@@ -22,11 +22,7 @@ class SearchForm extends FormBase {
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, FormStateInterface $form_state) {
-    $request = $this->getRequest();
-
-    $query = $request->request->has('search_keys') ? $request->request->get('search_keys') : '';
-
+  public function buildForm(array $form, FormStateInterface $form_state, $query = '') {
     $prompt = $this->t('Enter the terms you wish to search for.');
 
     // Basic search.

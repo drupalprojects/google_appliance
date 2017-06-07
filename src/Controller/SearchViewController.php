@@ -3,6 +3,7 @@
 namespace Drupal\google_appliance\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
+use Drupal\Core\Form\FormBuilderInterface;
 use Drupal\google_appliance\Service\ParserInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -28,9 +29,12 @@ class SearchViewController extends ControllerBase {
    *
    * @param \Drupal\google_appliance\Service\ParserInterface $parser
    *   Parser.
+   * @param \Drupal\Core\Form\FormBuilderInterface $formBuilder
+   *   Form builder.
    */
-  public function __construct(ParserInterface $parser) {
+  public function __construct(ParserInterface $parser, FormBuilderInterface $formBuilder) {
     $this->parser = $parser;
+    $this->formBuilder = $formBuilder;
   }
 
   /**
@@ -38,17 +42,28 @@ class SearchViewController extends ControllerBase {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('google_appliance.parser')
+      $container->get('google_appliance.parser'),
+      $container->get('form_builder')
     );
   }
 
   /**
+   * Builds search page.
    *
+   * @param \Symfony\Component\HttpFoundation\Request $request
+   *   Current request.
+   * @param string $search_query
+   *   Search query.
+   * @param null|string $result_sort
+   *   Sort order.
+   *
+   * @return array
+   *   Render array
    */
   public function get(Request $request, $search_query = '', $result_sort = NULL) {
     $search_query = urldecode($search_query);
 
-    $form = \Drupal::formBuilder()->getForm(SearchForm::class);
+    $form = $this->formBuilder->getForm(SearchForm::class, $search_query);
 
     if ($search_query !== '' && !$request->request->has('form_id')) {
       $requestContent = json_decode($request->getContent(), TRUE);
