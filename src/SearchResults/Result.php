@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\google_appliance\Response;
+namespace Drupal\google_appliance\SearchResults;
 
 use Drupal\Component\Utility\Xss;
 use Drupal\Core\Render\Markup;
@@ -8,7 +8,7 @@ use Drupal\Core\Render\Markup;
 /**
  * Defines a value object representing a search result.
  */
-class SearchResult {
+class Result {
 
   /**
    * Absolute URL.
@@ -74,7 +74,7 @@ class SearchResult {
   protected $level = 1;
 
   /**
-   * Constructs a new SearchResult object.
+   * Constructs a new Result object.
    *
    * @param string $absoluteUrl
    *   Absolute URL.

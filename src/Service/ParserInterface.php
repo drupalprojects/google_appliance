@@ -15,7 +15,7 @@ interface ParserInterface {
    * @param bool $useCached
    *   FALSE to re-parse and bypass static-cache.
    *
-   * @return \Drupal\google_appliance\Response\SearchResponse
+   * @return \Drupal\google_appliance\SearchResults\ResultSet
    *   Search response.
    */
   public function parseResponse($xml, $useCached = TRUE);

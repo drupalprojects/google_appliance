@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\google_appliance\Response;
+namespace Drupal\google_appliance\SearchResults;
 
 /**
  * Defines a value object for a one-box result set.
@@ -52,7 +52,7 @@ class OneBoxResultSet {
   /**
    * Results.
    *
-   * @var \Drupal\google_appliance\Response\OneBoxResult[]
+   * @var \Drupal\google_appliance\SearchResults\OneBoxResult[]
    */
   protected $results = [];
 
@@ -84,7 +84,7 @@ class OneBoxResultSet {
   /**
    * Adds a result.
    *
-   * @param \Drupal\google_appliance\Response\OneBoxResult $result
+   * @param \Drupal\google_appliance\SearchResults\OneBoxResult $result
    *   The result.
    *
    * @return $this
@@ -157,7 +157,7 @@ class OneBoxResultSet {
   /**
    * Gets value of results.
    *
-   * @return \Drupal\google_appliance\Response\OneBoxResult[]
+   * @return \Drupal\google_appliance\SearchResults\OneBoxResult[]
    *   Value of results
    */
   public function getResults() {

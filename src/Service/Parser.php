@@ -4,12 +4,12 @@ namespace Drupal\google_appliance\Service;
 
 use Drupal\Component\Utility\Xss;
 use Drupal\Core\Extension\ModuleHandlerInterface;
-use Drupal\google_appliance\Response\KeyMatch;
-use Drupal\google_appliance\Response\OneBoxResult;
-use Drupal\google_appliance\Response\OneBoxResultSet;
-use Drupal\google_appliance\Response\SearchResponse;
-use Drupal\google_appliance\Response\SearchResult;
-use Drupal\google_appliance\Response\Synonym;
+use Drupal\google_appliance\SearchResults\KeyMatch;
+use Drupal\google_appliance\SearchResults\OneBoxResult;
+use Drupal\google_appliance\SearchResults\OneBoxResultSet;
+use Drupal\google_appliance\SearchResults\ResultSet;
+use Drupal\google_appliance\SearchResults\Result;
+use Drupal\google_appliance\SearchResults\Synonym;
 
 /**
  * Defines a class for parsing GSA responses.
@@ -19,7 +19,7 @@ class Parser implements ParserInterface {
   /**
    * Cached parse result.
    *
-   * @var null|\Drupal\google_appliance\Response\SearchResponse
+   * @var null|\Drupal\google_appliance\SearchResults\ResultSet
    */
   protected $response;
 
@@ -45,7 +45,7 @@ class Parser implements ParserInterface {
    */
   public function parseResponse($xml, $useCached = TRUE) {
     if (!$this->response || FALSE === $useCached) {
-      $response = new SearchResponse();
+      $response = new ResultSet();
 
       // Look for xml parse errors.
       libxml_use_internal_errors(TRUE);
@@ -67,7 +67,7 @@ class Parser implements ParserInterface {
 
         // Search returned zero results.
         if (!$response->getTotal()) {
-          $response->addError('No results', SearchResponse::ERROR_NO_RESULTS);
+          $response->addError('No results', ResultSet::ERROR_NO_RESULTS);
           $this->response = $response;
           return $this->response;
         }
@@ -111,10 +111,10 @@ class Parser implements ParserInterface {
    *
    * @param \SimpleXMLElement $payload
    *   Payload.
-   * @param \Drupal\google_appliance\Response\SearchResponse $response
+   * @param \Drupal\google_appliance\SearchResults\ResultSet $response
    *   Response.
    */
-  protected function parseResultCount(\SimpleXMLElement $payload, SearchResponse $response) {
+  protected function parseResultCount(\SimpleXMLElement $payload, ResultSet $response) {
     $response->setTotal((int) $payload->RES->M);
 
     // C check if there is an result at all ($payload->RES),
@@ -137,12 +137,12 @@ class Parser implements ParserInterface {
    *
    * @param \SimpleXMLElement $payload
    *   Payload.
-   * @param \Drupal\google_appliance\Response\SearchResponse $response
+   * @param \Drupal\google_appliance\SearchResults\ResultSet $response
    *   Response.
    */
-  protected function parseResultEntries(\SimpleXMLElement $payload, SearchResponse $response) {
+  protected function parseResultEntries(\SimpleXMLElement $payload, ResultSet $response) {
     foreach ($payload->xpath('//R') as $res) {
-      $result = new SearchResult((string) $res->U, (string) $res->UE, (string) $res->T, (string) $res->S, (string) $res->FS['VALUE'], (string) $res['MIME'], isset($res['L']) ? (int) $res['L'] : 1);
+      $result = new Result((string) $res->U, (string) $res->UE, (string) $res->T, (string) $res->S, (string) $res->FS['VALUE'], (string) $res['MIME'], isset($res['L']) ? (int) $res['L'] : 1);
 
       // Result meta data.
       // Here we just collect the data from the device
@@ -161,10 +161,10 @@ class Parser implements ParserInterface {
    *
    * @param \SimpleXMLElement $payload
    *   Payload.
-   * @param \Drupal\google_appliance\Response\SearchResponse $response
+   * @param \Drupal\google_appliance\SearchResults\ResultSet $response
    *   Response.
    */
-  protected function parseOneboxResults(\SimpleXMLElement $payload, SearchResponse $response) {
+  protected function parseOneboxResults(\SimpleXMLElement $payload, ResultSet $response) {
     // Onebox results.
     // @see https://developers.google.com/search-appliance/documentation/614/oneboxguide#providerresultsschema
     // @see https://developers.google.com/search-appliance/documentation/614/oneboxguide#mergingobs

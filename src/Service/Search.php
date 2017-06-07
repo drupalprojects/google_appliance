@@ -5,7 +5,7 @@ namespace Drupal\google_appliance\Service;
 use Drupal\Component\Utility\Html;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
-use Drupal\google_appliance\Response\SearchResponse;
+use Drupal\google_appliance\SearchResults\ResultSet;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\GuzzleException;
 
@@ -73,7 +73,7 @@ class Search implements SearchInterface {
    * @param array $languages
    *   Array of language codes.
    *
-   * @return \Drupal\google_appliance\Response\SearchResponse
+   * @return \Drupal\google_appliance\SearchResults\ResultSet
    *   Search response.
    */
   public function search($searchQuery, $sort = NULL, $page = 0, array $languages = []) {
@@ -100,10 +100,10 @@ class Search implements SearchInterface {
       $return = $this->parser->parseResponse((string) $response->getBody());
     }
     catch (GuzzleException $e) {
-      $return = (new SearchResponse())->addError($e->getMessage(), SearchResponse::ERROR_HTTP);
+      $return = (new ResultSet())->addError($e->getMessage(), ResultSet::ERROR_HTTP);
     }
     $this->moduleHandler->alter('google_appliance_response', $return);
-    return $return;
+    return $return->setSearchTitle($config->get('display_settings.search_title'));
   }
 
 }

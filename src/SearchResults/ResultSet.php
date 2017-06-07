@@ -1,15 +1,22 @@
 <?php
 
-namespace Drupal\google_appliance\Response;
+namespace Drupal\google_appliance\SearchResults;
 
 /**
  * Defines a value object for a search response.
  */
-class SearchResponse {
+class ResultSet {
 
   const ERROR_PARSING = 'lib_xml_parse_error';
   const ERROR_NO_RESULTS = 'gsa_no_results';
   const ERROR_HTTP = 'http_error';
+
+  /**
+   * Display title.
+   *
+   * @var string
+   */
+  protected $searchTitle;
 
   /**
    * Response errors keyed by type.
@@ -28,7 +35,7 @@ class SearchResponse {
   /**
    * Result objects.
    *
-   * @var \Drupal\google_appliance\Response\SearchResult[]
+   * @var \Drupal\google_appliance\SearchResults\Result[]
    */
   protected $results = [];
 
@@ -42,14 +49,14 @@ class SearchResponse {
   /**
    * Key matches.
    *
-   * @var \Drupal\google_appliance\Response\KeyMatch[]
+   * @var \Drupal\google_appliance\SearchResults\KeyMatch[]
    */
   protected $keyMatches = [];
 
   /**
    * Synonyms.
    *
-   * @var \Drupal\google_appliance\Response\Synonym[]
+   * @var \Drupal\google_appliance\SearchResults\Synonym[]
    */
   protected $synonyms = [];
 
@@ -63,7 +70,7 @@ class SearchResponse {
   /**
    * One box result keyed by module name.
    *
-   * @var \Drupal\google_appliance\Response\OneBoxResultSet[]
+   * @var \Drupal\google_appliance\SearchResults\OneBoxResultSet[]
    */
   protected $oneBoxResultSets = [];
 
@@ -121,7 +128,7 @@ class SearchResponse {
   /**
    * Adds key match.
    *
-   * @param \Drupal\google_appliance\Response\KeyMatch $match
+   * @param \Drupal\google_appliance\SearchResults\KeyMatch $match
    *   Match.
    *
    * @return $this
@@ -134,7 +141,7 @@ class SearchResponse {
   /**
    * Adds synonym.
    *
-   * @param \Drupal\google_appliance\Response\Synonym $synonym
+   * @param \Drupal\google_appliance\SearchResults\Synonym $synonym
    *   Synonym.
    *
    * @return $this
@@ -147,12 +154,12 @@ class SearchResponse {
   /**
    * Adds a result.
    *
-   * @param \Drupal\google_appliance\Response\SearchResult $result
+   * @param \Drupal\google_appliance\SearchResults\Result $result
    *   Result.
    *
    * @return $this
    */
-  public function addResult(SearchResult $result) {
+  public function addResult(Result $result) {
     $this->results[] = $result;
     return $this;
   }
@@ -180,7 +187,7 @@ class SearchResponse {
   /**
    * Gets value of results.
    *
-   * @return \Drupal\google_appliance\Response\SearchResult[]
+   * @return \Drupal\google_appliance\SearchResults\Result[]
    *   Value of results
    */
   public function getResults() {
@@ -245,7 +252,7 @@ class SearchResponse {
    *
    * @param string $module_name
    *   One box module.
-   * @param \Drupal\google_appliance\Response\OneBoxResultSet $onebox
+   * @param \Drupal\google_appliance\SearchResults\OneBoxResultSet $onebox
    *   Results set.
    *
    * @return $this
@@ -293,6 +300,29 @@ class SearchResponse {
    */
   public function hasSpellingSuggestions() {
     return (bool) count($this->spellingSuggestions);
+  }
+
+  /**
+   * Gets value of searchTitle.
+   *
+   * @return string
+   *   Value of searchTitle
+   */
+  public function getSearchTitle() {
+    return $this->searchTitle;
+  }
+
+  /**
+   * Sets searchTitle.
+   *
+   * @param string $searchTitle
+   *   New value for searchTitle.
+   * @return ResultSet
+   *   Instance called.
+   */
+  public function setSearchTitle($searchTitle) {
+    $this->searchTitle = $searchTitle;
+    return $this;
   }
 
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\google_appliance\Response;
+namespace Drupal\google_appliance\SearchResults;
 
 /**
  * Defines a value object for a one-box result.

@@ -12,7 +12,7 @@
     <div>
         {{ form }}
     </div>
-    <h2 id="search-results-heading">{{ search_title }}</h2>
+    <h2 id="search-results-heading">{{ response.getSearchTitle }}</h2>
     <div>
         {% if response.hasSpellingSuggestions %}
             <ol>
