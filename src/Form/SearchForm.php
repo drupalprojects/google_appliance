@@ -6,11 +6,11 @@ use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 
 /**
- * Class SearchFrom.
+ * Provides the search form.
  *
  * @package Drupal\google_appliance\Form
  */
-class SearchFrom extends FormBase {
+class SearchForm extends FormBase {
 
   /**
    * {@inheritdoc}
@@ -23,7 +23,7 @@ class SearchFrom extends FormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-    $request = \Drupal::request();
+    $request = $this->getRequest();
 
     $query = $request->request->has('search_keys') ? $request->request->get('search_keys') : '';
 

@@ -7,7 +7,7 @@ use Drupal\google_appliance\Service\ParserInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Drupal\Component\Utility\Html;
-use Drupal\google_appliance\Form\SearchFrom;
+use Drupal\google_appliance\Form\SearchForm;
 
 /**
  * Class SearchView.
@@ -48,7 +48,7 @@ class SearchViewController extends ControllerBase {
   public function get(Request $request, $search_query = '', $result_sort = NULL) {
     $search_query = urldecode($search_query);
 
-    $form = \Drupal::formBuilder()->getForm(SearchFrom::class);
+    $form = \Drupal::formBuilder()->getForm(SearchForm::class);
 
     if ($search_query !== '' && !$request->request->has('form_id')) {
       $requestContent = json_decode($request->getContent(), TRUE);
