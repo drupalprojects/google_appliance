@@ -2,6 +2,8 @@
 
 namespace Drupal\google_appliance\Service;
 
+use Drupal\google_appliance\SearchResults\SearchQuery;
+
 /**
  * Defines an interface for performing a GSA search.
  */
@@ -10,18 +12,12 @@ interface SearchInterface {
   /**
    * Performs search.
    *
-   * @param string $searchQuery
-   *   Search terms.
-   * @param string|null $sort
-   *   Sort field. Pass 'Date' for date search. Leave empty for default
-   * @param int $page
-   *   Result to page from.
-   * @param array $languages
-   *   Array of language codes.
+   * @param \Drupal\google_appliance\SearchResults\SearchQuery $query
+   *   Search query.
    *
    * @return \Drupal\google_appliance\SearchResults\ResultSet
-   *   Search response.
+   *   Search result set.
    */
-  public function search($searchQuery, $sort = NULL, $page = 0, array $languages = []);
+  public function search(SearchQuery $query);
 
 }

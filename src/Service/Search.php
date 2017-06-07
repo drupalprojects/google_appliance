@@ -6,6 +6,7 @@ use Drupal\Component\Utility\Html;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\google_appliance\SearchResults\ResultSet;
+use Drupal\google_appliance\SearchResults\SearchQuery;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\GuzzleException;
 
@@ -64,19 +65,13 @@ class Search implements SearchInterface {
   /**
    * Performs search.
    *
-   * @param string $searchQuery
-   *   Search terms.
-   * @param string|null $sort
-   *   Sort field. Pass 'Date' for date search. Leave empty for default.
-   * @param int $page
-   *   Results page.
-   * @param array $languages
-   *   Array of language codes.
+   * @param \Drupal\google_appliance\SearchResults\SearchQuery $query
+   *   Search query.
    *
    * @return \Drupal\google_appliance\SearchResults\ResultSet
-   *   Search response.
+   *   Search result set.
    */
-  public function search($searchQuery, $sort = NULL, $page = 0, array $languages = []) {
+  public function search(SearchQuery $query) {
     $config = $this->configFactory->get('google_appliance.settings');
     $params = [
       'site' => Html::escape($config->get('connection_info.collection')),
@@ -84,12 +79,12 @@ class Search implements SearchInterface {
       'ie' => 'utf8',
       'getfields' => '*',
       'client' => Html::escape($config->get('connection_info.frontend')),
-      'page' => $page * (int) $config->get('display_settings.results_per_page'),
+      'page' => $query->getPage() * (int) $config->get('display_settings.results_per_page'),
       'num' => Html::escape($config->get('display_settings.results_per_page')),
       'filter' => Html::escape($config->get('query_param.autofilter')),
-      'q' => $searchQuery,
+      'q' => $query->getSearchQuery(),
       'output' => 'xml_no_dtd',
-      'sort' => $sort,
+      'sort' => $query->getSort(),
       'access' => 'p',
     ];
     $this->moduleHandler->alter('google_appliance_query', $params);
@@ -103,7 +98,9 @@ class Search implements SearchInterface {
       $return = (new ResultSet())->addError($e->getMessage(), ResultSet::ERROR_HTTP);
     }
     $this->moduleHandler->alter('google_appliance_response', $return);
-    return $return->setSearchTitle($config->get('display_settings.search_title'));
+    return $return
+      ->setSearchTitle($config->get('display_settings.search_title'))
+      ->setQuery($query);
   }
 
 }

@@ -40,10 +40,9 @@
         {{ pager }}
     </div>
     <div>
-        <div class="google-appliance-results-control-bar clearfix">
-            {# @todo {{ search_stats }}
-            {{ sort_headers }}#}
-        </div>
+        {% include '@google_appliance/google-appliance-results-control-bar.html.twig' with {
+        response: response,
+        } only %}
         {% if response.hasKeyMatch %}
             <ol class="keymatch-results google-appliance-keymatch-results">
                 {# @todo: keymatch results #}
@@ -72,5 +71,8 @@
             <span>No results found.</span>
         {% endif %}
 
+        {% include '@google_appliance/google-appliance-results-control-bar.html.twig' with {
+        response: response,
+        } only %}
     </div>
 </div>

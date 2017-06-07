@@ -61,7 +61,7 @@ class Parser implements ParserInterface {
       }
       else {
         // Store metrics for stat reporting.
-        $response->setLastResult((string) $payload->RES['EN']);
+        $response->setLastResult((int) $payload->RES['EN']);
 
         $this->parseResultCount($payload, $response);
 

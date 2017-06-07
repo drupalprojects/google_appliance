@@ -4,6 +4,7 @@ namespace Drupal\google_appliance\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Form\FormBuilderInterface;
+use Drupal\google_appliance\SearchResults\SearchQuery;
 use Drupal\google_appliance\Service\SearchInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -66,10 +67,7 @@ class SearchViewController extends ControllerBase {
 
     if ($search_query !== '' && !$request->request->has('form_id')) {
       // @todo Language filter.
-      $response = $this->search->search($search_query, $result_sort === 'date' ? 'date:D:S:d1' : NULL, $request->query->get('page'));
-
-      // Render the results.
-      $search_query_data['gsa_query_params']['urlencoded_q'] = urlencode($search_query);
+      $response = $this->search->search(new SearchQuery($search_query, $result_sort === 'date' ? SearchQuery::ORDER_DATE : NULL, $request->query->get('page')));
 
       return [
         '#theme' => 'google_appliance_search_results',

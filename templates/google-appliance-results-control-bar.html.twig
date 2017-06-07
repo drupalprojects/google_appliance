@@ -1,0 +1,21 @@
+{#
+ /**
+  * @file
+  * Contains theme representation of control bar
+  *
+  * Available variables:
+  *  - response - the search response
+  */
+#}
+<div class="google-appliance-results-control-bar clearfix">
+    <div class="container-inline google-appliance-search-stats">
+        {{ response.getStatistics }}
+    </div>
+
+
+    <div class="container-inline google-appliance-sort-headers">
+        {% for sortLink in response.getSortLinks  %}
+            <div class="google-appliance-sorter">{{ sortLink }}</div>
+        {% endfor %}
+    </div>
+</div>

@@ -1,6 +1,9 @@
 <?php
 
 namespace Drupal\google_appliance\SearchResults;
+use Drupal\Core\Link;
+use Drupal\Core\StringTranslation\TranslatableMarkup;
+use Drupal\Core\Url;
 
 /**
  * Defines a value object for a search response.
@@ -63,7 +66,7 @@ class ResultSet {
   /**
    * Last result.
    *
-   * @var string
+   * @var int
    */
   protected $lastResult = '';
 
@@ -73,6 +76,13 @@ class ResultSet {
    * @var \Drupal\google_appliance\SearchResults\OneBoxResultSet[]
    */
   protected $oneBoxResultSets = [];
+
+  /**
+   * Original query object.
+   *
+   * @var \Drupal\google_appliance\SearchResults\SearchQuery
+   */
+  protected $query;
 
   /**
    * Check if response is in error.
@@ -317,12 +327,78 @@ class ResultSet {
    *
    * @param string $searchTitle
    *   New value for searchTitle.
-   * @return ResultSet
-   *   Instance called.
+   *
+   * @return $this
    */
   public function setSearchTitle($searchTitle) {
     $this->searchTitle = $searchTitle;
     return $this;
+  }
+
+
+  /**
+   * Gets value of query.
+   *
+   * @return \Drupal\google_appliance\SearchResults\SearchQuery
+   *   Value of query
+   */
+  public function getQuery() {
+    return $this->query;
+  }
+
+  /**
+   * Sets query.
+   *
+   * @param \Drupal\google_appliance\SearchResults\SearchQuery $query
+   *   New value for query.
+   *
+   * @return $this
+   */
+  public function setQuery($query) {
+    $this->query = $query;
+    return $this;
+  }
+
+  /**
+   * Gets statistics information for search result.
+   *
+   * @return \Drupal\Core\StringTranslation\TranslatableMarkup
+   *   Statistics information.
+   */
+  public function getStatistics() {
+    return new TranslatableMarkup('Showing results @first - @last for %query', [
+      '@first' => $this->lastResult - count($this->results) + 1,
+      '@last' => $this->lastResult,
+      '%query' => $this->query->getSearchQuery(),
+    ]);
+  }
+
+  /**
+   * Returns an array of sort links.
+   *
+   * @return array
+   *   Sort links.
+   */
+  public function getSortLinks() {
+    $links = [];
+    if ($this->query->getSort() == SearchQuery::ORDER_DATE) {
+      $links[] = Link::fromTextAndUrl(New TranslatableMarkup('Relevance'), Url::fromRoute('google_appliance.search_view', [
+        'search_query' => $this->query->getSearchQuery(),
+        'result_sort' => 'rel',
+      ])->setAbsolute()->setOption('query', [
+        'page' => $this->query->getPage(),
+      ]));
+      $links[] = new TranslatableMarkup('Date');
+      return $links;
+    }
+    $links[] = new TranslatableMarkup('Relevance');
+    $links[] = Link::fromTextAndUrl(new TranslatableMarkup('Date'), Url::fromRoute('google_appliance.search_view', [
+      'search_query' => $this->query->getSearchQuery(),
+      'result_sort' => 'date',
+    ])->setAbsolute()->setOption('query', [
+      'page' => $this->query->getPage(),
+    ]));
+    return $links;
   }
 
 }
