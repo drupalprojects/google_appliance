@@ -1,13 +1,16 @@
 What "should" work:
 * Settings form
 * Search page/form
+* Synonyms
+* Pager
+* Sorting
+* Search block
 
-Note, these are not tested.
+Note, these are all tested.
 
 Most files contain @todo and @fixme parts.
 
 Files of the D7 version not even touched:
-	blocks.php
 	js/clicklog.js
 	js/jquery.gsa-clicks.js
 	js/jquery.gsa-clicks.min.js
@@ -15,14 +18,14 @@ Files of the D7 version not even touched:
 	theme/google-appliance-keymatch.tpl.php
 	theme/google-appliance-onebox-module.tpl.php
 	theme/google-appliance-onebox-result.tpl.php
-	theme/google-appliance-result.tpl.php
-	theme/google-appliance-results.tpl.php
 	theme/google-appliance-search-form.tpl.php
-	theme/google-appliance-search-stats.tpl.php
-	theme/google-appliance-sort-headers.tpl.php
 	theme/google-appliance-spelling-suggestion.tpl.php
-	theme/google-appliance-synonym.tpl.php
 	theme/google_appliance.css
 	theme/google_appliance.theme.inc
 
-Tests should also be written.	
+To do:
+* Onebox results
+* keymatch output
+* Spelling suggestion output
+* Click/JS stuff
+* Clustering
