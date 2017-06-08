@@ -2,6 +2,7 @@
 
 namespace Drupal\google_appliance\SearchResults;
 
+use Drupal\google_appliance\Routing\SearchViewRoute;
 use Drupal\Core\Link;
 use Drupal\Core\StringTranslation\TranslatableMarkup;
 use Drupal\Core\Url;
@@ -389,7 +390,7 @@ class ResultSet {
   public function getSortLinks() {
     $links = [];
     if ($this->query->getSort() == SearchQuery::ORDER_DATE) {
-      $links[] = Link::fromTextAndUrl(new TranslatableMarkup('Relevance'), Url::fromRoute('google_appliance.search_view', [
+      $links[] = Link::fromTextAndUrl(new TranslatableMarkup('Relevance'), Url::fromRoute(SearchViewRoute::ROUTE_NAME, [
         'search_query' => $this->query->getSearchQuery(),
         'result_sort' => 'rel',
       ])->setAbsolute()->setOption('query', [
@@ -399,7 +400,7 @@ class ResultSet {
       return $links;
     }
     $links[] = new TranslatableMarkup('Relevance');
-    $links[] = Link::fromTextAndUrl(new TranslatableMarkup('Date'), Url::fromRoute('google_appliance.search_view', [
+    $links[] = Link::fromTextAndUrl(new TranslatableMarkup('Date'), Url::fromRoute(SearchViewRoute::ROUTE_NAME, [
       'search_query' => $this->query->getSearchQuery(),
       'result_sort' => 'date',
     ])->setAbsolute()->setOption('query', [
@@ -416,14 +417,6 @@ class ResultSet {
    */
   public function getPager() {
     // Globals required to manually configure the pager.
-    //  _________________________
-    // < pager is a pile of puke >
-    // -------------------------
-    //     \   ^__^
-    //      \  (oo)\_______
-    //         (__)\       )\/\
-    //             ||----w |
-    //             ||     ||.
     global $pager_page_array, $pager_total, $pager_total_items;
 
     $element = 0;

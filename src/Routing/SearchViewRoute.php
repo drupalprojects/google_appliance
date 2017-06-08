@@ -9,6 +9,8 @@ use Symfony\Component\Routing\Route;
  */
 class SearchViewRoute {
 
+  const ROUTE_NAME = 'google_appliance.search_view';
+
   /**
    * Get route dynamically from system settings.
    */
@@ -23,7 +25,7 @@ class SearchViewRoute {
     }
 
     // . '/{$searchQuery}/{resultSort}'.
-    $routes['google_appliance.search_view'] = new Route(
+    $routes[self::ROUTE_NAME] = new Route(
       '/' . $drupalPath . '/{search_query}/{result_sort}',
       [
         '_title' => $title,

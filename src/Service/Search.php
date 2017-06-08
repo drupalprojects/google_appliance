@@ -80,7 +80,7 @@ class Search implements SearchInterface {
       'ie' => 'utf8',
       'getfields' => '*',
       'client' => Html::escape($config->get('connection_info.frontend')),
-      'page' => $query->getPage() * $resultsPerPage,
+      'start' => $query->getPage() * $resultsPerPage,
       'num' => Html::escape($config->get('display_settings.results_per_page')),
       'filter' => Html::escape($config->get('query_param.autofilter')),
       'q' => $query->getSearchQuery(),

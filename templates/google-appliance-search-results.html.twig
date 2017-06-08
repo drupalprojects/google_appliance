@@ -25,15 +25,14 @@
     </div>
     <div>
         {% if results.hasSynonyms %}
-            {% for synonym in results.getSynonyms %}
-                <div class="synonyms google-appliance-synonyms">
-                    {# @todo split into own tpl #}
-                    <span class="p">{{ synonym }}</span>
-                    <ul>{{ synonym }}</ul>
-                </div>
-            {% endfor %}
-        {% else %}
-            <span>No synonyms found.</span>
+            <div class="synonyms google-appliance-synonyms">
+                <span class="p">You may also try:</span>
+                <ul>
+                    {% for synonym in results.getSynonyms %}
+                        <li>{{ synonym.getLink }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
         {% endif %}
     </div>
     <div>

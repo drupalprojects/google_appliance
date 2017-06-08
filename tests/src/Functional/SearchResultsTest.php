@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\google_appliance\Functional;
 
+use Drupal\google_appliance\Routing\SearchViewRoute;
 use Drupal\Core\Url;
 
 /**
@@ -97,7 +98,7 @@ class SearchResultsTest extends GoogleApplianceFunctionalTestBase {
     // Verify sorting function.
     $this->clickLink('Date');
     $assert->pageTextNotContains('No Results');
-    $this->assertEquals(Url::fromRoute('google_appliance.search_view', [
+    $this->assertEquals(Url::fromRoute(SearchViewRoute::ROUTE_NAME, [
       'search_query' => 'ponies',
       'result_sort' => 'date',
     ])->setAbsolute()->setOption('query', [
@@ -108,7 +109,7 @@ class SearchResultsTest extends GoogleApplianceFunctionalTestBase {
     $this->clickLink('Relevance', 1);
     $assert->pageTextNotContains('No Results');
     $assert->linkNotExists('Relevance');
-    $this->assertEquals(Url::fromRoute('google_appliance.search_view', [
+    $this->assertEquals(Url::fromRoute(SearchViewRoute::ROUTE_NAME, [
       'search_query' => 'ponies',
       'result_sort' => 'rel',
     ])->setAbsolute()->setOption('query', [
@@ -133,9 +134,10 @@ class SearchResultsTest extends GoogleApplianceFunctionalTestBase {
     $this->drupalGet('gsearch/unicorns');
     $assert->statusCodeEquals(200);
     $assert->pageTextContains('You may also try:');
-    $assert->linkByHrefExists('Donkeys', Url::fromRoute('google_appliance.search_view', [
-      'search_query' => 'donkeys'
-    ])->setAbsolute()->toString());
+    $assert->linkExists('Donkeys');
+    $assert->linkByHrefExists(Url::fromRoute(SearchViewRoute::ROUTE_NAME, [
+      'search_query' => 'donkeys',
+    ])->toString());
   }
 
 }

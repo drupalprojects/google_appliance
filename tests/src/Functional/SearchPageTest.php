@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\google_appliance\Functional;
 
+use Drupal\google_appliance\Routing\SearchViewRoute;
 use Drupal\Core\Url;
 
 /**
@@ -56,7 +57,7 @@ class SearchPageTest extends GoogleApplianceFunctionalTestBase {
     $this->submitForm($terms, 'Search');
 
     // Confirm that the user is redirected to the results page.
-    $this->assertEquals(Url::fromRoute('google_appliance.search_view', [
+    $this->assertEquals(Url::fromRoute(SearchViewRoute::ROUTE_NAME, [
       'search_query' => $terms['search_keys'],
     ])->setAbsolute()->toString(), $this->getSession()->getCurrentUrl());
 

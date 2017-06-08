@@ -2,6 +2,7 @@
 
 namespace Drupal\google_appliance\Form;
 
+use Drupal\google_appliance\Routing\SearchViewRoute;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 
@@ -61,7 +62,7 @@ class SearchForm extends FormBase {
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $searchQuery = urlencode($form_state->getValue('search_keys'));
 
-    $form_state->setRedirect('google_appliance.search_view', [
+    $form_state->setRedirect(SearchViewRoute::ROUTE_NAME, [
       'search_query' => $searchQuery,
     ]);
   }

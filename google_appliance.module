@@ -5,6 +5,7 @@
  * Google Appliance module file.
  */
 
+use Drupal\google_appliance\Routing\SearchViewRoute;
 use Drupal\Component\Serialization\Json;
 use Drupal\Core\Url;
 
@@ -78,7 +79,7 @@ function google_appliance_page_attachments(array &$attachments) {
       $canonicalUrl = $attachments['metatag_canonical']['#value'];
     }
 
-    $targetUrl = Url::fromRoute('google_appliance.search_view')
+    $targetUrl = Url::fromRoute(SearchViewRoute::ROUTE_NAME)
       ->toString(TRUE)
       ->getGeneratedUrl() . '/{search_query}';
 

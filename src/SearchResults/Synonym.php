@@ -2,6 +2,11 @@
 
 namespace Drupal\google_appliance\SearchResults;
 
+use Drupal\google_appliance\Routing\SearchViewRoute;
+use Drupal\Core\Link;
+use Drupal\Core\StringTranslation\TranslatableMarkup;
+use Drupal\Core\Url;
+
 /**
  * Defines a value object for a synonym.
  */
@@ -52,6 +57,18 @@ class Synonym {
    */
   public function getUrl() {
     return $this->url;
+  }
+
+  /**
+   * Gets synonym as link.
+   *
+   * @return \Drupal\Core\Link
+   *   Link object.
+   */
+  public function getLink() {
+    return Link::fromTextAndUrl($this->description, Url::fromRoute(SearchViewRoute::ROUTE_NAME, [
+      'search_query' => $this->url
+    ]));
   }
 
 }
