@@ -116,4 +116,26 @@ class SearchResultsTest extends GoogleApplianceFunctionalTestBase {
     ])->toString(), $this->getSession()->getCurrentUrl());
   }
 
+  /**
+   * Tests synonyms.
+   */
+  public function testSynonyms() {
+    // Submit the search specified in $file_spec via URL (form submission already tested)
+    $this->drupalGet('gsearch/ponies');
+
+    $assert = $this->assertSession();
+    // Make sure we get a response, and that it is not an error message.
+    $assert->statusCodeEquals(200);
+    $assert->pageTextNotContains('No Results');
+    $assert->pageTextNotContains('You may also try:');
+
+    // No search for synonyms.
+    $this->drupalGet('gsearch/unicorns');
+    $assert->statusCodeEquals(200);
+    $assert->pageTextContains('You may also try:');
+    $assert->linkByHrefExists('Donkeys', Url::fromRoute('google_appliance.search_view', [
+      'search_query' => 'donkeys'
+    ])->setAbsolute()->toString());
+  }
+
 }
