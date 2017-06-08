@@ -21,11 +21,11 @@ Files of the D7 version not even touched:
 	theme/google-appliance-search-form.tpl.php
 	theme/google-appliance-spelling-suggestion.tpl.php
 	theme/google_appliance.css
-	theme/google_appliance.theme.inc
 
 To do:
-* Onebox results
+* Onebox results output
 * keymatch output
 * Spelling suggestion output
-* Click/JS stuff
+* Click/JS/Posting click stats
 * Clustering
+* Language filtering
