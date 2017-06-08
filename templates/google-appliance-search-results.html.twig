@@ -5,18 +5,18 @@
   *
   * Available variables:
   *  - form - the search form
-  *  - response - the search response
+  *  - results - the search results
   */
 #}
 <div>
     <div>
         {{ form }}
     </div>
-    <h2 id="search-results-heading">{{ response.getSearchTitle }}</h2>
+    <h2 id="search-results-heading">{{ results.getSearchTitle }}</h2>
     <div>
-        {% if response.hasSpellingSuggestions %}
+        {% if results.hasSpellingSuggestions %}
             <ol>
-                {% for suggestion in response.getSpellingSuggestions %}
+                {% for suggestion in results.getSpellingSuggestions %}
                     {# @todo split into own tpl #}
                     <li>{{ suggestion }}</li>
                 {% endfor %}
@@ -24,8 +24,8 @@
         {% endif %}
     </div>
     <div>
-        {% if response.hasSynonyms %}
-            {% for synonym in response.getSynonyms %}
+        {% if results.hasSynonyms %}
+            {% for synonym in results.getSynonyms %}
                 <div class="synonyms google-appliance-synonyms">
                     {# @todo split into own tpl #}
                     <span class="p">{{ synonym }}</span>
@@ -41,15 +41,15 @@
     </div>
     <div>
         {% include '@google_appliance/google-appliance-results-control-bar.html.twig' with {
-        response: response,
+        results: results,
         } only %}
-        {% if response.hasKeyMatch %}
+        {% if results.hasKeyMatch %}
             <ol class="keymatch-results google-appliance-keymatch-results">
                 {# @todo: keymatch results #}
             </ol>
         {% endif %}
 
-        {% if response.hasErrors %}
+        {% if results.hasErrors %}
             {# @todo
             <span>Errors</span>
             <ol>
@@ -59,9 +59,9 @@
             </ol>#}
         {% endif %}
 
-        {% if response.hasResults %}
+        {% if results.hasResults %}
             <ol class="search-results google-appliance-results">
-                {% for result in response.getResults %}
+                {% for result in results.getResults %}
                     <li class="search-result">{% include '@google_appliance/google-appliance-result.html.twig' with {
                         result: result,
                         } only %}</li>
@@ -72,7 +72,8 @@
         {% endif %}
 
         {% include '@google_appliance/google-appliance-results-control-bar.html.twig' with {
-        response: response,
+        results: results,
         } only %}
     </div>
+    {{ results.getPager }}
 </div>

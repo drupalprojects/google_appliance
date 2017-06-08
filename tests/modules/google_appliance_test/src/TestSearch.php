@@ -24,7 +24,10 @@ class TestSearch extends Search {
     foreach (range(1, $perPage) as $item) {
       $result->addResult(new Result('http://example.com', 'http://example.com', sprintf('Result %d', $item), sprintf('this is a snippet from item %d', $item), date('Y-m-d'), 'text/html'));
     }
-    return $result->setSearchTitle($config->get('display_settings.search_title'))->setQuery($searchQuery);
+    return $result
+      ->setSearchTitle($config->get('display_settings.search_title'))
+      ->setQuery($searchQuery)
+      ->setResultsPerPage($perPage);
   }
 
 }

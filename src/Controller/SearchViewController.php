@@ -71,7 +71,7 @@ class SearchViewController extends ControllerBase {
 
       return [
         '#theme' => 'google_appliance_search_results',
-        '#response' => $response,
+        '#results' => $response,
         '#form' => $form,
         '#cache' => [
           'tags' => ['config:google_appliance.settings'],

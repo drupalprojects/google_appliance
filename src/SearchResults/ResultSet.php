@@ -1,6 +1,7 @@
 <?php
 
 namespace Drupal\google_appliance\SearchResults;
+
 use Drupal\Core\Link;
 use Drupal\Core\StringTranslation\TranslatableMarkup;
 use Drupal\Core\Url;
@@ -83,6 +84,13 @@ class ResultSet {
    * @var \Drupal\google_appliance\SearchResults\SearchQuery
    */
   protected $query;
+
+  /**
+   * Results per page.
+   *
+   * @var int
+   */
+  protected $resultsPerPage;
 
   /**
    * Check if response is in error.
@@ -335,7 +343,6 @@ class ResultSet {
     return $this;
   }
 
-
   /**
    * Gets value of query.
    *
@@ -382,11 +389,11 @@ class ResultSet {
   public function getSortLinks() {
     $links = [];
     if ($this->query->getSort() == SearchQuery::ORDER_DATE) {
-      $links[] = Link::fromTextAndUrl(New TranslatableMarkup('Relevance'), Url::fromRoute('google_appliance.search_view', [
+      $links[] = Link::fromTextAndUrl(new TranslatableMarkup('Relevance'), Url::fromRoute('google_appliance.search_view', [
         'search_query' => $this->query->getSearchQuery(),
         'result_sort' => 'rel',
       ])->setAbsolute()->setOption('query', [
-        'page' => $this->query->getPage(),
+        'page' => (string) $this->query->getPage(),
       ]));
       $links[] = new TranslatableMarkup('Date');
       return $links;
@@ -396,9 +403,76 @@ class ResultSet {
       'search_query' => $this->query->getSearchQuery(),
       'result_sort' => 'date',
     ])->setAbsolute()->setOption('query', [
-      'page' => $this->query->getPage(),
+      'page' => (string) $this->query->getPage(),
     ]));
     return $links;
+  }
+
+  /**
+   * Returns render array for pager.
+   *
+   * @return array
+   *   Render array.
+   */
+  public function getPager() {
+    // Globals required to manually configure the pager.
+    //  _________________________
+    // < pager is a pile of puke >
+    // -------------------------
+    //     \   ^__^
+    //      \  (oo)\_______
+    //         (__)\       )\/\
+    //             ||----w |
+    //             ||     ||.
+    global $pager_page_array, $pager_total, $pager_total_items;
+
+    $element = 0;
+    /**
+     * NOTE: the total results count from the GSA is unreliable. The docs
+     * state that it is an *approximation*, but if you click around on
+     * enough searches, you'll find that it's off by a considerable amount -
+     * enough to break the math used to create pager links. It's not all that
+     * noticeable unless you click on the "last" link in the pager, and
+     * notice that in some searches, the last page is paginated at a number
+     * less than was previously viewable when the first page of results came
+     * up on the initial search view.
+     *
+     * The problem is rooted in public vs. access-controlled indexing.
+     * @see groups.google.com/group/Google-Search-Appliance-Help/browse_thread/thread/019b77fb3e7950c7
+     * Access-controlled results are counted before we know if we can actually
+     * view it. Device configuration can help.
+     *
+     * @TODO: perhaps a better solution is to just query the device for the
+     * first X (up to 1000) results and cache them locally.
+     */
+
+    // Manually configure (fake) the pager.
+    $page = $this->query->getPage();
+
+    // Convert page id to array.
+    $pager_page_array = explode(',', $page);
+
+    // Set the total results.
+    $pager_total_items[$element] = (int) $this->total;
+
+    // Set the total # of pages.
+    $pager_total[$element] = ceil($pager_total_items[$element] / $this->resultsPerPage);
+    $pager_page_array[$element] = max(0, min((int) $pager_page_array[$element], ((int) $pager_total[$element]) - 1));
+
+    return ['#type' => 'pager'];
+  }
+
+  /**
+   * Sets results per page.
+   *
+   * @param int $resultsPerPage
+   *   New value for resultsPerPage.
+   *
+   * @return $this
+   */
+  public function setResultsPerPage($resultsPerPage) {
+    $this->resultsPerPage = $resultsPerPage;
+    return $this;
   }
 
 }

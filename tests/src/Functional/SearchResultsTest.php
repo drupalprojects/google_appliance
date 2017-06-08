@@ -1,8 +1,8 @@
 <?php
 
 namespace Drupal\Tests\google_appliance\Functional;
+
 use Drupal\Core\Url;
-use Drupal\google_appliance_test\TestSearch;
 
 /**
  * Tests search results are output.
@@ -77,16 +77,22 @@ class SearchResultsTest extends GoogleApplianceFunctionalTestBase {
     $assert->linkExists('Date');
 
     // Verify that we have the pager, and that page 1 is marked current.
-    $assert->responseContains('<ul class="pager">');
-    $assert->responseContains('<li class="pager-current first">1</li>');
+    $page = $this->getSession()->getPage();
+    $pager = $page->find('css', 'ul.pager__items');
+    $this->assertNotEmpty($pager);
+    $active = $page->find('css', 'li.pager__item.is-active:contains("1")');
+    $this->assertNotEmpty($active);
 
     // Verify paging function.
-    $this->clickLink('2');
+    $pageTwoLink = $page->find('css', 'li.pager__item a:contains("2")');
+    $pageTwoLink->click();
     // Make sure resulting page doesn't have error message.
     $assert->pageTextNotContains('No Results');
     // Verify that we have the pager, and that page 2 is marked current.
-    $assert->responseContains('<ul class="pager">');
-    $assert->responseContains('<li class="pager-current">2</li>');
+    $pager = $page->find('css', 'ul.pager__items');
+    $this->assertNotEmpty($pager);
+    $active = $page->find('css', 'li.pager__item.is-active:contains("2")');
+    $this->assertNotEmpty($active);
 
     // Verify sorting function.
     $this->clickLink('Date');

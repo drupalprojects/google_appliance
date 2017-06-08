@@ -48,24 +48,12 @@ function google_appliance_theme() {
   $theme['google_appliance_search_results'] = [
     'file' => 'google_appliance.page.inc',
     'variables' => [
-      'response' => NULL,
+      'results' => NULL,
       'form' => '',
     ],
   ];
 
   return $theme;
-}
-
-/**
- * Implements hook_module_implements_alter().
- */
-function google_appliance_module_implements_alter(&$implementations, $hook) {
-  // Make sure we come after search module's implementation.
-  if ($hook === 'menu') {
-    $group = $implementations['google_appliance'];
-    unset($implementations['google_appliance']);
-    $implementations['google_appliance'] = $group;
-  }
 }
 
 /**

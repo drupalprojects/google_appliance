@@ -73,13 +73,14 @@ class Search implements SearchInterface {
    */
   public function search(SearchQuery $query) {
     $config = $this->configFactory->get('google_appliance.settings');
+    $resultsPerPage = (int) $config->get('display_settings.results_per_page');
     $params = [
       'site' => Html::escape($config->get('connection_info.collection')),
       'oe' => 'utf8',
       'ie' => 'utf8',
       'getfields' => '*',
       'client' => Html::escape($config->get('connection_info.frontend')),
-      'page' => $query->getPage() * (int) $config->get('display_settings.results_per_page'),
+      'page' => $query->getPage() * $resultsPerPage,
       'num' => Html::escape($config->get('display_settings.results_per_page')),
       'filter' => Html::escape($config->get('query_param.autofilter')),
       'q' => $query->getSearchQuery(),
@@ -100,7 +101,8 @@ class Search implements SearchInterface {
     $this->moduleHandler->alter('google_appliance_response', $return);
     return $return
       ->setSearchTitle($config->get('display_settings.search_title'))
-      ->setQuery($query);
+      ->setQuery($query)
+      ->setResultsPerPage($resultsPerPage);
   }
 
 }
