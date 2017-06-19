@@ -6,11 +6,11 @@ use Drupal\google_appliance\Routing\SearchViewRoute;
 use Drupal\Core\Url;
 
 /**
- * Test search block.
+ * Test related search block.
  *
  * @group google_appliance
  */
-class SearchBlockTest extends GoogleApplianceFunctionalTestBase {
+class ReleatedSearchesBlockTest extends GoogleApplianceFunctionalTestBase {
 
   /**
    * {@inheritdoc}
