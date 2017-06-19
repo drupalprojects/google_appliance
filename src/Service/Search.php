@@ -135,7 +135,7 @@ class Search implements SearchInterface {
         'site' => Html::escape($config->get('connection_info.collection')),
       ];
       $response = $this->httpClient->request('POST', $config->get('connection_info.hostname') . '/cluster', [
-        'body' => $params,
+        'form_params' => $params,
       ]);
       $response = json_decode((string) $response->getBody(), TRUE);
       if (isset($response['clusters'][0])) {
