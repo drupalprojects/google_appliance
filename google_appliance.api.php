@@ -72,32 +72,18 @@ function hook_google_appliance_response_alter(Drupal\google_appliance\SearchResu
  *
  * Use this to alter the render array properties.
  *
- * @param $cluster_list
- *   A renderable array conforming to theme_item_list().
- *
- * @param $cluster_results
+ * @param \Drupal\Core\Link[] $cluster_list
+ *   Array of links.
+ * @param array $cluster_results
  *   The raw cluster results returned via the Google Appliance instance.
  *
- * @see google_appliance_get_clusters()
+ * @see \Drupal\google_appliance\Service\Search::getRelatedSearches
  * @see theme_item_list()
- *
- * @todo Update as appropriate.
  */
-function hook_google_appliance_cluster_list_alter(&$cluster_list, $cluster_results) {
-  // Add some CSS classes.
-  $cluster_list['#attributes']['class'][] = 'foo-list';
-  $cluster_list['#items'] = [];
-
-  // Construct a new list of links using the raw results with a custom path.
-  foreach ($cluster_results as $cluster) {
-    $cluster_list['#items'][] = Link::fromTextAndUrl(
-      $cluster['label'],
-      Url::fromUri('search/my/path/' . $cluster['label'])
-    )->toString();
+function hook_google_appliance_cluster_list_alter(array &$cluster_list, array $cluster_results) {
+  foreach ($cluster_list as $link) {
+    $link->getUrl()->setAbsolute(TRUE);
   }
-
-  // Change the first item of the list.
-  $cluster_list['#items'][0] = '<span>A new item</span>';
 }
 
 /**

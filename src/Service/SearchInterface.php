@@ -20,4 +20,15 @@ interface SearchInterface {
    */
   public function search(SearchQuery $query);
 
+  /**
+   * Gets related searches.
+   *
+   * @param string $searchPhrase
+   *   Search phrase.
+   *
+   * @return \Drupal\Core\Link[]
+   *   Array of related search links.
+   */
+  public function getRelatedSearches($searchPhrase);
+
 }

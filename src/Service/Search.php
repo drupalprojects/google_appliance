@@ -5,6 +5,9 @@ namespace Drupal\google_appliance\Service;
 use Drupal\Component\Utility\Html;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
+use Drupal\Core\Link;
+use Drupal\Core\Url;
+use Drupal\google_appliance\Routing\SearchViewRoute;
 use Drupal\google_appliance\SearchResults\ResultSet;
 use Drupal\google_appliance\SearchResults\SearchQuery;
 use GuzzleHttp\ClientInterface;
@@ -105,86 +108,55 @@ class Search implements SearchInterface {
       ->setResultsPerPage($resultsPerPage);
   }
 
-}
-
-// @todo: Finish these.
-
-/**
- * Get related search via the Google Search Appliance clustering service.
- *
- * @return
- *   themed list of links
- */
-function google_appliance_get_clusters() {
-
-  // Grab module settings.
-  $settings = _google_appliance_get_settings();
-
-  // Get the search query.
-  $query_pos = substr_count($settings['drupal_path'], '/') + 1;
-  $search_query = urldecode(arg($query_pos));
-  $cluster_content = NULL;
-
-  // Perform POST to acquire the clusters  block.
-  $clusterQueryURL = Html::escape($settings['hostname'] . '/cluster');
-  $clusterQueryParams = [
-    'q' => Html::escape($search_query),
-    'btnG' => 'Google+Search',
-    'access' => 'p',
-    'entqr' => '0',
-    'ud' => '1',
-    'sort' => 'date:D:L:d1',
-    'output' => 'xml_no_dtd',
-    'oe' => 'utf8',
-    'ie' => 'utf8',
-    'site' => Html::escape($settings['collection']),
-    'client' => Html::escape($settings['frontend']),
-  ];
-
-  // Alter request according to language filter settings.
-  if (\Drupal::moduleHandler()
-    ->moduleExists('locale') && $settings['language_filter_toggle']
-  ) {
-    $clusterQueryParams['lr'] = _google_appliance_get_lr($settings['language_filter_options']);
-  }
-
-  // cURL request for the clusters produces JSON result.
-  $gsa_clusters_json = _curl_post($clusterQueryURL, $clusterQueryParams);
-
-  // No error -> get the clusters.
-  if (!$gsa_clusters_json['is_error']) {
-
-    $clusters = json_decode($gsa_clusters_json['response'], TRUE);
-
-    if (isset($clusters['clusters'][0])) {
-
-      // Build the link list.
-      $cluster_list_items = [];
-      foreach ($clusters['clusters'][0]['clusters'] as $cluster) {
-        // @FIXME
-        // l() expects a Url object, created from a route name or external URI.
-        // array_push($cluster_list_items, l($cluster['label'], $settings['drupal_path'] . '/' . $cluster['label']));
-      }
-
-      // Create theme-friendly list of links render array.
-      $cluster_list = [
-        '#theme' => 'item_list',
-        '#items' => $cluster_list_items,
-        '#title' => NULL,
-        '#type' => 'ul',
-        '#attributes' => [],
+  /**
+   * Gets related searches.
+   *
+   * @param string $searchPhrase
+   *   Search phrase.
+   *
+   * @return \Drupal\Core\Link[]
+   *   Array of related search links.
+   */
+  public function getRelatedSearches($searchPhrase) {
+    $config = $this->configFactory->get('google_appliance.settings');
+    $links = [];
+    try {
+      $params = [
+        'q' => $searchPhrase,
+        'btnG' => 'Google+Search',
+        'access' => 'p',
+        'entqr' => '0',
+        'ud' => '1',
+        'sort' => 'date:D:L:d1',
+        'output' => 'xml_no_dtd',
+        'oe' => 'utf8',
+        'ie' => 'utf8',
+        'client' => Html::escape($config->get('connection_info.frontend')),
+        'site' => Html::escape($config->get('connection_info.collection')),
       ];
+      $response = $this->httpClient->request('POST', $config->get('connection_info.hostname') . '/cluster', [
+        'body' => $params,
+      ]);
+      $response = json_decode((string) $response->getBody(), TRUE);
+      if (isset($response['clusters'][0])) {
 
-      // Allow implementation of hook_google_appliance_cluster_list_alter() by
-      // other modules.
-      \Drupal::moduleHandler()
-        ->alter('google_appliance_cluster_list', $cluster_list, $cluster_results);
+        // Build the link list.
+        $cluster_list_items = [];
+        foreach ($response['clusters'][0]['clusters'] as $cluster) {
+          $links[] = Link::fromTextAndUrl($cluster['label'], Url::fromRoute(SearchViewRoute::ROUTE_NAME, [
+            'search_query' => $cluster['label'],
+          ]));
+        }
 
-      $cluster_content = \Drupal::service('renderer')->render($cluster_list);
+        $this->moduleHandler->alter('google_appliance_cluster_list', $links, $response);
+      }
     }
+    catch (GuzzleException $e) {
+      return [];
+    }
+    return $links;
   }
 
-  return $cluster_content;
 }
 
 /**

@@ -2,6 +2,9 @@
 
 namespace Drupal\google_appliance_test;
 
+use Drupal\Core\Link;
+use Drupal\Core\Url;
+use Drupal\google_appliance\Routing\SearchViewRoute;
 use Drupal\google_appliance\SearchResults\ResultSet;
 use Drupal\google_appliance\SearchResults\Result;
 use Drupal\google_appliance\SearchResults\SearchQuery;
@@ -32,6 +35,20 @@ class TestSearch extends Search {
       ->setSearchTitle($config->get('display_settings.search_title'))
       ->setQuery($searchQuery)
       ->setResultsPerPage($perPage);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getRelatedSearches($searchPhrase) {
+    $phrases = ['foo', 'bar'];
+    $links = [];
+    foreach ($phrases as $phrase) {
+      Link::fromTextAndUrl($phrase, Url::fromRoute(SearchViewRoute::ROUTE_NAME, [
+        'search_query' => $phrase,
+      ]));
+    }
+    return $links;
   }
 
 }
