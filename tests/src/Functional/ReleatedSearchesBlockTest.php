@@ -13,6 +13,13 @@ use Drupal\Core\Url;
 class SearchBlockTest extends GoogleApplianceFunctionalTestBase {
 
   /**
+   * {@inheritdoc}
+   */
+  protected static $modules = [
+    'google_appliance_test',
+  ];
+
+  /**
    * Test search block form.
    */
   public function testSearchBlock() {
