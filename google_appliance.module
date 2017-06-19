@@ -34,7 +34,7 @@ function google_appliance_help($route_name, RouteMatchInterface $route_match) {
       break;
 
     case 'google_appliance.admin':
-      $output = '<p>' . t('The Google Appliance settings specify the interface to your GSA device. The search results obtained via that interface are controlled by the Google Search Appliance configuration itself. Visit the <a href="@gsa-help">Google Appliance help section</a> for more information on setting up the integration.', ['@gsa-help' => url('admin/help/google_appliance')]) . '</p>';
+      $output = '<p>' . t('The Google Appliance settings specify the interface to your GSA device. The search results obtained via that interface are controlled by the Google Search Appliance configuration itself. Visit the <a href="@gsa-help">Google Appliance help section</a> for more information on setting up the integration.', ['@gsa-help' => '/admin/help/google_appliance']) . '</p>';
       break;
   }
   return $output;
