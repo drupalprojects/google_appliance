@@ -4,7 +4,6 @@ namespace Drupal\google_appliance\SearchResults;
 
 use Drupal\google_appliance\Routing\SearchViewRoute;
 use Drupal\Core\Link;
-use Drupal\Core\StringTranslation\TranslatableMarkup;
 use Drupal\Core\Url;
 
 /**
@@ -67,7 +66,7 @@ class Synonym {
    */
   public function getLink() {
     return Link::fromTextAndUrl($this->description, Url::fromRoute(SearchViewRoute::ROUTE_NAME, [
-      'search_query' => $this->url
+      'search_query' => $this->url,
     ]));
   }
 
