@@ -70,7 +70,7 @@ class ResultSet {
    *
    * @var int
    */
-  protected $lastResult = '';
+  protected $lastResult = 0;
 
   /**
    * One box result keyed by module name.
@@ -375,7 +375,7 @@ class ResultSet {
    */
   public function getStatistics() {
     return new TranslatableMarkup('Showing results @first - @last for %query', [
-      '@first' => $this->lastResult - count($this->results) + 1,
+      '@first' => (int) $this->lastResult - count($this->results) + 1,
       '@last' => $this->lastResult,
       '%query' => $this->query->getSearchQuery(),
     ]);
